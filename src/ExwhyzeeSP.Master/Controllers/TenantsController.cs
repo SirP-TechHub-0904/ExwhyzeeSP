@@ -278,6 +278,8 @@ namespace ExwhyzeeSP.Master.Controllers
                         sqlOptions.MigrationsAssembly("ExwhyzeeSP.Data");
                         sqlOptions.CommandTimeout(180);
                     });
+                    optionsBuilder.ConfigureWarnings(warnings =>
+                        warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
                     using var tenantContext = new ApplicationDbContext(optionsBuilder.Options);
                     var pendingMigrations = (await tenantContext.Database.GetPendingMigrationsAsync()).ToList();
@@ -416,6 +418,8 @@ namespace ExwhyzeeSP.Master.Controllers
                     sqlOptions.MigrationsAssembly("ExwhyzeeSP.Data");
                     sqlOptions.CommandTimeout(180);
                 });
+                optionsBuilder.ConfigureWarnings(warnings =>
+                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
                 using var tenantContext = new ApplicationDbContext(optionsBuilder.Options);
                 var pendingMigrations = (await tenantContext.Database.GetPendingMigrationsAsync()).ToList();
@@ -460,6 +464,8 @@ namespace ExwhyzeeSP.Master.Controllers
                         sqlOptions.MigrationsAssembly("ExwhyzeeSP.Data");
                         sqlOptions.CommandTimeout(180);
                     });
+                    optionsBuilder.ConfigureWarnings(warnings =>
+                        warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
                     using var tenantContext = new ApplicationDbContext(optionsBuilder.Options);
                     var pendingMigrations = (await tenantContext.Database.GetPendingMigrationsAsync()).ToList();

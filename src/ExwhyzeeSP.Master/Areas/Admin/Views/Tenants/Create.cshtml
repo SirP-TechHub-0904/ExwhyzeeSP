@@ -67,7 +67,7 @@
                     <div class="space-y-4">
                         <div>
                             <label asp-for="SchoolName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">School Name <span class="text-rose-500">*</span></label>
-                            <input asp-for="SchoolName" id="schoolNameInput" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. Divine Threshers Academy" required />
+                            <input asp-for="SchoolName" id="schoolNameInput" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Enter school name..." required />
                             <span asp-validation-for="SchoolName" class="text-xs text-rose-600 mt-1 block"></span>
                         </div>
 
@@ -75,7 +75,7 @@
                             <div>
                                 <label asp-for="SubDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Default Subdomain <span class="text-rose-500">*</span></label>
                                 <div class="flex items-center">
-                                    <input asp-for="SubDomain" id="subdomainInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="divinethreshers" required />
+                                    <input asp-for="SubDomain" id="subdomainInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="schoolname" required />
                                     <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-xs font-mono text-[var(--text-secondary)] shrink-0">.exwhyzee.ng</span>
                                 </div>
                                 <span asp-validation-for="SubDomain" class="text-xs text-rose-600 mt-1 block"></span>
@@ -87,7 +87,7 @@
 
                             <div>
                                 <label asp-for="HostDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Custom Domain (Optional)</label>
-                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.divinethreshers.edu.ng" />
+                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.yourschool.edu.ng or yourschool.com" />
                                 <span asp-validation-for="HostDomain" class="text-xs text-rose-600 mt-1 block"></span>
                                 <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">School's proprietary domain if they don't want the default URL.</span>
                             </div>
@@ -143,7 +143,7 @@
                         <div class="flex flex-col sm:flex-row gap-4" style="display: flex; flex-direction: row; gap: 16px; align-items: flex-start; width: 100%;">
                             <div style="flex: 1 1 auto; min-width: 0;">
                                 <label asp-for="ServerHost" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server IP / Hostname</label>
-                                <input asp-for="ServerHost" id="serverHostInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50 or db.exwhyzee.ng" />
+                                <input asp-for="ServerHost" id="serverHostInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="e.g. 187.77.172.27 or localhost\SQLEXPRESS" />
                                 <span asp-validation-for="ServerHost" class="text-xs text-rose-600 mt-1 block"></span>
                             </div>
                             <div style="width: 140px; flex-shrink: 0;">
@@ -169,7 +169,7 @@
                             </div>
                             <div>
                                 <label asp-for="AdminPassword" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Password</label>
-                                <input asp-for="AdminPassword" type="password" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="Master Server SA Password" />
+                                <input asp-for="AdminPassword" type="password" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="Server admin password" />
                                 <span asp-validation-for="AdminPassword" class="text-xs text-rose-600 mt-1 block"></span>
                             </div>
                         </div>
@@ -225,11 +225,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server / Host <span class="text-rose-500">*</span></label>
-                                    <input type="text" id="bldServer" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50,1433" oninput="assembleConnectionString()" />
+                                    <input type="text" id="bldServer" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. 187.77.172.27,1433 or localhost\SQLEXPRESS" oninput="assembleConnectionString()" />
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Database Name <span class="text-rose-500">*</span></label>
-                                    <input type="text" id="bldDatabase" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. db_school_divine" oninput="assembleConnectionString()" />
+                                    <input type="text" id="bldDatabase" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. db_school_portal" oninput="assembleConnectionString()" />
                                 </div>
                             </div>
 
@@ -250,7 +250,7 @@
                             <div id="bldSqlAuthInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Username <span class="text-rose-500">*</span></label>
-                                    <input type="text" id="bldUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. usr_divine or sa" oninput="assembleConnectionString()" />
+                                    <input type="text" id="bldUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. usr_school or sa" oninput="assembleConnectionString()" />
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Password <span class="text-rose-500">*</span></label>

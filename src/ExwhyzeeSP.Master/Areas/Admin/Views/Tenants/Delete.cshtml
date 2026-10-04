@@ -3,7 +3,7 @@
     ViewData["Title"] = $"Decommission {Model.SchoolName}";
 }
 
-<div class="max-w-4xl mx-auto space-y-6 animate-rise-in pb-12">
+<div class="w-full space-y-6 animate-rise-in pb-12">
 
     <!-- Back button & Breadcrumb -->
     <div class="flex items-center justify-between gap-4">
@@ -43,7 +43,7 @@
 
     <!-- School Snapshot & Impact Analysis -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] space-y-1">
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-1">
             <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Target Institution</span>
             <div class="text-sm font-bold text-[var(--text-primary)] truncate">@Model.SchoolName</div>
             <div class="text-xs font-mono text-[var(--color-primary-600)] truncate">
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] space-y-1">
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-1">
             <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Financial Ledger Summary</span>
             <div class="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                 ₦@Model.TransactionVolume.ToString("N2")
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] space-y-1">
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-1">
             <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Registration Date</span>
             <div class="text-sm font-bold text-[var(--text-primary)]">
                 @Model.DateCreated.ToString("MMM dd, yyyy")
@@ -73,7 +73,7 @@
     </div>
 
     <!-- Impact & Consequences Breakdown -->
-    <div class="surface-card p-5 rounded-2xl border border-[var(--border-subtle)] space-y-4">
+    <div class="surface-card p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-4">
         <h3 class="text-sm font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-2">
             <i class="icon-info text-[var(--color-primary-600)]"></i>
             <span>Consequences of Decommissioning</span>
@@ -115,65 +115,74 @@
     </div>
 
     <!-- Security Authorization Form -->
-    <div class="surface-card p-6 rounded-2xl border-2 border-rose-500/20 shadow-lg space-y-5">
+    <div class="surface-card p-6 rounded-2xl border-2 border-rose-500/20 bg-[var(--surface-raised)] shadow-lg space-y-5">
         <div class="border-b border-[var(--border-subtle)] pb-3">
             <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <i class="icon-key text-rose-500"></i>
                 <span>Multi-Factor Administrative Authorization</span>
             </h3>
-            <p class="text-xs text-[var(--text-tertiary)]">Complete all verification requirements to execute this operation.</p>
+            <p class="text-xs text-[var(--text-tertiary)]">Complete all verification requirements below to execute this decommissioning.</p>
         </div>
 
-        <form asp-action="DeleteConfirmed" method="post" class="space-y-4" id="decommissionForm">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs space-y-1">
+                <div class="font-bold flex items-center gap-1.5 text-rose-600 mb-1">
+                    <i class="icon-alert-triangle text-base"></i>
+                    <span>Please review and correct the following errors:</span>
+                </div>
+                <div asp-validation-summary="All" class="space-y-0.5 pl-5 list-disc text-rose-600"></div>
+            </div>
+        }
+
+        <form asp-action="DeleteConfirmed" method="post" class="space-y-5" id="decommissionForm">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
 
-            <div asp-validation-summary="All" class="text-xs text-rose-600 dark:text-rose-400 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20"></div>
-
-            <!-- 1. Pass Phrase Verification -->
-            <div>
-                <label asp-for="ConfirmationText" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-1.5">
-                    1. Type <code class="px-1.5 py-0.5 bg-rose-500/10 text-rose-600 font-mono rounded font-bold">DELETE</code> or <code class="px-1.5 py-0.5 bg-rose-500/10 text-rose-600 font-mono rounded font-bold">DELETE @Model.SchoolName</code> to confirm:
+            <!-- 1. Deletion Reason -->
+            <div class="space-y-1.5">
+                <label asp-for="Reason" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                    1. Mandatory Compliance / Decommission Reason <span class="text-rose-500">*</span>
                 </label>
-                <input asp-for="ConfirmationText" id="confirmTextInput" autocomplete="off" class="form-control font-mono text-sm py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)]" placeholder="DELETE" />
-                <span asp-validation-for="ConfirmationText" class="text-xs text-rose-500 mt-1 block"></span>
+                <textarea asp-for="Reason" rows="3" required class="form-control text-sm w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3 focus:border-rose-500 focus:ring-1 focus:ring-rose-500" placeholder="Type the official reason for decommissioning this institution (at least 5 characters)..."></textarea>
+                <span asp-validation-for="Reason" class="text-xs text-rose-500 font-semibold mt-1 block"></span>
             </div>
 
-            <!-- 2. Deletion Reason -->
-            <div>
-                <label asp-for="Reason" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-1.5">
-                    2. Mandatory Compliance / Decommission Reason:
+            <!-- 2. Pass Phrase Verification -->
+            <div class="space-y-1.5">
+                <label asp-for="ConfirmationText" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                    2. Type <code class="px-1.5 py-0.5 bg-rose-500/10 text-rose-600 font-mono rounded font-bold">DELETE</code> or <code class="px-1.5 py-0.5 bg-rose-500/10 text-rose-600 font-mono rounded font-bold">DELETE @Model.SchoolName</code> to confirm: <span class="text-rose-500">*</span>
                 </label>
-                <textarea asp-for="Reason" rows="2" class="form-control text-sm rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3" placeholder="e.g. Contract termination, institution closure, regulatory request, or migration..."></textarea>
-                <span asp-validation-for="Reason" class="text-xs text-rose-500 mt-1 block"></span>
+                <input asp-for="ConfirmationText" id="confirmTextInput" required autocomplete="off" class="form-control font-mono text-sm py-2.5 px-3.5 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] focus:border-rose-500 focus:ring-1 focus:ring-rose-500" placeholder="Type DELETE here..." />
+                <span asp-validation-for="ConfirmationText" class="text-xs text-rose-500 font-semibold mt-1 block"></span>
             </div>
 
             <!-- 3. Admin Account Password -->
-            <div>
-                <label asp-for="AdminPassword" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-1.5">
-                    3. Your Master Administrator Password:
+            <div class="space-y-1.5">
+                <label asp-for="AdminPassword" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+                    3. Your Master Administrator Password <span class="text-rose-500">*</span>
                 </label>
-                <input asp-for="AdminPassword" type="password" class="form-control text-sm py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)]" placeholder="Enter your login password" />
-                <span asp-validation-for="AdminPassword" class="text-xs text-rose-500 mt-1 block"></span>
+                <input asp-for="AdminPassword" type="password" required class="form-control text-sm py-2.5 px-3.5 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] focus:border-rose-500 focus:ring-1 focus:ring-rose-500" placeholder="Enter your master administrator login password..." />
+                <span asp-validation-for="AdminPassword" class="text-xs text-rose-500 font-semibold mt-1 block"></span>
             </div>
 
             <!-- 4. Acknowledgment Checkbox -->
-            <div class="p-3.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
-                <div class="form-check flex items-start gap-2.5">
-                    <input asp-for="AcknowledgeConsequences" class="form-check-input size-4 mt-0.5 rounded border-secondary text-rose-600 focus:ring-rose-500 shrink-0" id="ackCheckbox" />
-                    <label for="ackCheckbox" class="text-xs text-[var(--text-primary)] font-medium select-none cursor-pointer">
+            <div class="p-4 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                <div class="form-check flex items-start gap-3">
+                    <input asp-for="AcknowledgeConsequences" class="form-check-input size-4 mt-0.5 rounded border-secondary text-rose-600 focus:ring-rose-500 shrink-0 cursor-pointer" id="ackCheckbox" />
+                    <label for="ackCheckbox" class="text-xs text-[var(--text-primary)] font-medium select-none cursor-pointer leading-relaxed">
                         I confirm and acknowledge that this institution will be permanently decommissioned, domain routing revoked, and all active user access terminated immediately.
                     </label>
                 </div>
-                <span asp-validation-for="AcknowledgeConsequences" class="text-xs text-rose-500 mt-1 block"></span>
+                <span asp-validation-for="AcknowledgeConsequences" class="text-xs text-rose-500 font-semibold mt-1 block"></span>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center justify-between gap-4 pt-3">
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline border-secondary text-xs font-semibold px-4 py-2.5 rounded-xl text-decoration-none">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[var(--border-subtle)]">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline border-secondary text-xs font-semibold px-4 py-2.5 rounded-xl text-decoration-none w-full sm:w-auto text-center">
                     Cancel and Return
                 </a>
-                <button type="submit" id="deleteSubmitBtn" class="btn btn-danger bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+                <button type="submit" id="deleteSubmitBtn" class="btn btn-danger bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto cursor-pointer">
                     <i class="icon-trash-2 text-[15px]"></i>
                     <span>Permanently Decommission Institution</span>
                 </button>

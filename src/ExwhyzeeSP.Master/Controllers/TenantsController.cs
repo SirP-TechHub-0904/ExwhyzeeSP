@@ -720,10 +720,17 @@ namespace ExwhyzeeSP.Master.Controllers
                 return Challenge();
             }
 
-            var passwordValid = await _userManager.CheckPasswordAsync(adminUser, model.AdminPassword);
-            if (!passwordValid)
+            if (string.IsNullOrWhiteSpace(model.AdminPassword))
             {
-                ModelState.AddModelError(nameof(model.AdminPassword), "Incorrect administrator password. Deletion authorization failed.");
+                ModelState.AddModelError(nameof(model.AdminPassword), "Administrator password is required to authorize decommissioning.");
+            }
+            else
+            {
+                var passwordValid = await _userManager.CheckPasswordAsync(adminUser, model.AdminPassword);
+                if (!passwordValid)
+                {
+                    ModelState.AddModelError(nameof(model.AdminPassword), "Incorrect administrator password. Deletion authorization failed.");
+                }
             }
 
             if (!ModelState.IsValid)

@@ -86,8 +86,9 @@ builder.Services.AddScoped<ExwhyzeeSP.Services.IMarketingService, ExwhyzeeSP.Ser
 var app = builder.Build();
 
 // ==============================================================================
-// 4. SEED MASTER DATABASE (Local Safe Setup)
+// 4. SEED MASTER DATABASE (Disabled - Initial Setup Completed)
 // ==============================================================================
+/*
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -102,6 +103,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the Master Database.");
     }
 }
+*/
 
 // ==============================================================================
 // 5. CONFIGURE HTTP PIPELINE

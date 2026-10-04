@@ -57,6 +57,10 @@ namespace ExwhyzeeSP.Data.Contexts
             builder.Entity<TenantSchool>()
                 .Property(t => t.ConnectionString)
                 .IsRequired();
+
+            // Soft-delete global query filter
+            builder.Entity<TenantSchool>()
+                .HasQueryFilter(t => !t.IsDeleted);
         }
     }
 }

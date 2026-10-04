@@ -396,27 +396,38 @@
         /* Mobile sidebar visibility */
         @@media (max-width: 1023px) {
             #appSidebar {
-                position: fixed;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                z-index: 999;
-                transform: translateX(-100%);
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: fixed !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                width: 280px !important;
+                max-width: 85vw !important;
+                height: 100vh !important;
+                z-index: 9999 !important;
+                transform: translateX(-100%) !important;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow-y: auto !important;
+                background-color: var(--sidebar-bg, #0f172a) !important;
+                box-shadow: none !important;
             }
             #appSidebar.is-mobile-open {
-                transform: translateX(0);
+                transform: translateX(0) !important;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
             }
-        }
-        .sidebar-backdrop {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 998;
-        }
-        .sidebar-backdrop.is-active {
-            display: block;
+            .sidebar-backdrop {
+                display: none;
+                position: fixed !important;
+                inset: 0 !important;
+                background: rgba(15, 23, 42, 0.65) !important;
+                backdrop-filter: blur(4px) !important;
+                -webkit-backdrop-filter: blur(4px) !important;
+                z-index: 9998 !important;
+            }
+            .sidebar-backdrop.is-active {
+                display: block !important;
+            }
         }
 
         /* Layout Grid & Card Helpers for Forms & Detail Views */
@@ -554,8 +565,11 @@
                     <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP" class="sidebar-logo-full sidebar-brand-img rounded" />
                     <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Exwhyzee SP" class="sidebar-logo-small size-8 object-cover rounded-full border border-info hidden" />
                 </a>
-                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0" aria-label="Collapse sidebar">
+                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0 hidden lg:inline-flex" aria-label="Collapse sidebar">
                     <i class="icon-panel-left-close text-[17px]"></i>
+                </button>
+                <button type="button" id="sidebarMobileCloseBtn" class="header-icon-btn !text-white/80 hover:!text-white hover:!bg-white/10 !size-8 shrink-0 lg:hidden flex items-center justify-center cursor-pointer" aria-label="Close sidebar">
+                    <i class="bi bi-x-lg text-[16px]"></i>
                 </button>
             </div>
 
@@ -802,8 +816,8 @@
                 <div class="flex items-center gap-3 px-4 lg:px-6 h-16">
 
                     <!-- Mobile sidebar toggle -->
-                    <button type="button" id="mobileSidebarBtn" class="header-icon-btn lg:hidden" aria-label="Open menu">
-                        <i class="icon-menu text-[18px]"></i>
+                    <button type="button" id="mobileSidebarBtn" class="header-icon-btn lg:hidden flex items-center justify-center size-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-sunken)] shadow-sm" aria-label="Open menu">
+                        <i class="bi bi-list text-[22px]"></i>
                     </button>
 
                     <!-- Desktop sidebar collapse toggle -->
@@ -981,17 +995,42 @@
                     toggleDesktopSidebar();
                 });
 
-                // 2. Mobile Sidebar Drawer
+                // 2. Mobile Sidebar Drawer Controls
+                function openMobileSidebar() {
+                    if (sidebar) sidebar.classList.add('is-mobile-open');
+                    if (backdrop) backdrop.classList.add('is-active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeMobileSidebar() {
+                    if (sidebar) sidebar.classList.remove('is-mobile-open');
+                    if (backdrop) backdrop.classList.remove('is-active');
+                    document.body.style.overflow = '';
+                }
+
+                function toggleMobileSidebar() {
+                    if (sidebar && sidebar.classList.contains('is-mobile-open')) {
+                        closeMobileSidebar();
+                    } else {
+                        openMobileSidebar();
+                    }
+                }
+
                 mobileBtn?.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    sidebar?.classList.toggle('is-mobile-open');
-                    backdrop?.classList.toggle('is-active');
+                    toggleMobileSidebar();
                 });
 
-                backdrop?.addEventListener('click', function() {
-                    sidebar?.classList.remove('is-mobile-open');
-                    backdrop?.classList.remove('is-active');
+                document.getElementById('sidebarMobileCloseBtn')?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeMobileSidebar();
+                });
+
+                backdrop?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeMobileSidebar();
                 });
 
                 // 3. Universal Event Delegation for Submenus, Dropdowns, Theme, and Modals

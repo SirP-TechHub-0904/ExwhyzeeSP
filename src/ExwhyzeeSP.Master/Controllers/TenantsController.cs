@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Identity;
 using ExwhyzeeSP.Core.Models;
 using ExwhyzeeSP.Data.Contexts;
 using ExwhyzeeSP.Master.Models;
@@ -28,6 +29,9 @@ namespace ExwhyzeeSP.Master.Controllers
         private readonly IAuditLogService _auditService;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _cache;
+        private readonly UserManager<MasterAdminUser> _userManager;
+        private readonly SignInManager<MasterAdminUser> _signInManager;
+        private readonly ITenantBackupService _backupService;
 
         public TenantsController(
             MasterDbContext context,
@@ -36,7 +40,10 @@ namespace ExwhyzeeSP.Master.Controllers
             IDelegatedSsoService ssoService,
             IAuditLogService auditService,
             IConfiguration configuration,
-            IMemoryCache cache)
+            IMemoryCache cache,
+            UserManager<MasterAdminUser> userManager,
+            SignInManager<MasterAdminUser> signInManager,
+            ITenantBackupService backupService)
         {
             _context = context;
             _provisioningService = provisioningService;
@@ -45,6 +52,9 @@ namespace ExwhyzeeSP.Master.Controllers
             _auditService = auditService;
             _configuration = configuration;
             _cache = cache;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _backupService = backupService;
         }
 
         // GET: /Tenants
@@ -638,6 +648,213 @@ namespace ExwhyzeeSP.Master.Controllers
             }
 
             return Redirect(redirectUrl);
+        }
+
+        // GET: /Tenants/Delete/5
+        [HttpGet]
+        [Authorize(Roles = $"{MasterRoles.SuperAdmin},{MasterRoles.Admin}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var school = await _context.TenantSchools
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(m => m.Id == id && !m.IsDeleted);
+
+            if (school == null)
+            {
+                TempData["ErrorMessage"] = "School institution not found or already decommissioned.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var transactions = await _context.SchoolTransactions
+                .Where(t => t.TenantSchoolId == id)
+                .ToListAsync();
+
+            var viewModel = new DeleteTenantViewModel
+            {
+                Id = school.Id,
+                SchoolName = school.SchoolName,
+                SubDomain = school.SubDomain,
+                HostDomain = school.HostDomain,
+                DateCreated = school.DateCreated,
+                IsActive = school.IsActive,
+                TransactionCount = transactions.Count,
+                TransactionVolume = transactions.Sum(t => t.Amount)
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: /Tenants/DeleteConfirmed
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{MasterRoles.SuperAdmin},{MasterRoles.Admin}")]
+        public async Task<IActionResult> DeleteConfirmed(DeleteTenantViewModel model)
+        {
+            var school = await _context.TenantSchools
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(m => m.Id == model.Id && !m.IsDeleted);
+
+            if (school == null)
+            {
+                TempData["ErrorMessage"] = "School institution not found or already decommissioned.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 1. Verify Confirmation Phrase (must be "DELETE" or "DELETE <SchoolName>")
+            var expectedPhrase1 = "DELETE";
+            var expectedPhrase2 = $"DELETE {school.SchoolName}".Trim();
+            var enteredPhrase = model.ConfirmationText?.Trim() ?? string.Empty;
+
+            if (!string.Equals(enteredPhrase, expectedPhrase1, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(enteredPhrase, expectedPhrase2, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(enteredPhrase, school.SchoolName.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(model.ConfirmationText), $"Confirmation phrase does not match. Please enter 'DELETE' or 'DELETE {school.SchoolName}'.");
+            }
+
+            // 2. Verify Admin Password
+            var adminUser = await _userManager.GetUserAsync(User);
+            if (adminUser == null)
+            {
+                return Challenge();
+            }
+
+            var passwordValid = await _userManager.CheckPasswordAsync(adminUser, model.AdminPassword);
+            if (!passwordValid)
+            {
+                ModelState.AddModelError(nameof(model.AdminPassword), "Incorrect administrator password. Deletion authorization failed.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var transactions = await _context.SchoolTransactions
+                    .Where(t => t.TenantSchoolId == school.Id)
+                    .ToListAsync();
+
+                model.SchoolName = school.SchoolName;
+                model.SubDomain = school.SubDomain;
+                model.HostDomain = school.HostDomain;
+                model.DateCreated = school.DateCreated;
+                model.IsActive = school.IsActive;
+                model.TransactionCount = transactions.Count;
+                model.TransactionVolume = transactions.Sum(t => t.Amount);
+
+                return View("Delete", model);
+            }
+
+            // 3. Capture Snapshot for Compliance Audit Log
+            var originalName = school.SchoolName;
+            var originalSubDomain = school.SubDomain;
+            var originalHostDomain = school.HostDomain;
+            var originalConnection = school.ConnectionString;
+
+            await _auditService.LogAsync(
+                action: "TenantDecommissioned",
+                details: $"School institution '{originalName}' (ID: #{school.Id}, Subdomain: '{originalSubDomain}', CustomDomain: '{originalHostDomain}') was permanently decommissioned by {adminUser.Email}. Reason: {model.Reason}",
+                userName: adminUser.Email ?? adminUser.UserName ?? "Admin",
+                area: "Tenants",
+                severity: "Critical",
+                tenantSubDomain: originalSubDomain,
+                tenantSchoolId: school.Id);
+
+            // 4. FinTech Soft Delete & Anonymization
+            // Ensures financial ledger relationships and database keys are preserved while wiping PII and freeing up domain routing
+            school.IsDeleted = true;
+            school.IsActive = false;
+            school.SuspensionMode = TenantSuspensionMode.FullSuspension;
+            school.SuspensionReason = $"Decommissioned on {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC by {adminUser.Email}. Reason: {model.Reason}";
+            school.SuspensionNotice = "This school portal has been permanently decommissioned and archived.";
+            school.SchoolName = $"[DELETED] {originalName} (Archived #{school.Id})";
+            school.SubDomain = $"deleted-{school.Id}-{Guid.NewGuid():N}";
+            school.HostDomain = null;
+            school.ConnectionString = "WIPED_AND_DECOMMISSIONED";
+            school.DeletedAt = DateTime.UtcNow;
+            school.DeletedBy = adminUser.Email;
+            school.DeletionReason = model.Reason;
+            school.LastModified = DateTime.UtcNow;
+
+            // Clear cache
+            _cache.Remove($"tenant_status_{school.Id}");
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Institution '{originalName}' has been successfully decommissioned and archived. All domain and portal routing has been permanently revoked.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: /Tenants/DownloadBackup/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{MasterRoles.SuperAdmin},{MasterRoles.Admin}")]
+        public async Task<IActionResult> DownloadBackup(int id)
+        {
+            var school = await _context.TenantSchools.FindAsync(id);
+            if (school == null)
+            {
+                TempData["ErrorMessage"] = "School tenant not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var backupResult = await _backupService.GenerateDatabaseBackupAsync(school);
+            if (!backupResult.Success || backupResult.FileBytes == null)
+            {
+                TempData["ErrorMessage"] = backupResult.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            // Log download audit event
+            await _auditService.LogAsync(
+                action: "DatabaseBackupDownloaded",
+                details: $"Database backup archive '{backupResult.FileName}' ({backupResult.FileSizeFormatted}) downloaded by {User.Identity?.Name}.",
+                userName: User.Identity?.Name ?? "Admin",
+                area: "Tenants",
+                severity: "Information",
+                tenantSubDomain: school.SubDomain,
+                tenantSchoolId: school.Id);
+
+            return File(backupResult.FileBytes, "application/octet-stream", backupResult.FileName);
+        }
+
+        // POST: /Tenants/UploadBackupToCloudinary/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{MasterRoles.SuperAdmin},{MasterRoles.Admin}")]
+        public async Task<IActionResult> UploadBackupToCloudinary(int id)
+        {
+            var school = await _context.TenantSchools.FindAsync(id);
+            if (school == null)
+            {
+                TempData["ErrorMessage"] = "School tenant not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var backupResult = await _backupService.GenerateDatabaseBackupAsync(school);
+            if (!backupResult.Success || backupResult.FileBytes == null || string.IsNullOrWhiteSpace(backupResult.FileName))
+            {
+                TempData["ErrorMessage"] = backupResult.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            var uploadResult = await _backupService.UploadToCloudinaryAsync(school, backupResult.FileBytes, backupResult.FileName);
+            if (uploadResult.Success)
+            {
+                await _auditService.LogAsync(
+                    action: "DatabaseBackupCloudVaulted",
+                    details: $"Database backup securely vaulted to Cloudinary for '{school.SchoolName}' ({uploadResult.FileSizeFormatted}) by {User.Identity?.Name}. URL: {uploadResult.CloudUrl}",
+                    userName: User.Identity?.Name ?? "Admin",
+                    area: "Tenants",
+                    severity: "Information",
+                    tenantSubDomain: school.SubDomain,
+                    tenantSchoolId: school.Id);
+
+                TempData["SuccessMessage"] = uploadResult.Message;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = uploadResult.Message;
+            }
+
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 

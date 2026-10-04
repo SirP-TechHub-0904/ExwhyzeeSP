@@ -20,6 +20,45 @@ namespace ExwhyzeeSP.Data.Seed
             // Ensure Master database tables are created locally
             await context.Database.EnsureCreatedAsync();
 
+            // Ensure FinTech soft-delete columns exist on TenantSchools
+            try
+            {
+                await context.Database.ExecuteSqlRawAsync(@"
+                    IF COL_LENGTH('dbo.TenantSchools', 'IsDeleted') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [IsDeleted] bit NOT NULL CONSTRAINT DF_TenantSchools_IsDeleted DEFAULT(0);
+                    END
+                    IF COL_LENGTH('dbo.TenantSchools', 'DeletedAt') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [DeletedAt] datetime2 NULL;
+                    END
+                    IF COL_LENGTH('dbo.TenantSchools', 'DeletedBy') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [DeletedBy] nvarchar(200) NULL;
+                    END
+                    IF COL_LENGTH('dbo.TenantSchools', 'DeletionReason') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [DeletionReason] nvarchar(500) NULL;
+                    END
+                    IF COL_LENGTH('dbo.TenantSchools', 'LastBackupDate') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [LastBackupDate] datetime2 NULL;
+                    END
+                    IF COL_LENGTH('dbo.TenantSchools', 'LastBackupUrl') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [LastBackupUrl] nvarchar(500) NULL;
+                    END
+                    IF COL_LENGTH('dbo.TenantSchools', 'LastBackupSize') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.TenantSchools ADD [LastBackupSize] nvarchar(50) NULL;
+                    END
+                ");
+            }
+            catch
+            {
+                // Suppressed if table not yet created or permissions restricted
+            }
+
             // Seed RBAC Identity Roles and SuperAdmin
             if (serviceProvider != null)
             {

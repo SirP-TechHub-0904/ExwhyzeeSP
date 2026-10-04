@@ -70,6 +70,10 @@
                     <i class="icon-edit text-[14px]"></i>
                     <span>Edit School</span>
                 </a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-trash-2 text-[14px]"></i>
+                    <span>Decommission</span>
+                </a>
             </div>
         </div>
     </div>
@@ -206,6 +210,77 @@
                     <pre class="text-xs font-mono text-[var(--text-secondary)] break-all whitespace-pre-wrap m-0">@Model.ConnectionString</pre>
                 </div>
                 <div id="testConnResult" class="text-xs font-semibold hidden"></div>
+            </div>
+
+            <!-- ============ Database Backup & Cloudinary Cloud Vault ============ -->
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-5 shadow-sm space-y-4">
+                <div class="border-b border-[var(--border-subtle)] pb-3 flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                        <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                            <i class="icon-cloud-rain text-[18px] text-[var(--color-primary-600)]"></i>
+                            <span>Database Backup &amp; Cloud Vault</span>
+                        </h3>
+                        <p class="text-xs text-[var(--text-secondary)] mt-0.5">Generate native SQL Server backup archives (.bak) or sync directly to Cloudinary cloud storage.</p>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.LastBackupUrl))
+                    {
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                            <i class="icon-cloud-check text-xs"></i> Cloud Vault Active
+                        </span>
+                    }
+                </div>
+
+                <!-- Backup Details & Metadata -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-[11px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block">Last Cloud Backup</span>
+                        <span class="font-semibold text-[var(--text-primary)] mt-1 block">
+                            @(Model.LastBackupDate.HasValue ? Model.LastBackupDate.Value.ToString("MMM dd, yyyy HH:mm UTC") : "Never uploaded")
+                        </span>
+                    </div>
+
+                    <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-[11px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block">Archive Size</span>
+                        <span class="font-semibold text-[var(--text-primary)] mt-1 block">
+                            @(!string.IsNullOrWhiteSpace(Model.LastBackupSize) ? Model.LastBackupSize : "N/A")
+                        </span>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.LastBackupUrl))
+                {
+                    <div class="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-2 truncate">
+                            <i class="icon-link text-sky-600 text-sm shrink-0"></i>
+                            <span class="text-sky-900 dark:text-sky-200 font-mono truncate">@Model.LastBackupUrl</span>
+                        </div>
+                        <a href="@Model.LastBackupUrl" target="_blank" class="btn btn-outline border-sky-500/40 text-sky-600 dark:text-sky-400 hover:bg-sky-500/10 !text-xs !py-1 !px-2.5 rounded-lg flex items-center gap-1.5 shrink-0 text-decoration-none">
+                            <i class="icon-download text-xs"></i>
+                            <span>Download from Cloud</span>
+                        </a>
+                    </div>
+                }
+
+                <!-- Backup Action Triggers -->
+                <div class="flex items-center flex-wrap gap-3 pt-1">
+                    <!-- 1. Download Local .bak -->
+                    <form asp-action="DownloadBackup" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2">
+                            <i class="icon-download text-[14px]"></i>
+                            <span>Generate &amp; Download SQL Backup (.bak)</span>
+                        </button>
+                    </form>
+
+                    <!-- 2. Upload to Cloudinary -->
+                    <form asp-action="UploadBackupToCloudinary" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Generate database backup and upload directly to Cloudinary cloud vault?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline border-sky-500/40 text-sky-600 hover:bg-sky-500/10 dark:text-sky-400 text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2">
+                            <i class="icon-upload-cloud text-[14px]"></i>
+                            <span>Backup &amp; Vault to Cloudinary</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 

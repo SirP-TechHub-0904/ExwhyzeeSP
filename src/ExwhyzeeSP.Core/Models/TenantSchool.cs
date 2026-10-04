@@ -121,5 +121,32 @@ namespace ExwhyzeeSP.Core.Models
 
         [Display(Name = "Last Modified")]
         public DateTime? LastModified { get; set; }
+
+        // --- Cloud Backup & Archive Tracking ---
+        [Display(Name = "Last Backup Date")]
+        public DateTime? LastBackupDate { get; set; }
+
+        [StringLength(500)]
+        [Display(Name = "Cloud Backup URL")]
+        public string? LastBackupUrl { get; set; }
+
+        [StringLength(50)]
+        [Display(Name = "Last Backup Size")]
+        public string? LastBackupSize { get; set; }
+
+        // --- FinTech Soft Delete & Anonymization Audit ---
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; } = false;
+
+        [Display(Name = "Deleted At")]
+        public DateTime? DeletedAt { get; set; }
+
+        [StringLength(200)]
+        [Display(Name = "Deleted By")]
+        public string? DeletedBy { get; set; }
+
+        [StringLength(500)]
+        [Display(Name = "Deletion Reason")]
+        public string? DeletionReason { get; set; }
     }
 }

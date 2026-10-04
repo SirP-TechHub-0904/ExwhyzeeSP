@@ -77,6 +77,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ExwhyzeeSP.Services.Provisioning.IDatabaseProvisioningService, ExwhyzeeSP.Services.Provisioning.DatabaseProvisioningService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.Provisioning.ITenantMigrationService, ExwhyzeeSP.Services.Provisioning.TenantMigrationService>();
+builder.Services.AddScoped<ExwhyzeeSP.Services.Provisioning.ITenantBackupService, ExwhyzeeSP.Services.Provisioning.TenantBackupService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.IDelegatedSsoService, ExwhyzeeSP.Services.DelegatedSsoService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.IAuditLogService, ExwhyzeeSP.Services.AuditLogService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.IEmailLoggingService, ExwhyzeeSP.Services.EmailLoggingService>();

@@ -208,7 +208,7 @@
                                                 </span>
                                                 <form asp-area="Admin" asp-controller="Tenants" asp-action="MigrateTenant" asp-route-id="@school.Id" method="post" class="d-inline">
                                                     @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-outline border-amber-500/40 text-amber-600 dark:text-amber-400 !px-1.5 !py-0.5 !text-[10px] font-bold rounded">Update</button>
+                                                    <button type="submit" class="btn text-white text-[10.5px] font-bold px-2 py-0.5 rounded shadow-xs cursor-pointer border-0" style="background: #d97706 !important; color: #ffffff !important;">Update</button>
                                                 </form>
                                             </div>
                                         }

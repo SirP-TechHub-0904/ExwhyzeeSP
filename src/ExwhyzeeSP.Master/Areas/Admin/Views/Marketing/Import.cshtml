@@ -1,0 +1,215 @@
+@{
+    ViewData["Title"] = "Import Marketing Leads & Contacts";
+    Layout = "_AdminLayout";
+
+    var existingTags = ViewBag.ExistingTags as List<string> ?? new();
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Contacts" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Contacts">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-emerald-500/10 text-emerald-600 grid place-items-center border border-emerald-500/20 shadow-xs">
+                    <i class="icon-upload-cloud text-[28px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">Multi-Channel Contact Import</h1>
+                        <span class="badge-soft badge-success">
+                            <i class="icon-users text-[9px]"></i> Lead Ingestion
+                        </span>
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1">
+                        Import hundreds of school emails from spreadsheets or paste raw contacts directly from Word documents.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Contacts" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to Contacts</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
+            <i class="icon-alert-triangle text-[16px]"></i>
+            <div>@Html.Raw(TempData["ErrorMessage"])</div>
+        </div>
+    }
+
+    <!-- Main Import Tabs Card -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-8 space-y-6">
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm overflow-hidden">
+                <div class="p-0 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                    <ul class="nav nav-tabs border-0 flex items-center gap-2 px-4" id="importTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active py-3.5 px-4 text-xs font-bold flex items-center gap-2 border-0 bg-transparent text-[var(--text-primary)]" id="excel-tab" data-bs-toggle="tab" data-bs-target="#excel-pane" type="button" role="tab">
+                                <i class="icon-file-spreadsheet text-emerald-500 text-[16px]"></i>
+                                <span>Excel &amp; CSV Spreadsheet</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-3.5 px-4 text-xs font-bold flex items-center gap-2 border-0 bg-transparent text-[var(--text-tertiary)]" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-pane" type="button" role="tab">
+                                <i class="icon-file-text text-[var(--color-primary-500)] text-[16px]"></i>
+                                <span>Word &amp; Text Raw Paste</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="p-5 lg:p-6">
+                    <div class="tab-content" id="importTabContent">
+                        <!-- TAB 1: EXCEL IMPORT -->
+                        <div class="tab-pane fade show active space-y-4" id="excel-pane" role="tabpanel" aria-labelledby="excel-tab">
+                            <form method="post" asp-action="ImportExcel" enctype="multipart/form-data" class="space-y-4">
+                                @Html.AntiForgeryToken()
+                                
+                                <div>
+                                    <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-2">Upload Excel or CSV File</label>
+                                    <div class="p-8 border-2 border-dashed border-[var(--border-subtle)] rounded-2xl text-center bg-[var(--surface-sunken)] space-y-3">
+                                        <div class="size-12 rounded-2xl bg-emerald-500/10 text-emerald-600 grid place-items-center mx-auto">
+                                            <i class="icon-upload text-[24px]"></i>
+                                        </div>
+                                        <h4 class="text-sm font-bold text-[var(--text-primary)]">Select your spreadsheet file</h4>
+                                        <p class="text-xs text-[var(--text-tertiary)]">Supports .xlsx, .xls, and .csv formats</p>
+                                        <input type="file" name="excelFile" class="form-input max-w-md mx-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-xs" accept=".xlsx,.xls,.csv" required />
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Target Audience Segment / Tag</label>
+                                        <select name="defaultTag" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]">
+                                            <option value="General">General Leads</option>
+                                            <option value="Prospects" selected>Prospects</option>
+                                            <option value="Lagos Schools">Lagos Schools</option>
+                                            <option value="Abuja Leads">Abuja Leads</option>
+                                            <option value="Existing Clients">Existing Clients</option>
+                                            @foreach (var t in existingTags.Where(t => t != "General" && t != "Prospects" && t != "Lagos Schools" && t != "Abuja Leads" && t != "Existing Clients"))
+                                            {
+                                                <option value="@t">@t</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Or Create New Tag</label>
+                                        <input type="text" name="newTag" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. Rivers State Principals" />
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)]">
+                                    <span class="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                                        <i class="icon-shield-check text-emerald-500 text-[14px]"></i>
+                                        Auto-deduplicates existing email addresses
+                                    </span>
+                                    <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2">
+                                        <i class="icon-upload text-[14px]"></i>
+                                        <span>Process &amp; Import Excel</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- TAB 2: WORD & TEXT PASTE -->
+                        <div class="tab-pane fade space-y-4" id="text-pane" role="tabpanel" aria-labelledby="text-tab">
+                            <form method="post" asp-action="ImportText" class="space-y-4">
+                                @Html.AntiForgeryToken()
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Paste Contacts from Word / Email Dump / PDF</label>
+                                    <textarea name="rawText" class="form-textarea w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs font-mono text-[var(--text-primary)]" rows="8" placeholder="Paste text here in any format:&#10;proprietor@kingsway.com&#10;Dr. Anthony &lt;anthony@premier.edu.ng&gt;&#10;bursar@grace.org, Mrs Folashade Adeleke, 08012345678&#10;principal@stpauls.sch.ng" required></textarea>
+                                    <span class="text-[11px] text-[var(--text-tertiary)] block mt-1">The parser will automatically detect and extract all email addresses and contact names.</span>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Audience Tag</label>
+                                        <select name="defaultTag" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]">
+                                            <option value="General">General</option>
+                                            <option value="Prospects" selected>Prospects</option>
+                                            <option value="Lagos Schools">Lagos Schools</option>
+                                            <option value="Abuja Leads">Abuja Leads</option>
+                                            <option value="WordDump">Word Dump</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Or New Tag Name</label>
+                                        <input type="text" name="newTag" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. Workshop Attendees" />
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Default Role (Optional)</label>
+                                        <input type="text" name="defaultRole" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. School Proprietor / Head" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Default School Name (Optional)</label>
+                                        <input type="text" name="defaultSchool" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. Private Schools Association" />
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)]">
+                                    <span class="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                                        <i class="icon-cpu text-[var(--color-primary-500)] text-[14px]"></i>
+                                        Regex engine parses comma/newline/bracket formats
+                                    </span>
+                                    <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2">
+                                        <i class="icon-check-circle text-[14px]"></i>
+                                        <span>Parse &amp; Import Text Dump</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Format Guidelines & Best Practices -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="surface-card p-5 space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] flex items-center gap-2 pb-2 border-b border-[var(--border-subtle)]">
+                    <i class="icon-info text-[15px] text-[var(--color-primary-500)]"></i>
+                    Excel Header Guidelines
+                </h3>
+                <p class="text-xs text-[var(--text-tertiary)]">Our intelligent column matcher recognizes the following standard column headers in your worksheet:</p>
+                
+                <div class="space-y-2 text-xs">
+                    <div class="p-2.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"><strong class="text-[var(--text-primary)]">Email:</strong> <code class="font-mono text-[var(--color-primary-600)]">Email, Email Address, E-mail</code></div>
+                    <div class="p-2.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"><strong class="text-[var(--text-primary)]">Full Name:</strong> <code class="font-mono text-[var(--color-primary-600)]">FullName, Name, Contact Name</code></div>
+                    <div class="p-2.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"><strong class="text-[var(--text-primary)]">Phone:</strong> <code class="font-mono text-[var(--color-primary-600)]">Phone, Mobile, WhatsApp</code></div>
+                    <div class="p-2.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"><strong class="text-[var(--text-primary)]">School:</strong> <code class="font-mono text-[var(--color-primary-600)]">SchoolName, Institution, Academy</code></div>
+                    <div class="p-2.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"><strong class="text-[var(--text-primary)]">Role:</strong> <code class="font-mono text-[var(--color-primary-600)]">Role, Job Title, Position</code></div>
+                    <div class="p-2.5 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"><strong class="text-[var(--text-primary)]">State:</strong> <code class="font-mono text-[var(--color-primary-600)]">State, City, Location</code></div>
+                </div>
+
+                <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs">
+                    <strong>Tip:</strong> If headers are absent, the system automatically reads Column 1 as Email and Column 2 as Name.
+                </div>
+            </div>
+
+            <div class="surface-card p-5 space-y-2">
+                <h4 class="text-xs font-bold text-[var(--text-primary)]">Word / Text Copy-Paste Tips</h4>
+                <p class="text-xs text-[var(--text-tertiary)]">You can copy paste email blocks from Microsoft Word tables, WhatsApp message chains, or email headers. The regex parser automatically extracts valid emails even if mixed with paragraphs or bullets.</p>
+            </div>
+        </div>
+    </div>
+</div>

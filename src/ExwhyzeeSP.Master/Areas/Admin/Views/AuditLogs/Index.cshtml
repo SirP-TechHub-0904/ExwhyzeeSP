@@ -1,0 +1,191 @@
+@model List<ExwhyzeeSP.Core.Models.MasterAuditLog>
+@{
+    ViewData["Title"] = "Activity & Security Audit Logs";
+    var actions = ViewBag.AvailableActions as List<string> ?? new List<string>();
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+}
+
+<div class="space-y-6">
+
+    <!-- Page Header & Action Toolbar -->
+    <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Security &amp; Activity Audit Logs</h1>
+            <p class="text-xs sm:text-[13px] text-[var(--text-secondary)] mt-0.5">
+                Track all administrative activities, operator logins, IP addresses, client browsers, and system security events.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+            <a asp-action="ExportCsv" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                <i class="icon-download text-[14px]"></i>
+                <span>Export CSV</span>
+            </a>
+            <button type="button" class="btn btn-outline border-rose-500/30 text-rose-600 hover:bg-rose-500/10 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#purgeLogsModal">
+                <i class="icon-trash-2 text-[14px]"></i>
+                <span>Clear Old Logs</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-4 shadow-sm">
+        <form method="get" asp-action="Index" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+            <div class="lg:col-span-3">
+                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3 py-1.5 text-xs text-[var(--text-primary)]" placeholder="Search user, IP, action..." />
+            </div>
+            <div class="lg:col-span-2">
+                <select name="actionFilter" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3 py-1.5 text-xs text-[var(--text-primary)]">
+                    <option value="">All Actions</option>
+                    @foreach (var act in actions)
+                    {
+                        <option value="@act" selected="@(ViewBag.ActionFilter == act)">@act</option>
+                    }
+                </select>
+            </div>
+            <div class="lg:col-span-2">
+                <select name="severityFilter" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3 py-1.5 text-xs text-[var(--text-primary)]">
+                    <option value="">All Severities</option>
+                    <option value="Info" selected="@(ViewBag.SeverityFilter == "Info")">Info</option>
+                    <option value="Warning" selected="@(ViewBag.SeverityFilter == "Warning")">Warning</option>
+                    <option value="Error" selected="@(ViewBag.SeverityFilter == "Error")">Error</option>
+                    <option value="Critical" selected="@(ViewBag.SeverityFilter == "Critical")">Critical</option>
+                </select>
+            </div>
+            <div class="lg:col-span-2">
+                <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3 py-1.5 text-xs text-[var(--text-primary)]" title="From Date" />
+            </div>
+            <div class="lg:col-span-2">
+                <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3 py-1.5 text-xs text-[var(--text-primary)]" title="To Date" />
+            </div>
+            <div class="lg:col-span-1 flex items-center gap-1">
+                <button type="submit" class="btn btn-primary text-xs font-semibold px-3 py-1.5 rounded-lg w-full">Filter</button>
+                @if (!string.IsNullOrWhiteSpace(ViewBag.SearchString) || !string.IsNullOrWhiteSpace(ViewBag.ActionFilter) || !string.IsNullOrWhiteSpace(ViewBag.SeverityFilter))
+                {
+                    <a asp-action="Index" class="btn btn-outline border-secondary text-xs px-2 py-1.5 rounded-lg text-decoration-none" title="Reset">✕</a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <!-- Audit Log Table -->
+    <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
+            <h3 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <i class="icon-shield text-[16px] text-[var(--color-primary-600)]"></i>
+                <span>Log Records (@totalCount.ToString("N0") Total)</span>
+            </h3>
+            <span class="text-xs text-[var(--text-tertiary)]">Page @currentPage of @totalPages</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="table table-hover align-middle mb-0 w-full text-xs">
+                <thead>
+                    <tr class="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-tertiary)] uppercase font-semibold text-[11px] tracking-wider">
+                        <th class="px-4 py-3 text-start">Timestamp</th>
+                        <th class="px-4 py-3 text-start">User</th>
+                        <th class="px-4 py-3 text-start">Action</th>
+                        <th class="px-4 py-3 text-start">Client / Device</th>
+                        <th class="px-4 py-3 text-start">IP Address</th>
+                        <th class="px-4 py-3 text-start">Tenant / Area</th>
+                        <th class="px-4 py-3 text-start">Severity</th>
+                        <th class="px-4 py-3 text-end">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[var(--border-subtle)]">
+                    @if (Model.Any())
+                    {
+                        @foreach (var log in Model)
+                        {
+                            var sevBadge = log.Severity switch
+                            {
+                                "Critical" => "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20",
+                                "Error" => "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20",
+                                "Warning" => "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
+                                _ => "bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20"
+                            };
+
+                            <tr class="hover:bg-[var(--surface-sunken)]/50 transition-colors">
+                                <td class="px-4 py-3 font-mono text-[var(--text-tertiary)]">@log.TimestampUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td class="px-4 py-3 font-medium text-[var(--text-primary)]">@(string.IsNullOrWhiteSpace(log.UserName) ? "System" : log.UserName)</td>
+                                <td class="px-4 py-3 font-semibold text-[var(--text-primary)]">@log.Action</td>
+                                <td class="px-4 py-3 text-[var(--text-tertiary)] max-w-xs truncate" title="@log.UserAgent">@(string.IsNullOrWhiteSpace(log.UserAgent) ? "-" : log.UserAgent)</td>
+                                <td class="px-4 py-3 font-mono text-[var(--text-secondary)]">@(string.IsNullOrWhiteSpace(log.IpAddress) ? "-" : log.IpAddress)</td>
+                                <td class="px-4 py-3 text-[var(--text-secondary)]">@(string.IsNullOrWhiteSpace(log.TenantSubDomain) ? "Global Master" : log.TenantSubDomain)</td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-semibold @sevBadge">
+                                        @log.Severity
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-end">
+                                    <button type="button" class="btn btn-outline border-secondary text-xs px-2.5 py-1 rounded-lg" data-bs-toggle="modal" data-bs-target="#detailModal_@log.Id">
+                                        View
+                                    </button>
+
+                                    <!-- Detail Modal -->
+                                    <div class="modal fade" id="detailModal_@log.Id" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered text-start">
+                                            <div class="modal-content surface-card rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-2xl overflow-hidden">
+                                                <div class="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
+                                                    <h6 class="text-sm font-bold text-[var(--text-primary)]">Audit Log Detail #@log.Id</h6>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="p-5 space-y-3 text-xs">
+                                                    <div><strong>Action:</strong> <span class="text-[var(--text-primary)]">@log.Action</span></div>
+                                                    <div><strong>User:</strong> <span class="text-[var(--text-primary)]">@log.UserName</span></div>
+                                                    <div><strong>IP Address:</strong> <code class="font-mono">@log.IpAddress</code></div>
+                                                    <div><strong>Timestamp:</strong> @log.TimestampUtc.ToString("F") UTC</div>
+                                                    <div><strong>Details / Description:</strong></div>
+                                                    <pre class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] font-mono text-xs break-all whitespace-pre-wrap">@log.Details</pre>
+                                                </div>
+                                                <div class="px-5 py-3 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex justify-end">
+                                                    <button type="button" class="btn btn-outline border-secondary text-xs px-3 py-1 rounded-lg" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-8 text-[var(--text-tertiary)]">No audit records found matching criteria.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Purge Modal -->
+<div class="modal fade" id="purgeLogsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content surface-card rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-2xl overflow-hidden">
+            <form asp-action="PurgeLogs" method="post">
+                @Html.AntiForgeryToken()
+                <div class="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
+                    <h6 class="text-sm font-bold text-rose-600">Clear Historical Audit Logs</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="p-5 space-y-3">
+                    <p class="text-xs text-[var(--text-secondary)]">Delete activity logs older than specified days:</p>
+                    <select name="days" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3 py-2 text-xs">
+                        <option value="90">Older than 90 days</option>
+                        <option value="180">Older than 180 days</option>
+                        <option value="365">Older than 1 year</option>
+                    </select>
+                </div>
+                <div class="px-5 py-3.5 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-center justify-end gap-2">
+                    <button type="button" class="btn btn-outline border-secondary text-xs px-3 py-1.5 rounded-lg" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger text-xs font-semibold px-4 py-1.5 rounded-lg">Purge Logs</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

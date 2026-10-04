@@ -1,0 +1,535 @@
+@model List<MasterTenantMetricSnapshot>
+@{
+    ViewData["Title"] = "Student Demographics & Academic Stages";
+    var totalStudents = Model.Sum(m => m.TotalStudents);
+    var totalBoys = Model.Sum(m => m.MaleStudents);
+    var totalGirls = Model.Sum(m => m.FemaleStudents);
+    var totalCreche = Model.Sum(m => m.EarlyYearsStudents);
+    var totalPrimary = Model.Sum(m => m.PrimaryStudents);
+    var totalJss = Model.Sum(m => m.JuniorSecondaryStudents);
+    var totalSss = Model.Sum(m => m.SeniorSecondaryStudents);
+    var totalStaff = Model.Sum(m => m.TotalStaff);
+    var academicStaff = Model.Sum(m => m.AcademicStaff);
+    var boyPercent = totalStudents > 0 ? Math.Round((double)totalBoys / totalStudents * 100, 1) : 0;
+    var girlPercent = totalStudents > 0 ? Math.Round((double)totalGirls / totalStudents * 100, 1) : 0;
+    var studentTeacherRatio = academicStaff > 0 ? Math.Round((double)totalStudents / academicStaff, 1) : 0;
+}
+
+<!-- Page Header & Action Toolbar -->
+<div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <div class="flex items-center gap-2 mb-1">
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Student &amp; Staff Demographics</h1>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Live Database Feed
+            </span>
+        </div>
+        <p class="text-xs sm:text-[13px] text-[var(--text-secondary)]">
+            Real-time population intelligence, gender balance, class section ratios, and regional distribution across enrolled schools.
+        </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+        <button type="button" onclick="loadDemographicsData()" id="btnRefreshDemographics" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <i class="icon-refresh-cw text-[14px]" id="refreshSpinner"></i>
+            <span>Refresh Dataset</span>
+        </button>
+        <a asp-action="TelemetryLive" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <i class="icon-activity text-[14px] text-sky-500"></i>
+            <span>Live Telemetry</span>
+        </a>
+        <a asp-action="Index" class="btn btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none bg-sky-600 hover:bg-sky-700 text-white">
+            <i class="icon-bar-chart-2 text-[14px]"></i>
+            <span>Analytics Hub</span>
+        </a>
+    </div>
+</div>
+
+<!-- Data Provenance & Source Transparency Card -->
+<div class="surface-card rounded-xl p-4 sm:p-5 border border-sky-100 dark:border-sky-900/40 bg-gradient-to-r from-sky-50/50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 mb-6 shadow-sm">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="flex items-start gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 border border-sky-200 dark:border-sky-800/60">
+                <i class="icon-database text-lg"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider">Data Provenance &amp; Verification Pipeline</h2>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300">GET /api/v1/telemetry/demographics-data</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)] mt-1 max-w-3xl leading-relaxed">
+                    This demographic intelligence dashboard is backed by live SQL aggregations from the master repository database (<code class="text-xs bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-sky-600 dark:text-sky-400">MasterTenantMetricSnapshot</code> and <code class="text-xs bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-sky-600 dark:text-sky-400">TenantSchools</code>). Each institution pushes student registers via the API telemetry ingest pipeline, providing accurate headcount without estimations.
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-200 dark:border-slate-800">
+            <div class="text-right">
+                <span class="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold block">Last Verified Sync</span>
+                <span class="text-xs font-mono font-semibold text-[var(--text-primary)]" id="provenanceLastSync">@DateTime.UtcNow.ToString("MMM dd, yyyy HH:mm") UTC</span>
+            </div>
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Stat Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Male Students -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-blue-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Male Students (Boys)</span>
+            <span class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <i class="icon-users text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-blue-600 dark:text-blue-400" id="cardTotalBoys">@totalBoys.ToString("N0")</h3>
+            <span class="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-full" id="cardBoyPercent">@boyPercent%</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-check-circle-2 text-[12px] text-emerald-500"></i>
+            <span>Calculated from active school registers</span>
+        </p>
+    </div>
+
+    <!-- Female Students -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-pink-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Female Students (Girls)</span>
+            <span class="w-8 h-8 rounded-lg bg-pink-50 dark:bg-pink-950/50 text-pink-600 dark:text-pink-400 flex items-center justify-center">
+                <i class="icon-user-check text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-pink-600 dark:text-pink-400" id="cardTotalGirls">@totalGirls.ToString("N0")</h3>
+            <span class="text-xs font-semibold text-pink-700 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/60 px-2 py-0.5 rounded-full" id="cardGirlPercent">@girlPercent%</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-check-circle-2 text-[12px] text-emerald-500"></i>
+            <span>Calculated from active school registers</span>
+        </p>
+    </div>
+
+    <!-- Academic Staff & Educators -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-emerald-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Academic Staff</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <i class="icon-award text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400" id="cardAcademicStaff">@academicStaff.ToString("N0")</h3>
+            <span class="text-xs font-medium text-[var(--text-secondary)]">/ @totalStaff total staff</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-check-circle-2 text-[12px] text-emerald-500"></i>
+            <span>Active teachers &amp; instructors</span>
+        </p>
+    </div>
+
+    <!-- Student-Teacher Ratio -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-purple-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Student-Teacher Ratio</span>
+            <span class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                <i class="icon-scale text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-purple-600 dark:text-purple-400" id="cardRatio">@(studentTeacherRatio):1</h3>
+            <span class="text-xs font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-full">Optimal</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-activity text-[12px] text-purple-500"></i>
+            <span>Across all active classrooms</span>
+        </p>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+    <!-- Gender Stacked Bar by School -->
+    <div class="lg:col-span-7 surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <h3 class="text-base font-bold text-[var(--text-primary)]">Gender Composition by Institution</h3>
+                    <p class="text-xs text-[var(--text-secondary)]">Exact boy vs girl distribution per registered tenant portal</p>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    Real Counts
+                </span>
+            </div>
+            <div id="genderStackedBarChart" style="min-height: 350px;"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mt-2 text-center">
+            <div class="p-2.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30">
+                <span class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold block uppercase">Total Boys Enrolled</span>
+                <span class="text-base font-bold text-[var(--text-primary)]" id="footerTotalBoys">@totalBoys.ToString("N0")</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-pink-50/50 dark:bg-pink-950/30 border border-pink-100 dark:border-pink-900/30">
+                <span class="text-[11px] text-pink-600 dark:text-pink-400 font-semibold block uppercase">Total Girls Enrolled</span>
+                <span class="text-base font-bold text-[var(--text-primary)]" id="footerTotalGirls">@totalGirls.ToString("N0")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Stage Shares Donut Chart -->
+    <div class="lg:col-span-5 surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <h3 class="text-base font-bold text-[var(--text-primary)]">Academic Division Shares</h3>
+                    <p class="text-xs text-[var(--text-secondary)]">Distribution of learners across educational tiers</p>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                    4 Sections
+                </span>
+            </div>
+            <div id="stagePieChart" style="min-height: 350px;"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 mt-2 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+                <span class="text-[var(--text-secondary)]">Early Years:</span>
+                <strong class="text-[var(--text-primary)] ml-auto" id="stageEarlyYearsCount">@totalCreche.ToString("N0")</strong>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="text-[var(--text-secondary)]">Primary:</span>
+                <strong class="text-[var(--text-primary)] ml-auto" id="stagePrimaryCount">@totalPrimary.ToString("N0")</strong>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span class="text-[var(--text-secondary)]">Junior Sec (JSS):</span>
+                <strong class="text-[var(--text-primary)] ml-auto" id="stageJssCount">@totalJss.ToString("N0")</strong>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                <span class="text-[var(--text-secondary)]">Senior Sec (SSS):</span>
+                <strong class="text-[var(--text-primary)] ml-auto" id="stageSssCount">@totalSss.ToString("N0")</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Regional Distribution Chart -->
+<div class="surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <div>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">Geographical &amp; Regional Student Footprint</h3>
+            <p class="text-xs text-[var(--text-secondary)]">Aggregate enrollment volume segmented across geopolitical zones in Nigeria</p>
+        </div>
+        <span class="px-2.5 py-1 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-[var(--text-secondary)] w-fit">
+            Federated Network Nodes
+        </span>
+    </div>
+    <div id="regionalBarChart" style="min-height: 260px;"></div>
+</div>
+
+<!-- Detailed School Demographics Matrix Table -->
+<div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden mb-6">
+    <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+        <div>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">Institution Demographic Roster</h3>
+            <p class="text-xs text-[var(--text-secondary)]">Direct table records extracted from each school's database telemetry</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[var(--text-secondary)]">
+                @Model.Count Institutions Reporting
+            </span>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-[var(--text-primary)]">
+            <thead class="bg-slate-100/75 dark:bg-slate-800/60 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] border-b border-slate-200 dark:border-slate-700">
+                <tr>
+                    <th scope="col" class="py-3 px-4">School Institution</th>
+                    <th scope="col" class="py-3 px-4">Subdomain</th>
+                    <th scope="col" class="py-3 px-4 text-center">Total Students</th>
+                    <th scope="col" class="py-3 px-4 text-center">Boys (Male)</th>
+                    <th scope="col" class="py-3 px-4 text-center">Girls (Female)</th>
+                    <th scope="col" class="py-3 px-4 text-center">Staff Count</th>
+                    <th scope="col" class="py-3 px-4 text-center">Attendance</th>
+                    <th scope="col" class="py-3 px-4 text-center">Health Status</th>
+                    <th scope="col" class="py-3 px-4 text-right">Last Synchronized</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="tableDemographicsBody">
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var schoolName = item.TenantSchool?.SchoolName ?? $"School #{item.TenantSchoolId}";
+                        var subDomain = item.TenantSchool?.SubDomain ?? "default";
+                        var boysRatio = item.TotalStudents > 0 ? Math.Round((double)item.MaleStudents / item.TotalStudents * 100, 0) : 0;
+                        var girlsRatio = item.TotalStudents > 0 ? Math.Round((double)item.FemaleStudents / item.TotalStudents * 100, 0) : 0;
+
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4 font-semibold">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-xs border border-sky-100 dark:border-sky-900/40">
+                                        @schoolName.Substring(0, 1)
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-[var(--text-primary)] block">@schoolName</span>
+                                        <span class="text-[11px] text-[var(--text-secondary)]">@item.ActiveTerm (@item.ActiveSession)</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                    @subDomain
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-sm">
+                                @item.TotalStudents.ToString("N0")
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <div class="inline-flex flex-col items-center">
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400">@item.MaleStudents.ToString("N0")</span>
+                                    <span class="text-[10px] text-[var(--text-secondary)]">(@boysRatio%)</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <div class="inline-flex flex-col items-center">
+                                    <span class="font-semibold text-pink-600 dark:text-pink-400">@item.FemaleStudents.ToString("N0")</span>
+                                    <span class="text-[10px] text-[var(--text-secondary)]">(@girlsRatio%)</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-medium">@item.TotalStaff</span>
+                                <span class="text-[10px] text-[var(--text-secondary)] block">(@item.AcademicStaff T / @item.NonAcademicStaff NT)</span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold @(item.DailyAttendanceRate >= 90 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60" : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60")">
+                                    @item.DailyAttendanceRate%
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Nominal (@item.ApiLatencyMs ms)
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right text-xs text-[var(--text-secondary)] font-mono">
+                                @item.RecordedAtUtc.ToString("MMM dd, yyyy HH:mm")
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="py-8 text-center text-slate-400">
+                            <i class="icon-inbox text-3xl mb-2 block opacity-40"></i>
+                            <span>No demographic data records available yet.</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    let genderChartInstance = null;
+    let stageChartInstance = null;
+    let regionalChartInstance = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadDemographicsData();
+    });
+
+    async function loadDemographicsData() {
+        const refreshBtn = document.getElementById('btnRefreshDemographics');
+        const spinner = document.getElementById('refreshSpinner');
+        if (spinner) spinner.classList.add('animate-spin');
+
+        try {
+            const resp = await fetch('/api/v1/telemetry/demographics-data');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+
+            // Update Provenance Last Sync
+            if (data.dataProvenance && data.dataProvenance.queriedAtUtc) {
+                const syncDate = new Date(data.dataProvenance.queriedAtUtc);
+                const syncEl = document.getElementById('provenanceLastSync');
+                if (syncEl) syncEl.innerText = syncDate.toUTCString().replace('GMT', 'UTC');
+            }
+
+            // Update Top Cards
+            if (data.summary) {
+                const s = data.summary;
+                if (document.getElementById('cardTotalBoys')) document.getElementById('cardTotalBoys').innerText = Number(s.totalBoys).toLocaleString();
+                if (document.getElementById('cardBoyPercent')) document.getElementById('cardBoyPercent').innerText = s.boyRatioPercent + '%';
+                if (document.getElementById('cardTotalGirls')) document.getElementById('cardTotalGirls').innerText = Number(s.totalGirls).toLocaleString();
+                if (document.getElementById('cardGirlPercent')) document.getElementById('cardGirlPercent').innerText = s.girlRatioPercent + '%';
+                if (document.getElementById('cardAcademicStaff')) document.getElementById('cardAcademicStaff').innerText = Number(s.academicStaff).toLocaleString();
+                if (document.getElementById('cardRatio')) document.getElementById('cardRatio').innerText = s.studentTeacherRatio + ':1';
+                
+                if (document.getElementById('footerTotalBoys')) document.getElementById('footerTotalBoys').innerText = Number(s.totalBoys).toLocaleString();
+                if (document.getElementById('footerTotalGirls')) document.getElementById('footerTotalGirls').innerText = Number(s.totalGirls).toLocaleString();
+            }
+
+            // Update Stage counts in footer
+            if (data.educationStages) {
+                const es = data.educationStages;
+                if (document.getElementById('stageEarlyYearsCount')) document.getElementById('stageEarlyYearsCount').innerText = Number(es.earlyYears).toLocaleString();
+                if (document.getElementById('stagePrimaryCount')) document.getElementById('stagePrimaryCount').innerText = Number(es.primary).toLocaleString();
+                if (document.getElementById('stageJssCount')) document.getElementById('stageJssCount').innerText = Number(es.juniorSec).toLocaleString();
+                if (document.getElementById('stageSssCount')) document.getElementById('stageSssCount').innerText = Number(es.seniorSec).toLocaleString();
+            }
+
+            // 1. Gender Stacked Bar Chart (Real boys & girls from DB)
+            const genderOptions = {
+                series: [
+                    { name: 'Boys (Male Students)', data: data.genderBySchool.boys },
+                    { name: 'Girls (Female Students)', data: data.genderBySchool.girls }
+                ],
+                chart: {
+                    type: 'bar',
+                    height: 330,
+                    stacked: true,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+                colors: ['#3b82f6', '#ec4899'],
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        borderRadius: 4,
+                        columnWidth: '40%'
+                    }
+                },
+                xaxis: {
+                    categories: data.genderBySchool.labels,
+                    labels: {
+                        rotate: -15,
+                        style: { fontSize: '11px', fontWeight: 500 }
+                    }
+                },
+                yaxis: {
+                    title: { text: 'Enrolled Students' }
+                },
+                fill: { opacity: 1 },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right'
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " learners";
+                        }
+                    }
+                }
+            };
+
+            if (genderChartInstance) genderChartInstance.destroy();
+            genderChartInstance = new ApexCharts(document.querySelector("#genderStackedBarChart"), genderOptions);
+            genderChartInstance.render();
+
+            // 2. Education Stage Shares Donut Chart
+            const stageOptions = {
+                series: data.educationStages.series,
+                chart: {
+                    type: 'donut',
+                    height: 330,
+                    fontFamily: 'inherit'
+                },
+                labels: data.educationStages.labels,
+                colors: ['#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'],
+                legend: {
+                    position: 'bottom'
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return Math.round(val) + "%";
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '62%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'Total Students',
+                                    formatter: function (w) {
+                                        return data.summary.totalStudents.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            if (stageChartInstance) stageChartInstance.destroy();
+            stageChartInstance = new ApexCharts(document.querySelector("#stagePieChart"), stageOptions);
+            stageChartInstance.render();
+
+            // 3. Regional Distribution Bar Chart
+            if (data.regionalDistribution) {
+                const regLabels = data.regionalDistribution.map(r => r.region);
+                const regStudents = data.regionalDistribution.map(r => r.studentsCount);
+                const regSchools = data.regionalDistribution.map(r => r.schoolsCount);
+
+                const regionalOptions = {
+                    series: [
+                        { name: 'Enrolled Students', data: regStudents },
+                        { name: 'Institution Portals', data: regSchools }
+                    ],
+                    chart: {
+                        type: 'bar',
+                        height: 260,
+                        toolbar: { show: false },
+                        fontFamily: 'inherit'
+                    },
+                    colors: ['#0284c7', '#10b981'],
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            borderRadius: 4,
+                            barHeight: '55%'
+                        }
+                    },
+                    xaxis: {
+                        categories: regLabels,
+                        labels: {
+                            formatter: function (val) {
+                                return Number(val).toLocaleString();
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'right'
+                    }
+                };
+
+                if (regionalChartInstance) regionalChartInstance.destroy();
+                regionalChartInstance = new ApexCharts(document.querySelector("#regionalBarChart"), regionalOptions);
+                regionalChartInstance.render();
+            }
+
+        } catch (err) {
+            console.error("Failed to load real demographics data:", err);
+        } finally {
+            if (spinner) spinner.classList.remove('animate-spin');
+        }
+    }
+</script>
+}

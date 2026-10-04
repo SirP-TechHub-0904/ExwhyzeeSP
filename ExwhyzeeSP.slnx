@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ExwhyzeeSP.Core/ExwhyzeeSP.Core.csproj" />
+    <Project Path="src/ExwhyzeeSP.Data/ExwhyzeeSP.Data.csproj" />
+    <Project Path="src/ExwhyzeeSP.Master/ExwhyzeeSP.Master.csproj" />
+    <Project Path="src/ExwhyzeeSP.Services/ExwhyzeeSP.Services.csproj" />
+    <Project Path="src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj" />
+  </Folder>
+</Solution>

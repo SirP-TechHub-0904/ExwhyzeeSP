@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <RootNamespace>ExwhyzeeSP.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="ExwhyzeeSP.Core.Models" />
+    <Using Include="ExwhyzeeSP.Core.Entities" />
+    <Using Include="ExwhyzeeSP.Core.Dtos" />
+    <Using Include="ExwhyzeeSP.Core.Dtos.Api" />
+    <Using Include="ExwhyzeeSP.Core.Attributes" />
+    <Using Include="System.ComponentModel.DataAnnotations" />
+    <Using Include="Newtonsoft.Json" />
+    <Using Include="Microsoft.AspNetCore.Mvc.Rendering" />
+  </ItemGroup>
+
+</Project>

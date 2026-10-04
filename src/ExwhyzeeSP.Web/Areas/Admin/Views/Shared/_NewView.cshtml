@@ -1,0 +1,247 @@
+@using ExwhyzeeSP.Web.Areas.Service
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Portal | @ViewBag.Title | @GeneralService.SchoolName()</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    @if (!string.IsNullOrEmpty(GeneralService.SchoolLogoBase64()))
+    {
+        <link rel="icon" href="@GeneralService.SchoolLogoBase64()" type="image/png" />
+    }
+    else
+    {
+        <link rel="shortcut icon" href="~/Content/Green_Leaf.png">
+    }
+    <link rel="stylesheet" href="~/admin/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/admin/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/admin/bower_components/Ionicons/css/ionicons.min.css">
+    <!-- Theme style -->
+    @RenderSection("Style", required: false)
+    <link rel="stylesheet" href="~/admin/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="~/admin/dist/css/skins/_all-skins.min.css">
+
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        .skin-blue .main-header .logo:hover {
+            background-color: #31a980 !important;
+            color: #fff;
+        }
+        .skin-blue .sidebar-menu > li.header {
+            color: #31a980 !important;
+            background: #ffffff !important;
+        }
+        .sidebar-menu > li:hover {
+           
+           color:#31a980 !important;
+        }
+        #mainmenu li a:hover{
+            background-color:#ffffff !important;
+            color:#31a980 !important;
+        }
+    </style>
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="~/Admin/DashBoard/Index" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">
+                    @if (!string.IsNullOrEmpty(GeneralService.SchoolLogoBase64()))
+                    {
+                        <img src="@GeneralService.SchoolLogoBase64()" alt="Logo" style="max-height:34px; max-width:34px; border-radius:50%; background:#fff; padding:2px; vertical-align:middle;" />
+                    }
+                    else
+                    {
+                        <b>@GeneralService.SchoolInitials()</b>
+                    }
+                </span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg" style="font-size:14px; font-weight:700; text-transform:uppercase;">
+                    @if (!string.IsNullOrEmpty(GeneralService.SchoolLogoBase64()))
+                    {
+                        <img src="@GeneralService.SchoolLogoBase64()" alt="Logo" style="max-height:32px; max-width:32px; border-radius:50%; background:#fff; padding:2px; vertical-align:middle; margin-right:4px;" />
+                    }
+                    <b>@GeneralService.SchoolInitials()</b>
+                </span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                <!-- School Name Title Bar in Navbar -->
+                <div style="float:left; line-height:50px; padding-left:15px; color:#ffffff; font-weight:700; font-size:15px; letter-spacing:0.3px; text-transform:uppercase;">
+                    <span class="hidden-xs">@GeneralService.SchoolName()</span>
+                    <span class="visible-xs">@GeneralService.SchoolInitials()</span>
+                </div>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="~/Content/Green_Leaf.png" class="user-image" alt="User Image">
+                                <span class="hidden-xs">Admin Green Data</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/Content/Green_Leaf.png" class="img-circle" alt="User Image">
+
+                                    <p>
+                                        Admin Green Data
+
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="~/Content/Green_Leaf.png" class="img-circle" alt="User Image" style="border:1px solid #ffffff;">
+                    </div>
+                    <div class="pull-left info">
+                        <p>Admin Green Data</p>
+                        <a href="#"><i class="fa fa-circle" style="color:#ffffff !important;"></i> Online</a>
+                    </div>
+                </div>
+                <!-- search form -->
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu" id="mainmenu" data-widget="tree">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li>
+                        <a href="@Url.Content("/Admin/Dashboard/Index")">
+                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green"><i class="fa fa-leaf"></i></small>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Content("/Admin/Imagesliders/index")">
+                            <i class="fa fa-user"></i> <span>Barners</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green"><i class="fa fa-leaf"></i></small>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Content("/Admin/Farmprofiles/Index")">
+                            <i class="fa fa-book"></i> <span>Farmers</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green"><i class="fa fa-leaf"></i></small>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="fa fa-lock"></i> <span>Change Password</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-green"><i class="fa fa-leaf"></i></small>
+                            </span>
+                        </a>
+                    </li>
+
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+
+            @RenderBody()
+
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 2.4.0
+            </div>
+            <strong>Copyright &copy; @DateTime.UtcNow.Year <a href="http://exwhyzee.ng">Exwhyzee Technologies Ltd</a>.</strong> All rights
+            reserved.
+        </footer>
+
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery 3 -->
+    <script src="~/admin/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/admin/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    @RenderSection("Scripts", required: false)
+    <!-- Slimscroll -->
+    <script src="~/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/admin/bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/admin/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="~/admin/dist/js/pages/dashboard.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/admin/dist/js/demo.js"></script>
+    @RenderSection("Scripts2", required: false)
+</body>
+</html>
+
+
+

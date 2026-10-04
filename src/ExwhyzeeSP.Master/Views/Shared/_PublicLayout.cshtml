@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zxx">
+   <head>
+      <!-- Standard Meta Tags -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="@(ViewData["MetaDescription"] ?? "Exwhyzee SP is Nigeria's premier school portal school portal & academic ERP platform with automated report cards, online admissions, CBT exam engines, and school fee reconciliation.")">
+      <meta name="keywords" content="school management portal, automated report card, online admissions, cbt exams, school fees billing, student information system, nigerian school portal, exwhyzee sp, exwhyzee technologies">
+      <meta name="author" content="Exwhyzee Technologies Ltd">
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+      <link rel="canonical" href="@(Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path)" />
+
+      <!-- Open Graph / Facebook / WhatsApp Meta Tags -->
+      <meta property="og:site_name" content="Exwhyzee SP - School Portal &amp; Academic ERP" />
+      <meta property="og:type" content="@(ViewData["OgType"] ?? "website")" />
+      <meta property="og:title" content="@(ViewData["Title"] != null ? $"{ViewData["Title"]} - Exwhyzee SP" : "Exwhyzee SP | Unified Cloud School Portal & Academic ERP")" />
+      <meta property="og:description" content="@(ViewData["MetaDescription"] ?? "Automate report cards, CBT exams, online student admissions, and school fees payment reconciliation with Exwhyzee School Portal.")" />
+      <meta property="og:url" content="@(Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path)" />
+      <meta property="og:image" content="@(Context.Request.Scheme + "://" + Context.Request.Host + "/assets/images/hero-students.jpg")" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="Exwhyzee SP Cloud Academic Portal" />
+      <meta property="og:locale" content="en_US" />
+
+      <!-- Twitter Card Meta Tags -->
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@@exwhyzee_tech" />
+      <meta name="twitter:creator" content="@@exwhyzee_tech" />
+      <meta name="twitter:title" content="@(ViewData["Title"] != null ? $"{ViewData["Title"]} - Exwhyzee SP" : "Exwhyzee SP | Unified Cloud School Portal & Academic ERP")" />
+      <meta name="twitter:description" content="@(ViewData["MetaDescription"] ?? "Automate report cards, CBT exams, online student admissions, and school fees payment reconciliation with Exwhyzee School Portal.")" />
+      <meta name="twitter:image" content="@(Context.Request.Scheme + "://" + Context.Request.Host + "/assets/images/hero-students.jpg")" />
+
+      <!-- JSON-LD Structured Data Schema -->
+      <script type="application/ld+json">
+      {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Exwhyzee School Portal (Exwhyzee SP)",
+        "operatingSystem": "Web Browser, iOS, Android",
+        "applicationCategory": "EducationalApplication",
+        "offers": {
+          "@@type": "Offer",
+          "price": "0",
+          "priceCurrency": "NGN"
+        },
+        "publisher": {
+          "@@type": "Organization",
+          "name": "Exwhyzee Technologies Ltd",
+          "url": "https://www.exwhyzee.ng",
+          "logo": "https://exwhyzee.ng/img/exwhyzeesp-logo.jpg",
+          "contactPoint": {
+            "@@type": "ContactPoint",
+            "telephone": "+234-800-EXWHYZEE",
+            "contactType": "Customer Support",
+            "availableLanguage": ["English"]
+          }
+        },
+        "description": "Enterprise cloud school management ERP with automated terminal report card generation, online admissions, student CBT testing, and fee reconciliation."
+      }
+      </script>
+
+      @await RenderSectionAsync("MetaTags", required: false)
+
+      <!-- Page Title -->
+      <title>@(ViewData["Title"] ?? "Unified School Management Platform") - Exwhyzee SP</title>
+      <!-- Favicon Icon -->
+      <link rel="shortcut icon" type="image/x-icon" href="/img/icon-exwhyzeesp.jpg?v=2">
+      <link rel="icon" type="image/jpeg" href="/img/icon-exwhyzeesp.jpg?v=2">
+      <link rel="apple-touch-icon" href="/img/icon-exwhyzeesp.jpg?v=2">
+      <!-- Bootstrap Css Link -->
+      <link href="/assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      <!-- Swiper Css -->
+      <link rel="stylesheet" href="/assets/css/swiper-bundle.min.css">
+      <!-- Mouse Cursor Css File -->
+      <link rel="stylesheet" href="/assets/css/mousecursor.css">
+      <!-- Magnific Popup Css File -->
+      <link rel="stylesheet" href="/assets/css/magnific-popup.css">
+      <!-- Font Awesome Icon Css-->
+      <link href="/assets/css/all.min.css" rel="stylesheet" media="screen">
+      <!-- Bootstrap Icons -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+      <!-- SlickNav Css -->
+      <link href="/assets/css/slicknav.min.css" rel="stylesheet">
+      <!-- Animation On Scroll Css File -->
+      <link href="/assets/css/aos.css" rel="stylesheet">
+      <!-- Google Fonts Link-->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <!-- Plus Jakarta Sans Fonts Link -->
+      <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@@0,200..800;1,200..800&display=swap" rel="stylesheet">
+      <!-- Main Custom Css -->
+      <link href="/assets/css/custom.css" rel="stylesheet" media="screen">
+      @await RenderSectionAsync("Styles", required: false)
+   </head>
+   <body>
+      <!-- Preloader Start -->
+      <div class="sis-preloader" style="background: #071e3d; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999999; display: flex; align-items: center; justify-content: center;">
+         <div class="d-flex flex-column align-items-center justify-content-center text-center">
+            <div class="position-relative d-flex align-items-center justify-content-center mb-3" style="width: 90px; height: 90px;">
+               <div class="spinner-border text-primary position-absolute" style="width: 86px; height: 86px; border-width: 3px; border-top-color: #38bdf8 !important;" role="status"></div>
+               <div class="rounded-circle bg-white shadow d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; z-index: 2; padding: 4px;">
+                  <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP" style="max-height: 44px; max-width: 44px; object-fit: contain; border-radius: 4px;">
+               </div>
+            </div>
+            <div class="text-white fw-bold fs-5" style="letter-spacing: 1.5px;">
+               EXWHYZEE <span style="color: #38bdf8;">SP</span>
+            </div>
+            <div class="small text-light opacity-75 mt-1">
+               Loading Portal...
+            </div>
+         </div>
+      </div>
+      <!-- Preloader End -->
+      <!-- Header New Start -->
+      <header id="sisf-page-header" class="sisf-main-header sisf-standerd-header">
+         <div class="sis-header-top">
+            <div class="container">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="sis-header_col">
+                        <div class="sisf-widget-holder">
+                           <div class="sisf-top-bar-widget d-flex align-items-center gap-4">
+                              <div class="sisf-icon-list-item sisf-icon--icon-pack">                  
+                                 <a href="tel:+2348000000000" target="_self">                  
+                                 <span class="sisf-e-title-inner">                           
+                                 <span class="sisf-e-title-text"><i class="fa-solid pe-2 fa-phone"></i> +234 (0) 800-EXWHYZEE</span>
+                                 </span>                 
+                                 </a>            
+                              </div>
+                              <div class="mail-us">
+                                 <a href="mailto:info@exwhyzee.ng"><span class="sisf-e-title-text"><i class="fa-regular fa-envelope pe-2"></i> info@exwhyzee.ng</span></a>
+                              </div>
+                              <div class="sisf-top-time">
+                                 <a href="https://www.exwhyzee.ng" target="_blank">
+                                 <span><i class="fa-solid pe-1 fa-clock"></i></span>
+                                 <span>24/7 Operations &amp; Support</span>
+                                 </a>
+                              </div>
+                           </div>
+                           <div class="social-icons-link">
+                              <ul class="list-unstyled p-0 m-0">
+                                 <li><a href="https://www.exwhyzee.ng" target="_blank" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
+                                 <li><a href="https://www.exwhyzee.ng" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a></li>
+                                 <li><a href="https://www.exwhyzee.ng" target="_blank" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                 <li><a href="https://www.exwhyzee.ng" target="_blank" title="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="sisf-page-header-inner" class="sisf-skin--dark position-relative d-flex align-items-center">
+            <div class="container">
+               <!-- Logo Start -->
+               <a class="navbar-brand sisf-header-logo-link mobile-block" href="/">
+                  <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP Logo" style="max-height: 48px; border-radius: 6px; object-fit: contain;">
+               </a>
+               <!-- Logo End -->
+               <div class="sisf-centered-header-wrapper sisf--header d-flex justify-content-between align-items-center">
+                  <!-- Logo Start -->
+                  <a class="navbar-brand sisf-header-logo-link" href="/">
+                     <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP Logo" style="max-height: 48px; border-radius: 6px; object-fit: contain;">
+                  </a>
+                  <!-- Logo End -->
+                  <nav class="navbar navbar-expand-lg">
+                     <!-- Main Menu Start -->
+                     <div class="collapse navbar-collapse sis-main-menu">
+                        <div class="nav-menu-wrapper">
+                            <ul class="navbar-nav" id="menu">
+                               <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                               <li class="nav-item"><a class="nav-link" href="/About">About Us</a></li>
+                               <li class="nav-item"><a class="nav-link" href="/Services">Features &amp; Modules</a></li>
+                               <li class="nav-item"><a class="nav-link" href="/Pricing">Pricing</a></li>
+                               <li class="nav-item"><a class="nav-link" href="/Blog">News &amp; Blog</a></li>
+                               <li class="nav-item"><a class="nav-link" href="/Testimonials">Testimonials</a></li>
+                               <li class="nav-item"><a class="nav-link" href="/Contact">Contact Us</a></li>
+                            </ul>
+                        </div>
+                     </div>
+                     <!-- Main Menu End -->
+                  </nav>
+                  <div class="sisf-widget-holder sisf--two d-flex align-items-center gap-2">
+                     <div class="header-btn">
+                        <a href="/Demo" class="btn btn-outline-light btn-sm px-3 py-2 fw-semibold rounded-pill d-none d-xl-inline-block">Request Demo</a>
+                     </div>
+                     <div class="header-btn">
+                        <a href="/Account/Login" class="sis-btn-default shadow-none">Login<i class="fa-solid fa-arrow-right-long"></i></a>
+                     </div>
+                  </div>
+               </div>
+               <div class="navbar-toggle"></div>
+               <div class="responsive-menu"></div>
+            </div>
+         </div>
+      </header>
+      <!-- Header New End -->
+@RenderBody()
+      <!-- Footer Start -->
+      <footer class="main-footer">
+         <div class="sisf-page-footer-inner-area sisf-page-background position-relative">
+            <div class="sisf-sis-bottom-left-image">
+               <figure>
+                  <img src="/assets/images/footer-bg.png" alt="Exwhyzee SP">
+               </figure>
+            </div>
+            <div class="sisf-page-footer-top-area-inner page">
+               <div class="container">
+                  <div class="row align-items-center">
+                     <div class="col-lg-7">
+                        <div class="footer-logo mb-4" data-aos="fade-up" data-aos-delay="100">
+                           <a href="/">
+                              <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP" style="max-height: 52px; border-radius: 6px; background:#fff; padding: 4px;">
+                           </a>
+                        </div>
+                        <!-- Setion Title Start -->
+                        <div class="sisf-sis-section-title mb-0 sis-section-title">
+                           <div class="sisf-m-text" data-aos="fade-up" data-aos-delay="100">
+                              <p class="mt-0 text-white">Empowering primary, secondary, and tertiary schools with complete school portal academic ERP, online admissions, CBT exams, automated result computation, fee invoicing, and robust communication.</p>
+                           </div>
+                        </div>
+                        <!-- Setion Title End -->
+                     </div>
+                     <div class="col-lg-5">
+                        <!-- Title Start -->
+                        <div class="sisf-sis-title mb-4">
+                           <span class="sisf-m-title sis-comman-title text-white sis-text-anime-style-3">Ready to Modernize Your School Operations?</span>
+                        </div>
+                        <!-- Title End -->
+                        <div class="d-flex flex-wrap gap-3 mt-3" data-aos="fade-up" data-aos-delay="200">
+                           <a href="/Demo" class="sis-btn-default shadow-none bg-white text-dark">Schedule Live Demo <i class="fa-solid fa-arrow-right-long"></i></a>
+                           <a href="/Contact" class="btn btn-outline-light px-4 py-3 fw-bold rounded-pill">Contact Sales</a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="sisf-page-footer-middle-area">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-xl-3 col-lg-6 col-md-6">
+                        <!-- Links Start -->
+                        <div class="footer-links page" data-aos="fade-up" data-aos-delay="100">
+                           <h3>QUICK NAVIGATION</h3>
+                           <ul>
+                              <li><a href="/">Home</a></li>
+                              <li><a href="/About">About Exwhyzee SP</a></li>
+                              <li><a href="/Services">Features &amp; Modules</a></li>
+                              <li><a href="/Pricing">Pricing</a></li>
+                               <li><a href="/Blog">News &amp; EdTech Insights</a></li>
+                              <li><a href="/Testimonials">Testimonials</a></li>
+                              <li><a href="/KnowledgeBase">Knowledge Base &amp; Help</a></li>
+                              <li class="mb-0"><a href="/Contact">Contact Support &amp; Sales</a></li>
+                           </ul>
+                        </div>
+                        <!-- Links End -->
+                     </div>
+                     <div class="col-xl-3 col-lg-6 col-md-6">
+                        <!-- Links Start -->
+                        <div class="footer-links page" data-aos="fade-up" data-aos-delay="300">
+                           <h3>CORE MODULES</h3>
+                           <ul>
+                              <li><a href="/Services#sis">Student Information System (SIS)</a></li>
+                              <li><a href="/Services#admissions">Online Applications &amp; Onboarding</a></li>
+                              <li><a href="/Services#cbt">Online CBT &amp; Live Classes</a></li>
+                              <li><a href="/Services#results">Automated Result Processing &amp; PINs</a></li>
+                              <li><a href="/Services#finance">School Fees &amp; Invoicing</a></li>
+                               <li><a href="/Services#ai-learning">AI Learning &amp; Holiday Skills Hub</a></li>
+                              <li class="mb-0"><a href="/Services#sms">Bulk SMS &amp; Parent Notifications</a></li>
+                           </ul>
+                        </div>
+                        <!-- Links End -->
+                     </div>
+                     <div class="col-xl-3 col-lg-6 col-md-6">
+                        <!-- Links Start -->
+                        <div class="footer-links page" data-aos="fade-up" data-aos-delay="300">
+                           <h3>PRICING MODELS</h3>
+                           <ul>
+                              <li><a href="/Pricing">Pay Per Student / Term</a></li>
+                              <li><a href="/Pricing">Pay Per Class / Term</a></li>
+                              <li><a href="/Pricing">Annual Unlimited Institution</a></li>
+                              <li><a href="/Pricing">Scratch Card / Result PIN Billing</a></li>
+                              <li><a href="/Pricing">Custom Multi-Campus Enterprise</a></li>
+                              <li class="mb-0"><a href="/Demo">Request Custom Quote</a></li>
+                           </ul>
+                        </div>
+                        <!-- Links End -->
+                     </div>
+                     <div class="col-xl-3 col-lg-6 col-md-6">
+                        <!-- Links Start -->
+                        <div class="footer-links page" data-aos="fade-up" data-aos-delay="700">
+                           <h3 class="text-uppercase">CONTACT &amp; HEADQUARTERS</h3>
+                           <div class="sisf-sis-contact-information">
+                              <div class="sisf-contact-box mb-3 d-flex align-items-center gap-3">
+                                 <div class="sisf-icon">
+                                    <a href="tel:+2348000000000"><i class="fa-solid fa-phone-volume"></i></a>
+                                 </div>
+                                 <div class="sisf-sis-e-content">
+                                    <span class="sis-title text-white d-block">Call Help Desk</span>
+                                    <a href="tel:+2348000000000" class="sis-title text-white d-block">+234 (0) 800-EXWHYZEE</a>
+                                 </div>
+                              </div>
+                              <div class="sisf-contact-box mb-3 d-flex align-items-center gap-3">
+                                 <div class="sisf-icon">
+                                    <a href="mailto:info@exwhyzee.ng"><i class="fa-regular fa-envelope"></i></a>
+                                 </div>
+                                 <div class="sisf-sis-e-content">
+                                    <span class="sis-title text-white d-block">Official Email</span>
+                                    <a href="mailto:info@exwhyzee.ng" class="sis-title text-white d-block">info@exwhyzee.ng</a>
+                                 </div>
+                              </div>
+                              <div class="sisf-contact-box mb-0 d-flex align-items-center gap-3">
+                                 <div class="sisf-icon">
+                                    <a href="#"><i class="fa-regular fa-clock"></i></a>
+                                 </div>
+                                 <div class="sisf-sis-e-content">
+                                    <span class="sis-title text-white d-block">Working Hours</span>
+                                    <span class="sis-title text-white d-block">24/7 Technical Operations</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <!-- Links End -->
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="sisf-page-footer-bottom-area">
+               <div class="container">
+                  <!-- Footer Copyright Section Start -->
+                  <div class="footer-copyright py-4">
+                     <div class="row align-items-center">
+                        <div class="col-xl-5 col-lg-5">
+                           <!-- Footer Copyright Start -->
+                           <div class="footer-copyright-text">
+                              <p class="mb-0 text-white">&copy; @DateTime.UtcNow.Year Exwhyzee SP. All Rights Reserved. Powered by <a href="https://www.exwhyzee.ng" target="_blank" class="text-white text-decoration-underline">Exwhyzee Technologies</a>.</p>
+                           </div>
+                           <!-- Footer Copyright End -->
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-4">
+                           <!-- Links Start -->
+                           <div class="footer-links page">
+                              <div class="footer-social-icons-link page">
+                                 <ul class="list-unstyled d-flex align-items-center justify-content-center gap-3 p-0 m-0">
+                                    <li class="mb-0 p-0"><a href="https://www.exwhyzee.ng" target="_blank" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
+                                    <li class="mb-0 p-0"><a href="https://www.exwhyzee.ng" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a></li>
+                                    <li class="mb-0 p-0"><a href="https://www.exwhyzee.ng" target="_blank" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                    <li class="mb-0 p-0"><a href="https://www.exwhyzee.ng" target="_blank" title="YouTube"><i class="fa-brands fa-youtube"></i></a></li>
+                                 </ul>
+                              </div>
+                           </div>
+                           <!-- Links End -->
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-8">
+                           <div class="footer-privacy-policy">
+                              <ul class="list-unstyled d-flex align-items-center justify-content-end gap-3 p-0 m-0 flex-wrap small">
+                                 <li><a href="/Privacy" class="text-white">Privacy Policy</a></li>
+                                 <li><a href="/Terms" class="text-white">Terms of Service</a></li>
+                                 <li><a href="/Cookies" class="text-white">Cookie Policy</a></li>
+                                 <li><a href="/Sitemap" class="text-white">Sitemap</a></li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Footer Copyright Section End -->
+               </div>
+            </div>
+         </div>
+      </footer>
+      <!-- Footer End -->
+
+      <!-- Cookie Consent Banner Modal for First-time Visitors -->
+      <div id="cookieConsentBanner" class="position-fixed bottom-0 start-0 end-0 p-3 shadow-lg" style="z-index: 99999; display: none; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px); border-top: 2px solid #2563eb;">
+         <div class="container d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 text-white">
+            <div class="d-flex align-items-center gap-3">
+               <i class="fa-solid fa-cookie-bite text-warning fs-1 flex-shrink-0"></i>
+               <div class="small">
+                  <strong class="d-block text-white fs-6 mb-1">We value your privacy and security</strong>
+                  Exwhyzee SP uses essential cookies and local session storage to secure logins, protect portal transactions, and optimize your school management experience. Learn more in our <a href="/Cookies" class="text-info text-decoration-underline">Cookie Policy</a> and <a href="/Privacy" class="text-info text-decoration-underline">Privacy Policy</a>.
+               </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+               <button type="button" id="btnAcceptCookies" class="btn btn-primary btn-sm px-4 py-2 fw-semibold rounded-pill shadow">Accept All</button>
+               <button type="button" id="btnEssentialCookies" class="btn btn-outline-light btn-sm px-3 py-2 rounded-pill">Essential Only</button>
+            </div>
+         </div>
+      </div>
+
+      <!-- Cursor Start -->
+      <div class="sisf-cursor sisf-js-cursor">
+         <div class="sisf-cursor-wrapper">
+            <div class="sisf-cursor--follower sisf-js-follower"></div>
+            <div class="sisf-cursor--label sisf-js-label"></div>
+            <div class="sisf-cursor--drap sisf-js-drap"></div>
+            <div class="sisf-cursor--icon sisf-js-icon"></div>
+         </div>
+      </div>
+      <!-- Cursor End -->
+      <!-- WhatsApp Floating Live Chat Widget Start -->
+      <div id="whatsappLiveChatWidget" class="whatsapp-chat-widget">
+         <!-- Chat Window Popup -->
+         <div id="whatsappChatWindow" class="whatsapp-chat-window">
+            <!-- Header -->
+            <div class="whatsapp-chat-header d-flex align-items-center justify-content-between p-3 text-white">
+               <div class="d-flex align-items-center gap-3">
+                  <div class="position-relative">
+                     <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; font-size: 24px;">
+                        <i class="fa-brands fa-whatsapp text-success"></i>
+                     </div>
+                     <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-white rounded-circle"></span>
+                  </div>
+                  <div>
+                     <h6 class="fw-bold mb-0 text-white fs-6">Exwhyzee SP Support</h6>
+                     <small class="text-white-50 d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                        <i class="fa-solid fa-circle text-success" style="font-size: 7px;"></i> Online &bull; Active Academic Support
+                     </small>
+                  </div>
+               </div>
+               <button type="button" class="btn-close btn-close-white" id="closeWhatsAppChat" aria-label="Close"></button>
+            </div>
+
+            <!-- Chat Body -->
+            <div class="whatsapp-chat-body p-3">
+               <div class="text-center mb-2">
+                  <span class="badge bg-secondary bg-opacity-25 text-dark fw-normal px-2 py-1" style="font-size: 0.7rem;">Live Portal Helpdesk</span>
+               </div>
+               
+               <div class="whatsapp-message-bubble p-3 rounded-3 shadow-sm mb-3">
+                  <p class="small mb-1 text-dark">
+                     Hello! Welcome to <strong>Exwhyzee SP</strong>. How can our portal deployment and technical team assist your school today?
+                  </p>
+                  <div class="text-end">
+                     <small class="text-muted" style="font-size: 0.65rem;">Official Desk</small>
+                     <i class="fa-solid fa-check-double text-primary ms-1" style="font-size: 9px;"></i>
+                  </div>
+               </div>
+
+               <!-- Quick Topic Suggestion Chips -->
+               <div class="quick-chips mb-2">
+                  <span class="d-block text-muted small fw-semibold mb-2" style="font-size: 0.72rem;">Select an inquiry or type below:</span>
+                  <div class="d-flex flex-wrap gap-2">
+                     <button type="button" class="btn btn-sm quick-chip" data-msg="Hello Exwhyzee SP, I would like to schedule a Live Demo for my school.">
+                        <i class="fa-solid fa-calendar-check me-1 text-success"></i> Request Live Demo
+                     </button>
+                     <button type="button" class="btn btn-sm quick-chip" data-msg="Hello Exwhyzee SP, I want to inquire about School Fee Billing, Invoicing and Scratch Card Result Processing.">
+                        <i class="fa-solid fa-receipt me-1 text-success"></i> Fees &amp; Result PINs
+                     </button>
+                     <button type="button" class="btn btn-sm quick-chip" data-msg="Hello Exwhyzee SP, I need information about the Online CBT Exam Engine and AI Learning Hub for our students.">
+                        <i class="fa-solid fa-laptop-code me-1 text-success"></i> CBT &amp; AI Hub
+                     </button>
+                     <button type="button" class="btn btn-sm quick-chip" data-msg="Hello Exwhyzee SP, I would like to speak with a technical onboarding engineer regarding school portal setup.">
+                        <i class="fa-solid fa-headset me-1 text-success"></i> Technical Onboarding
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Chat Input Footer -->
+            <div class="whatsapp-chat-footer p-2 bg-white border-top">
+               <form id="whatsappChatForm" class="d-flex align-items-center gap-2 m-0">
+                  <input type="text" id="whatsappChatInput" class="form-control form-control-sm rounded-pill px-3" placeholder="Type a message on WhatsApp..." autocomplete="off" />
+                  <button type="submit" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 38px; height: 38px;" title="Send on WhatsApp">
+                     <i class="fa-solid fa-paper-plane text-white" style="font-size: 14px;"></i>
+                  </button>
+               </form>
+               <div class="text-center mt-1">
+                  <small class="text-muted" style="font-size: 0.68rem;">Direct Line: <strong>+234 816 568 0904</strong></small>
+               </div>
+            </div>
+         </div>
+
+         <!-- Floating Trigger Button -->
+         <div class="whatsapp-trigger-container position-relative">
+            <div class="whatsapp-pulsating-circle"></div>
+            <button id="whatsappTriggerBtn" class="whatsapp-trigger-btn shadow-lg" title="Chat with Exwhyzee SP on WhatsApp" aria-label="Open WhatsApp Chat">
+               <i class="fa-brands fa-whatsapp"></i>
+               <span class="whatsapp-badge-pill">Chat with us</span>
+            </button>
+         </div>
+      </div>
+      <!-- WhatsApp Floating Live Chat Widget End -->
+
+      <!-- Back to Top Button Start -->
+      <div class="sis-back-to-top-button">
+         <button class="sis-back-to-top" id="backToTop">
+         <span><i class="fa fa-chevron-up"></i></span>
+         </button>
+      </div>
+      <!-- Back to Top Button End -->
+
+      <style>
+         /* WhatsApp Floating Live Chat Widget Styling */
+         .whatsapp-chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 99998;
+            font-family: inherit;
+         }
+
+         .whatsapp-trigger-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+         }
+
+         .whatsapp-trigger-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #ffffff;
+            border: none;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            position: relative;
+            z-index: 2;
+         }
+
+         .whatsapp-trigger-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.45);
+            color: #ffffff;
+         }
+
+         .whatsapp-badge-pill {
+            position: absolute;
+            right: 68px;
+            background: #ffffff;
+            color: #075e54;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 13.5px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            border: 1px solid rgba(37, 211, 102, 0.25);
+         }
+
+         .whatsapp-trigger-btn:hover .whatsapp-badge-pill {
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.24);
+            transform: scale(1.04);
+         }
+
+         .whatsapp-pulsating-circle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(37, 211, 102, 0.4);
+            animation: wa-pulse 2s infinite;
+            z-index: 1;
+         }
+
+         @@keyframes wa-pulse {
+            0% {
+               transform: scale(0.95);
+               opacity: 0.8;
+            }
+            70% {
+               transform: scale(1.45);
+               opacity: 0;
+            }
+            100% {
+               transform: scale(0.95);
+               opacity: 0;
+            }
+         }
+
+         .whatsapp-chat-window {
+            position: absolute;
+            bottom: 74px;
+            right: 0;
+            width: 350px;
+            max-width: 90vw;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.22);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            z-index: 99999;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+         }
+
+         .whatsapp-chat-window.active {
+            display: flex;
+            animation: wa-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+         }
+
+         @@keyframes wa-slide-up {
+            from {
+               opacity: 0;
+               transform: translateY(20px) scale(0.96);
+            }
+            to {
+               opacity: 1;
+               transform: translateY(0) scale(1);
+            }
+         }
+
+         .whatsapp-chat-header {
+            background: linear-gradient(135deg, #075E54 0%, #128C7E 100%);
+         }
+
+         .whatsapp-chat-body {
+            background-color: #f0f2f5;
+            min-height: 230px;
+            max-height: 330px;
+            overflow-y: auto;
+         }
+
+         .whatsapp-message-bubble {
+            background: #ffffff;
+            border-radius: 12px 12px 12px 2px;
+            position: relative;
+            max-width: 92%;
+         }
+
+         .quick-chip {
+            font-size: 0.74rem;
+            background-color: #ffffff;
+            border: 1px solid #25D366;
+            color: #075E54;
+            font-weight: 500;
+            border-radius: 20px;
+            padding: 4px 10px;
+            transition: all 0.2s ease;
+         }
+
+         .quick-chip:hover {
+            background-color: #25D366;
+            color: #ffffff;
+         }
+
+         .quick-chip:hover i {
+            color: #ffffff !important;
+         }
+
+         /* Position backToTop cleanly above WhatsApp widget */
+         .sis-back-to-top-button {
+            bottom: 96px !important;
+            right: 28px !important;
+         }
+      </style>
+
+      <!-- Jquery Library File -->
+      <script src="/assets/js/jquery-3.7.1.min.js"></script>
+      <!-- Bootstrap js File -->
+      <script src="/assets/js/bootstrap.min.js"></script>
+      <!-- Validator js file -->
+      <script src="/assets/js/validator.min.js"></script>
+      <!-- SlickNav js File -->
+      <script src="/assets/js/jquery.slicknav.js"></script>
+      <!-- Swiper js File -->
+      <script src="/assets/js/swiper-bundle.min.js"></script>
+      <!-- Animation On Scroll Js File -->
+      <script src="/assets/js/aos.js"></script>
+      <!-- Counter js File -->
+      <script src="/assets/js/jquery.waypoints.min.js"></script>
+      <script src="/assets/js/jquery.counterup.min.js"></script>
+      <!-- Magnific js File -->
+      <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+      <!-- Gsap Js File -->
+      <script src="/assets/js/gsap.min.js"></script>
+      <!-- Cursor Js File -->
+      <script src="/assets/js/magiccursor.js"></script>
+      <script src="/assets/js/cursor/cursor.js"></script>
+      <!-- Text Effect js file -->
+      <script src="/assets/js/ScrollTrigger.min.js"></script>
+      <script src="/assets/js/SplitText.js"></script>
+      <!-- Main Custom js file -->
+      <script src="/assets/js/script.js"></script>
+
+      <!-- WhatsApp Live Chat Script -->
+      <script>
+         document.addEventListener("DOMContentLoaded", function() {
+            var whatsappNumber = "2348165680904";
+            var triggerBtn = document.getElementById("whatsappTriggerBtn");
+            var chatWindow = document.getElementById("whatsappChatWindow");
+            var closeBtn = document.getElementById("closeWhatsAppChat");
+            var chatForm = document.getElementById("whatsappChatForm");
+            var chatInput = document.getElementById("whatsappChatInput");
+            var quickChips = document.querySelectorAll(".quick-chip");
+
+            function openWhatsApp(message) {
+               var text = encodeURIComponent(message || "Hello Exwhyzee SP, I would like to inquire about your school management portal.");
+               var url = "https://wa.me/" + whatsappNumber + "?text=" + text;
+               window.open(url, "_blank");
+            }
+
+            if (triggerBtn && chatWindow) {
+               triggerBtn.addEventListener("click", function(e) {
+                  e.stopPropagation();
+                  chatWindow.classList.toggle("active");
+                  if (chatWindow.classList.contains("active") && chatInput) {
+                     setTimeout(function() { chatInput.focus(); }, 200);
+                  }
+               });
+            }
+
+            if (closeBtn && chatWindow) {
+               closeBtn.addEventListener("click", function(e) {
+                  e.stopPropagation();
+                  chatWindow.classList.remove("active");
+               });
+            }
+
+            // Close when clicking outside
+            document.addEventListener("click", function(e) {
+               var widget = document.getElementById("whatsappLiveChatWidget");
+               if (widget && !widget.contains(e.target) && chatWindow && chatWindow.classList.contains("active")) {
+                  chatWindow.classList.remove("active");
+               }
+            });
+
+            if (chatForm && chatInput) {
+               chatForm.addEventListener("submit", function(e) {
+                  e.preventDefault();
+                  var msg = chatInput.value.trim();
+                  if (msg.length > 0) {
+                     openWhatsApp(msg);
+                     chatInput.value = "";
+                     if (chatWindow) chatWindow.classList.remove("active");
+                  }
+               });
+            }
+
+            quickChips.forEach(function(chip) {
+               chip.addEventListener("click", function(e) {
+                  e.preventDefault();
+                  var msg = this.getAttribute("data-msg");
+                  openWhatsApp(msg);
+                  if (chatWindow) chatWindow.classList.remove("active");
+               });
+            });
+         });
+      </script>
+
+      <script>
+         // Preloader bulletproof dismissal
+         function dismissPreloader() {
+            var preloader = document.querySelector(".sis-preloader");
+            if (preloader && preloader.style.display !== "none") {
+               preloader.style.transition = "opacity 0.35s ease, visibility 0.35s ease";
+               preloader.style.opacity = "0";
+               preloader.style.visibility = "hidden";
+               setTimeout(function() {
+                  preloader.style.display = "none";
+               }, 380);
+            }
+         }
+         window.addEventListener("load", dismissPreloader);
+         document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(dismissPreloader, 500);
+         });
+         setTimeout(dismissPreloader, 2000); // Safety fallback
+      </script>
+
+      <script>
+         // Cookie Consent Logic for First-Time Visitors
+         document.addEventListener("DOMContentLoaded", function() {
+            var consent = localStorage.getItem("exwhyzee_cookie_consent");
+            var banner = document.getElementById("cookieConsentBanner");
+            if (!consent && banner) {
+               banner.style.display = "block";
+            }
+            var btnAccept = document.getElementById("btnAcceptCookies");
+            var btnEssential = document.getElementById("btnEssentialCookies");
+            if (btnAccept) {
+               btnAccept.addEventListener("click", function() {
+                  localStorage.setItem("exwhyzee_cookie_consent", "accepted");
+                  if (banner) banner.style.display = "none";
+               });
+            }
+            if (btnEssential) {
+               btnEssential.addEventListener("click", function() {
+                  localStorage.setItem("exwhyzee_cookie_consent", "essential_only");
+                  if (banner) banner.style.display = "none";
+               });
+            }
+         });
+      </script>
+   @await RenderSectionAsync("Scripts", required: false)
+   </body>
+</html>

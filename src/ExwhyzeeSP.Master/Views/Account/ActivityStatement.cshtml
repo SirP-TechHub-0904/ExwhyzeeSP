@@ -1,0 +1,424 @@
+@model IEnumerable<ExwhyzeeSP.Core.Models.MasterAuditLog>
+@{
+    Layout = null;
+    var fromDate = ViewBag.FromDate as string ?? DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-dd");
+    var toDate = ViewBag.ToDate as string ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
+    var generatedAt = (DateTime)(ViewBag.GeneratedAt ?? DateTime.UtcNow);
+    var generatedBy = ViewBag.GeneratedBy as string ?? "SuperAdmin";
+    var statementRef = ViewBag.StatementRef as string ?? "EXZ-SEC-STMT-" + DateTime.UtcNow.ToString("yyyyMMdd") + "-001";
+    var auditedUser = ViewBag.AuditedUser as ExwhyzeeSP.Core.Models.MasterAdminUser;
+    var search = ViewBag.Search as string;
+    var isSingleUser = auditedUser != null || (!string.IsNullOrWhiteSpace(search) && search.Contains("@"));
+    var targetPerson = auditedUser?.FullName ?? search ?? generatedBy;
+
+    var totalCount = Model.Count();
+    var logins = Model.Count(l => l.Action.Contains("Login") || l.Action.Contains("SignIn"));
+    var sso = Model.Count(l => l.Action.Contains("SSO") || l.Action.Contains("Delegated"));
+    var warnings = Model.Count(l => l.Severity == "Warning" || l.Severity == "Critical" || l.Action.Contains("Failed"));
+    var uniqueIps = Model.Select(l => l.IpAddress).Distinct().Count();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Official Security Audit Statement - @statementRef</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding: 24px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .statement-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 36px 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .no-print-bar {
+            max-width: 1000px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+
+        .btn-print {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            color: #ffffff;
+            border-color: #64748b;
+        }
+
+        .statement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #0f172a;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .ref-badge {
+            text-align: right;
+        }
+
+        .ref-badge h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0284c7;
+            font-family: monospace;
+        }
+
+        .ref-badge span {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .meta-item label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .meta-item span {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-card label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .stat-card strong {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 24px;
+        }
+
+        .audit-table th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .audit-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .audit-table tr:nth-child(even) td {
+            background-color: #fafafa;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .pill-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .pill-info {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .pill-warning {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .statement-footer {
+            border-top: 1px solid #cbd5e1;
+            padding-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .verification-seal {
+            border: 1px dashed #94a3b8;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 9px;
+            color: #475569;
+            background: #f8fafc;
+        }
+
+        @@media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .statement-container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Print / Back Toolbar -->
+    <div class="no-print-bar no-print">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 700; font-size: 13px;">Official Security Audit Statement</span>
+            <span style="font-size: 11px; color: #94a3b8;">Formatted for PDF Export &amp; Regulatory Filing</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <a href="javascript:history.back()" class="btn-back">Return to Log</a>
+            <button onclick="window.print()" class="btn-print">Print / Save as PDF</button>
+        </div>
+    </div>
+
+    <!-- Official Statement Body -->
+    <div class="statement-container">
+        <!-- Header -->
+        <div class="statement-header">
+            <div>
+                <div class="brand-title">EXWHYZEESP PLATFORM SECURITY AUDIT</div>
+                <div class="brand-subtitle">Master Coordination Gateway &bull; Multi-Tenant Core Authentication Ledger</div>
+            </div>
+            <div class="ref-badge">
+                <span>Statement Reference</span>
+                <h4>@statementRef</h4>
+                <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Issued: @generatedAt.ToString("MMM dd, yyyy HH:mm:ss") UTC</div>
+            </div>
+        </div>
+
+        <!-- Meta Grid -->
+        <div class="meta-grid">
+            <div class="meta-item">
+                <label>Audit Target / Scope</label>
+                <span>@(isSingleUser ? $"{targetPerson}" : "All Platform Operators")</span>
+            </div>
+            <div class="meta-item">
+                <label>Period Covered</label>
+                <span>@fromDate to @toDate</span>
+            </div>
+            <div class="meta-item">
+                <label>Total Ledger Events</label>
+                <span>@totalCount.ToString("N0") Records</span>
+            </div>
+            <div class="meta-item">
+                <label>Compliance Status</label>
+                <span style="color: #15803d; font-weight: 700;">VERIFIED &bull; NOMINAL</span>
+            </div>
+        </div>
+
+        <!-- Statistical Summaries -->
+        <div class="summary-cards">
+            <div class="stat-card">
+                <label>Total Logins</label>
+                <strong style="color: #0284c7;">@logins.ToString("N0")</strong>
+            </div>
+            <div class="stat-card">
+                <label>Delegated SSO Sessions</label>
+                <strong style="color: #10b981;">@sso.ToString("N0")</strong>
+            </div>
+            <div class="stat-card">
+                <label>Distinct IP Addresses</label>
+                <strong style="color: #6366f1;">@uniqueIps.ToString("N0")</strong>
+            </div>
+            <div class="stat-card">
+                <label>Security Exceptions</label>
+                <strong style="color: @(warnings > 0 ? "#b91c1c" : "#15803d");">@warnings.ToString("N0")</strong>
+            </div>
+        </div>
+
+        <!-- Chronological Ledger Table -->
+        <table class="audit-table">
+            <thead>
+                <tr>
+                    <th style="width: 140px;">Timestamp (UTC)</th>
+                    <th style="width: 110px;">Event Action</th>
+                    <th style="width: 110px;">IP Address</th>
+                    <th style="width: 150px;">Client Device</th>
+                    <th>Audit Details &amp; Operational Context</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var isLogin = item.Action.Contains("Login") || item.Action.Contains("2fa");
+                        var isWarning = item.Severity == "Warning" || item.Severity == "Critical" || item.Action.Contains("Failed");
+
+                        <tr>
+                            <td style="font-family: monospace; font-size: 10.5px; font-weight: 600;">
+                                @item.TimestampUtc.ToString("yyyy-MM-dd HH:mm:ss")
+                            </td>
+                            <td>
+                                <span class="pill @(isWarning ? "pill-warning" : isLogin ? "pill-success" : "pill-info")">
+                                    @item.Action
+                                </span>
+                            </td>
+                            <td style="font-family: monospace; font-size: 10.5px;">
+                                @item.IpAddress
+                            </td>
+                            <td>
+                                <div style="font-weight: 600;">@(item.Browser ?? "Browser")</div>
+                                <div style="font-size: 10px; color: #64748b;">@(item.DeviceType ?? "Desktop") / @(item.OperatingSystem ?? "Windows")</div>
+                            </td>
+                            <td>
+                                <div>@item.Details</div>
+                                @if (!string.IsNullOrEmpty(item.TenantSubDomain))
+                                {
+                                    <span style="font-family: monospace; font-size: 9.5px; color: #0284c7;">[Tenant: @item.TenantSubDomain]</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 24px; color: #94a3b8;">
+                            No security audit log records recorded during the selected period.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Footer & Verification Stamp -->
+        <div class="statement-footer">
+            <div>
+                <div>Official document generated automatically by ExwhyzeeSP Security Subsystem.</div>
+                <div>This document is verified and valid for regulatory submission, compliance audits, and legal declarations.</div>
+            </div>
+            <div class="verification-seal">
+                DIGITAL AUDIT SEAL<br />
+                ID: @statementRef<br />
+                HASH: @Guid.NewGuid().ToString().Substring(0, 16).ToUpper()
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+@model List<ExwhyzeeSP.Core.Models.MasterAuditLog>
+@{
+    ViewData["Title"] = "Delegated SSO & Support Sessions";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+}
+
+<div class="space-y-6">
+
+    <!-- Page Header & Action Toolbar -->
+    <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Delegated SSO &amp; Support Sessions</h1>
+            <p class="text-xs sm:text-[13px] text-[var(--text-secondary)] mt-0.5">
+                Record of all cross-tenant single sign-on handshakes, support logins, reasons, and active session tokens.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+            <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                <i class="icon-arrow-left text-[14px]"></i>
+                <span>All Audit Logs</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- SSO Sessions Table Card -->
+    <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm overflow-hidden">
+        <div class="p-4 bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] flex items-center justify-between">
+            <h3 class="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                <i class="icon-shield text-[14px] text-amber-500"></i>
+                Recorded Support Impersonations (@totalCount Total)
+            </h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-[var(--surface-sunken)]/50 border-b border-[var(--border-subtle)] text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+                    <tr>
+                        <th class="py-3 px-4">Timestamp</th>
+                        <th class="py-3 px-4">Master Administrator</th>
+                        <th class="py-3 px-4">Target School</th>
+                        <th class="py-3 px-4">Client Browser / IP</th>
+                        <th class="py-3 px-4">Support Reason</th>
+                        <th class="py-3 px-4 text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[var(--border-subtle)]">
+                    @if (Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr class="hover:bg-[var(--surface-sunken)]/50 transition-colors">
+                                <td class="py-3.5 px-4 font-mono text-[var(--text-tertiary)]">
+                                    @item.TimestampUtc.ToString("yyyy-MM-dd HH:mm:ss")
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <strong class="text-[var(--text-primary)] block">@item.UserName</strong>
+                                    <span class="badge-soft badge-secondary text-[10px]">@item.UserRole</span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="badge-soft badge-primary font-mono text-[10px]">@(item.TenantSubDomain ?? "Default")</span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="text-[var(--text-secondary)]">@item.Browser on @item.OperatingSystem</div>
+                                    <code class="font-mono text-[11px] text-[var(--text-tertiary)]">@item.IpAddress</code>
+                                </td>
+                                <td class="py-3.5 px-4 text-[var(--text-tertiary)] italic">
+                                    @(item.Details ?? "Platform Maintenance Inspection")
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <span class="badge-soft badge-success text-[10px]">
+                                        <i class="icon-circle-check text-[9px]"></i> Authorized
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="py-12 text-center text-[var(--text-tertiary)]">
+                                No delegated SSO support sessions logged yet.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

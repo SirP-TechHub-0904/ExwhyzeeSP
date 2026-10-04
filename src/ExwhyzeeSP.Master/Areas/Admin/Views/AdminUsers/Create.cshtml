@@ -1,0 +1,284 @@
+@model ExwhyzeeSP.Master.Controllers.CreateAdminUserViewModel
+@{
+    ViewData["Title"] = "Add Administrator";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header ============ -->
+    <div class="surface-card p-5 lg:p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Users">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-14 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 grid place-items-center border border-sky-500/20 shadow-xs">
+                    <i class="icon-user-plus text-[26px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">Add Platform Administrator</h1>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
+                            <i class="icon-shield text-[10px]"></i> Security Role Access
+                        </span>
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-secondary)] mt-1">
+                        Create a new master operator account, configure contact details, and assign role-based system permissions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3.5 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to User List</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Create Form ============ -->
+    <form asp-action="Create" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs font-semibold" role="alert"></div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+
+            <!-- Left Main Column (8 cols) -->
+            <div class="xl:col-span-8 space-y-4">
+
+                <!-- 1. Administrator Profile & Password -->
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-user text-[16px] text-sky-600"></i>
+                                <span>Administrator Profile &amp; Credentials</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Personal details and login security credentials.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label asp-for="FullName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Full Name <span class="text-rose-500">*</span></label>
+                            <input asp-for="FullName" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] font-semibold focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="e.g. Samuel Adebayo" autofocus required />
+                            <span asp-validation-for="FullName" class="text-xs text-rose-600 mt-1 block"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label asp-for="Email" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Email Address (Username) <span class="text-rose-500">*</span></label>
+                                <input asp-for="Email" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="admin@exwhyzee.ng" required />
+                                <span asp-validation-for="Email" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label asp-for="PhoneNumber" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Phone Number</label>
+                                <input asp-for="PhoneNumber" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="08012345678" />
+                                <span asp-validation-for="PhoneNumber" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <!-- Password Header with Auto-Generate Button -->
+                        <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <span class="text-xs font-bold text-[var(--text-primary)] block">Authentication Password</span>
+                                    <span class="text-[11px] text-[var(--text-secondary)]">Create a password or auto-generate a secure random key.</span>
+                                </div>
+                                <button type="button" onclick="autoGeneratePassword()" class="btn btn-outline border-sky-300 dark:border-sky-800 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-xs transition-all">
+                                    <i class="icon-sparkles text-[13px] text-amber-500"></i>
+                                    <span>Auto-Generate Password</span>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Initial Password Input with Eye Icon -->
+                                <div>
+                                    <label asp-for="Password" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Initial Password <span class="text-rose-500">*</span></label>
+                                    <div class="relative">
+                                        <input asp-for="Password" type="password" id="initialPassInput" class="w-full h-10 px-3.5 pr-10 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="Minimum 6 characters" required />
+                                        <button type="button" class="absolute end-0 top-0 h-10 px-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center justify-center transition-colors" onclick="togglePasswordEye('initialPassInput', 'initialEyeIcon')" title="Toggle password visibility">
+                                            <i class="bi bi-eye text-[15px]" id="initialEyeIcon"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="Password" class="text-xs text-rose-600 mt-1 block"></span>
+                                </div>
+
+                                <!-- Confirm Password Input with Eye Icon -->
+                                <div>
+                                    <label asp-for="ConfirmPassword" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Confirm Password <span class="text-rose-500">*</span></label>
+                                    <div class="relative">
+                                        <input asp-for="ConfirmPassword" type="password" id="confirmPassInput" class="w-full h-10 px-3.5 pr-10 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" placeholder="Re-enter password" required />
+                                        <button type="button" class="absolute end-0 top-0 h-10 px-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center justify-center transition-colors" onclick="togglePasswordEye('confirmPassInput', 'confirmEyeIcon')" title="Toggle password visibility">
+                                            <i class="bi bi-eye text-[15px]" id="confirmEyeIcon"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="ConfirmPassword" class="text-xs text-rose-600 mt-1 block"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 2. Role Assignment & Live Scope -->
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-shield-check text-[16px] text-sky-600"></i>
+                                <span>Security Role &amp; Access Level</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Select the administrative privilege tier for this operator.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label asp-for="Role" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Administrative Role <span class="text-rose-500">*</span></label>
+                        <select asp-for="Role" asp-items="ViewBag.Roles" id="roleSelector" class="w-full h-10 px-3.5 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] font-semibold focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" onchange="updateRolePreview()"></select>
+                        <span asp-validation-for="Role" class="text-xs text-rose-600 mt-1 block"></span>
+                    </div>
+
+                    <!-- Dynamic Role Scope Preview Card -->
+                    <div id="roleScopeCard" class="p-4 rounded-xl border border-sky-200/80 dark:border-sky-900/40 bg-sky-50/50 dark:bg-sky-950/20 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span id="rolePreviewTitle" class="text-xs font-bold text-sky-900 dark:text-sky-300">Admin Role Capabilities</span>
+                            <span class="text-[10.5px] px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-900 text-sky-800 dark:text-sky-200 font-semibold">Standard Management</span>
+                        </div>
+                        <p id="rolePreviewDesc" class="text-xs text-sky-800 dark:text-sky-300/80 leading-relaxed">
+                            Grants full day-to-day administrative powers: provisioning new school databases, running migrations, managing billing, launching marketing broadcasts, and managing platform user accounts.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 cols) -->
+            <div class="xl:col-span-4 space-y-4">
+
+                <!-- Account Status & Policy Card -->
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <i class="icon-sliders text-[16px] text-sky-600"></i>
+                        <span>Account Lifecycle</span>
+                    </h2>
+
+                    <!-- Active Switch -->
+                    <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Active Status</span>
+                            <span class="text-[11px] text-[var(--text-secondary)]">If disabled, this operator will be suspended from login.</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" asp-for="IsActive" class="sr-only peer" checked />
+                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Force Password Change Option -->
+                    <div class="p-3.5 rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20 flex items-start gap-3">
+                        <input type="checkbox" asp-for="RequirePasswordChangeOnLogin" class="rounded border-slate-300 text-sky-600 mt-1 size-4 focus:ring-sky-500" id="forcePassCheck" checked />
+                        <label for="forcePassCheck" class="text-xs cursor-pointer select-none">
+                            <strong class="text-[var(--text-primary)] block">Change Password on Sign-In</strong>
+                            <span class="text-[11px] text-[var(--text-secondary)] block mt-0.5">
+                                User must choose their own permanent secure password immediately upon first login.
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="btn btn-primary w-full text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors">
+                            <i class="icon-check-circle text-[15px]"></i>
+                            <span>Save &amp; Generate Credentials</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Security Guidance Card -->
+                <div class="surface-card p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 text-xs">
+                    <h3 class="font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <i class="icon-shield text-[14px] text-amber-500"></i>
+                        <span>Next Step: Credentials Handoff</span>
+                    </h3>
+                    <p class="text-[11.5px] text-[var(--text-secondary)] leading-relaxed">
+                        After saving, you will be presented with the generated credentials and can dispatch them via automated email or 1-click clipboard copy for WhatsApp/SMS.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const roleDescriptions = {
+            'Admin': 'Grants full day-to-day administrative powers: provisioning new school databases, running migrations, managing billing, launching marketing broadcasts, and managing platform user accounts.',
+            'Accountant': 'Grants access to financial ledgers: managing school subscription invoices, recording offline bank transfers, issuing receipts, configuring pricing tiers, and viewing revenue reports.',
+            'ContentManager': 'Grants access to public marketing & CMS: writing blog articles, configuring legal policies (Terms/Privacy), organizing knowledge base guides, managing testimonials, and dispatching email/WhatsApp broadcasts.',
+            'ReadOnly': 'Auditor inspection tier: allows viewing the school directory, platform metrics, and dashboards without permission to create, edit, delete, or run migrations.'
+        };
+
+        function updateRolePreview() {
+            const selector = document.getElementById('roleSelector');
+            const selected = selector ? selector.value : 'Admin';
+            const title = document.getElementById('rolePreviewTitle');
+            const desc = document.getElementById('rolePreviewDesc');
+
+            if (title) title.textContent = `${selected} Role Capabilities`;
+            if (desc) desc.textContent = roleDescriptions[selected] || 'Role permissions configured.';
+        }
+
+        function togglePasswordEye(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash text-[15px] text-sky-600';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye text-[15px]';
+            }
+        }
+
+        function autoGeneratePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@@#$%&*';
+            let pass = 'Exz-';
+            for (let i = 0; i < 8; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            pass += Math.floor(10 + Math.random() * 90);
+
+            const initialInput = document.getElementById('initialPassInput');
+            const confirmInput = document.getElementById('confirmPassInput');
+
+            if (initialInput && confirmInput) {
+                initialInput.value = pass;
+                confirmInput.value = pass;
+                
+                // Show password in text mode momentarily so admin can see it
+                initialInput.type = 'text';
+                confirmInput.type = 'text';
+                
+                const icon1 = document.getElementById('initialEyeIcon');
+                const icon2 = document.getElementById('confirmEyeIcon');
+                if (icon1) icon1.className = 'bi bi-eye-slash text-[15px] text-sky-600';
+                if (icon2) icon2.className = 'bi bi-eye-slash text-[15px] text-sky-600';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateRolePreview);
+    </script>
+}

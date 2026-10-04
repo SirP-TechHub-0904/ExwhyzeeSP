@@ -1,0 +1,478 @@
+@model List<MasterTenantMetricSnapshot>
+@{
+    ViewData["Title"] = "Statistical Intelligence & System Health Dashboard";
+    var schools = ViewBag.Schools as List<TenantSchool> ?? new List<TenantSchool>();
+    var totalStudents = (int)(ViewBag.TotalStudents ?? 0);
+    var totalStaff = (int)(ViewBag.TotalStaff ?? 0);
+    var totalMale = (int)(ViewBag.TotalMaleStudents ?? 0);
+    var totalFemale = (int)(ViewBag.TotalFemaleStudents ?? 0);
+    var totalFeesBilled = (decimal)(ViewBag.TotalFeesBilled ?? 0m);
+    var totalFeesCollected = (decimal)(ViewBag.TotalFeesCollected ?? 0m);
+    var totalFeesPending = (decimal)(ViewBag.TotalFeesPending ?? 0m);
+    var totalPins = (int)(ViewBag.TotalPinsVerified ?? 0);
+    var totalCbt = (int)(ViewBag.TotalCbtExams ?? 0);
+    var avgAttendance = (double)(ViewBag.AvgAttendanceRate ?? 0.0);
+    var healthyNodes = (int)(ViewBag.HealthyNodes ?? 0);
+    var totalSchools = (int)(ViewBag.TotalSchools ?? 0);
+}
+
+<!-- Page Header & Action Toolbar -->
+<div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <div class="flex items-center gap-2 mb-1">
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Platform Analytics &amp; System Health</h1>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
+                Federated Core
+            </span>
+        </div>
+        <p class="text-xs sm:text-[13px] text-[var(--text-secondary)]">
+            Live aggregated metrics, cross-school comparisons, student demographics, liquidity ratios, and AI growth forecasting.
+        </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+        <button type="button" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" id="btnRefreshAnalytics" onclick="refreshLiveData()">
+            <i class="icon-refresh-cw text-[14px]" id="refreshIcon"></i>
+            <span>Sync Live Data</span>
+        </button>
+        <a asp-action="Demographics" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <i class="icon-pie-chart text-[14px] text-pink-500"></i>
+            <span>Demographics Hub</span>
+        </a>
+        <a asp-action="TelemetryLive" class="btn btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none bg-sky-600 hover:bg-sky-700 text-white">
+            <i class="icon-activity text-[14px]"></i>
+            <span>Live Telemetry Feed</span>
+        </a>
+    </div>
+</div>
+
+<!-- Primary Real-Time Metric Tiles -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total Enrolled Students -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-blue-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Total Enrolled Students</span>
+            <span class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <i class="icon-users text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-2xl font-bold tracking-tight text-blue-600 dark:text-blue-400" id="statTotalStudents">@totalStudents.ToString("N0")</h3>
+        </div>
+        <div class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center justify-between">
+            <span>Across <strong>@totalSchools</strong> tenant institutions</span>
+            <span class="text-blue-600 dark:text-blue-400 font-semibold">100% Active</span>
+        </div>
+    </div>
+
+    <!-- Fees Liquidity Collected -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-emerald-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Fees Liquidity Collected</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <i class="icon-credit-card text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">₦@totalFeesCollected.ToString("N0")</h3>
+        </div>
+        <div class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center justify-between">
+            <span>Pending: <strong class="text-rose-600 dark:text-rose-400">₦@totalFeesPending.ToString("N0")</strong></span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-semibold">@(totalFeesBilled > 0 ? Math.Round((double)(totalFeesCollected / totalFeesBilled) * 100, 1) : 0)%</span>
+        </div>
+    </div>
+
+    <!-- Daily Attendance Rate -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-purple-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Daily Attendance Rate</span>
+            <span class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                <i class="icon-calendar text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-2xl font-bold tracking-tight text-purple-600 dark:text-purple-400">@avgAttendance%</h3>
+        </div>
+        <div class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center justify-between">
+            <span>Result PINs: <strong>@totalPins.ToString("N0")</strong></span>
+            <span class="text-purple-600 dark:text-purple-400 font-semibold">@totalCbt CBT Runs</span>
+        </div>
+    </div>
+
+    <!-- Platform System Health -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-cyan-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Platform Health Index</span>
+            <span class="w-8 h-8 rounded-lg bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+                <i class="icon-server text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-2xl font-bold tracking-tight text-cyan-600 dark:text-cyan-400">@healthyNodes / @totalSchools Online</h3>
+        </div>
+        <div class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1.5 flex items-center gap-1">
+            <i class="icon-shield-check text-[12px]"></i>
+            <span>All API heartbeats nominal</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Row 1: School Population Comparison & Network Growth Curve -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+    <!-- School Population Bar Chart -->
+    <div class="lg:col-span-7 surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <h3 class="text-base font-bold text-[var(--text-primary)]">School Population &amp; Staffing Comparison</h3>
+                    <p class="text-xs text-[var(--text-secondary)]">Cross-tenant student enrollment vs educator counts</p>
+                </div>
+                <span class="px-2.5 py-1 rounded text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
+                    Live Counts
+                </span>
+            </div>
+            <div id="schoolComparisonChart" style="min-height: 340px;"></div>
+        </div>
+    </div>
+
+    <!-- 12-Month Historical Growth & AI Projections Curve -->
+    <div class="lg:col-span-5 surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <h3 class="text-base font-bold text-[var(--text-primary)]">Network Growth Curve &amp; Projections</h3>
+                    <p class="text-xs text-[var(--text-secondary)]">12-Month trend vs projected next quarters</p>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                    AI Forecast Active
+                </span>
+            </div>
+            <div id="growthProjectionChart" style="min-height: 340px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Row 2: Gender Distribution Donut, Stage Breakdown, Fee Liquidity -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <!-- Gender Distribution Donut -->
+    <div class="surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-[var(--text-primary)]">Gender Balance</h3>
+                <span class="text-[11px] text-[var(--text-secondary)] font-medium">Network Wide</span>
+            </div>
+            <div id="genderPieChart" style="min-height: 270px;"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 mt-2 text-center text-xs">
+            <div>
+                <span class="text-[var(--text-secondary)] block text-[11px]">Boys (Male)</span>
+                <strong class="text-blue-600 dark:text-blue-400 font-bold">@totalMale.ToString("N0")</strong>
+            </div>
+            <div class="border-l border-slate-200 dark:border-slate-800">
+                <span class="text-[var(--text-secondary)] block text-[11px]">Girls (Female)</span>
+                <strong class="text-pink-600 dark:text-pink-400 font-bold">@totalFemale.ToString("N0")</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Level Breakdown -->
+    <div class="surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-[var(--text-primary)]">Class Section Stages</h3>
+                <span class="text-[11px] text-[var(--text-secondary)] font-medium">Creche - SSS</span>
+            </div>
+            <div id="stageDonutChart" style="min-height: 270px;"></div>
+        </div>
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 mt-2 text-center text-xs text-[var(--text-secondary)]">
+            Distributed across <strong>@Model.Sum(m => m.TotalClasses)</strong> active classrooms
+        </div>
+    </div>
+
+    <!-- Financial Liquidity Recovery Donut -->
+    <div class="surface-card rounded-xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-[var(--text-primary)]">Fee Liquidity &amp; Recovery</h3>
+                <span class="text-[11px] text-[var(--text-secondary)] font-medium">Billing vs Inflow</span>
+            </div>
+            <div id="financeDonutChart" style="min-height: 270px;"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 mt-2 text-center text-xs">
+            <div>
+                <span class="text-[var(--text-secondary)] block text-[11px]">Collected</span>
+                <strong class="text-emerald-600 dark:text-emerald-400 font-bold">₦@totalFeesCollected.ToString("N0")</strong>
+            </div>
+            <div class="border-l border-slate-200 dark:border-slate-800">
+                <span class="text-[var(--text-secondary)] block text-[11px]">Outstanding</span>
+                <strong class="text-rose-600 dark:text-rose-400 font-bold">₦@totalFeesPending.ToString("N0")</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Multi-School Analytics Matrix Table -->
+<div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden mb-6">
+    <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+        <div>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">School Performance &amp; Activity Overview</h3>
+            <p class="text-xs text-[var(--text-secondary)]">Live performance and activity statistics across all schools</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a asp-controller="Analytics" asp-action="TelemetryLive" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <i class="icon-activity text-[14px]"></i>
+                <span>Live Telemetry Feed</span>
+            </a>
+            <a asp-controller="Tenants" asp-action="Create" class="btn btn-primary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none bg-sky-600 hover:bg-sky-700 text-white">
+                <i class="icon-plus text-[14px]"></i>
+                <span>New School</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-[var(--text-primary)]">
+            <thead class="bg-slate-100/75 dark:bg-slate-800/60 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] border-b border-slate-200 dark:border-slate-700">
+                <tr>
+                    <th scope="col" class="py-3 px-4">School Institution</th>
+                    <th scope="col" class="py-3 px-4">Subdomain</th>
+                    <th scope="col" class="py-3 px-4 text-center">Students</th>
+                    <th scope="col" class="py-3 px-4 text-center">Staff (T/NT)</th>
+                    <th scope="col" class="py-3 px-4 text-center">Attendance</th>
+                    <th scope="col" class="py-3 px-4">Fee Liquidity (Recovery %)</th>
+                    <th scope="col" class="py-3 px-4 text-center">Results / PINs</th>
+                    <th scope="col" class="py-3 px-4 text-center">Health Status</th>
+                    <th scope="col" class="py-3 px-4 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var schoolName = item.TenantSchool?.SchoolName ?? $"School #{item.TenantSchoolId}";
+                        var subDomain = item.TenantSchool?.SubDomain ?? "default";
+                        var recovery = item.FeeCollectionPercentage;
+
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4 font-semibold">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-xs border border-sky-100 dark:border-sky-900/40">
+                                        @schoolName.Substring(0, 1)
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-[var(--text-primary)] block">@schoolName</span>
+                                        <span class="text-[11px] text-[var(--text-secondary)]">Term: @item.ActiveTerm (@item.ActiveSession)</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                    @subDomain
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-sm">
+                                @item.TotalStudents.ToString("N0")
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold">@item.TotalStaff</span>
+                                <span class="text-[10px] text-[var(--text-secondary)] block">(@item.AcademicStaff/@item.NonAcademicStaff)</span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold @(item.DailyAttendanceRate >= 90 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60" : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60")">
+                                    @item.DailyAttendanceRate%
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2 min-w-[150px]">
+                                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                                        <div class="h-2 rounded-full @(recovery >= 90 ? "bg-emerald-500" : recovery >= 70 ? "bg-sky-500" : "bg-amber-500")" style="width: @Math.Min(100, Math.Max(0, recovery))%"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-[var(--text-primary)] shrink-0">@Math.Round(recovery, 1)%</span>
+                                </div>
+                                <span class="text-[10px] text-[var(--text-secondary)] block mt-0.5">
+                                    ₦@item.TotalFeesCollected.ToString("N0") / ₦@item.TotalFeesBilled.ToString("N0")
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-[var(--text-secondary)]">
+                                    @item.TotalResultsPublished res / @item.TotalPinsVerified PINs
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Healthy (@item.ApiLatencyMs ms)
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                                <a asp-controller="Tenants" asp-action="Details" asp-route-id="@item.TenantSchoolId" class="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-700 text-[var(--text-secondary)] hover:text-sky-600 hover:border-sky-500 transition-colors" title="View Details">
+                                    <i class="icon-eye text-xs"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="py-8 text-center text-slate-400">
+                            <i class="icon-inbox text-3xl mb-2 block opacity-40"></i>
+                            <span>No school activity logs recorded yet.</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        initAnalyticsCharts();
+    });
+
+    async function initAnalyticsCharts() {
+        try {
+            const response = await fetch('/api/v1/telemetry/chart-data');
+            if (!response.ok) return;
+            const data = await response.json();
+
+            // 1. School Population Comparison (ApexCharts Bar)
+            const schoolOptions = {
+                series: [
+                    { name: 'Enrolled Students', data: data.comparison.students },
+                    { name: 'Educators & Staff', data: data.comparison.staff }
+                ],
+                chart: {
+                    type: 'bar',
+                    height: 330,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '45%',
+                        borderRadius: 6
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: { show: true, width: 2, colors: ['transparent'] },
+                xaxis: {
+                    categories: data.comparison.labels,
+                    labels: {
+                        rotate: -20,
+                        style: { fontSize: '11px', fontWeight: 500 }
+                    }
+                },
+                yaxis: { title: { text: 'Headcount' } },
+                fill: { opacity: 1 },
+                colors: ['#0284c7', '#10b981'],
+                legend: { position: 'top', horizontalAlign: 'right' },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " people";
+                        }
+                    }
+                }
+            };
+            new ApexCharts(document.querySelector("#schoolComparisonChart"), schoolOptions).render();
+
+            // 2. Growth Trend & AI Projections (ApexCharts Line/Area)
+            const growthOptions = {
+                series: [{
+                    name: 'Student Population Growth & Projections',
+                    data: data.growthTrendAndProjections.enrollment
+                }],
+                chart: {
+                    height: 330,
+                    type: 'area',
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                    fontFamily: 'inherit'
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 3 },
+                colors: ['#0284c7'],
+                xaxis: {
+                    categories: data.growthTrendAndProjections.months,
+                    labels: { rotate: -30, style: { fontSize: '10px' } }
+                },
+                yaxis: { title: { text: 'Total Students' } },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.6,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
+                    }
+                }
+            };
+            new ApexCharts(document.querySelector("#growthProjectionChart"), growthOptions).render();
+
+            // 3. Gender Distribution (ApexCharts Donut)
+            const genderOptions = {
+                series: data.genderDistribution.series,
+                chart: { type: 'donut', height: 260, fontFamily: 'inherit' },
+                labels: data.genderDistribution.labels,
+                colors: ['#3b82f6', '#ec4899'],
+                legend: { position: 'bottom' },
+                dataLabels: { enabled: true }
+            };
+            new ApexCharts(document.querySelector("#genderPieChart"), genderOptions).render();
+
+            // 4. Section Stage Donut
+            const stageOptions = {
+                series: data.educationStageDistribution.series,
+                chart: { type: 'donut', height: 260, fontFamily: 'inherit' },
+                labels: data.educationStageDistribution.labels,
+                colors: ['#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'],
+                legend: { position: 'bottom' },
+                dataLabels: { enabled: false }
+            };
+            new ApexCharts(document.querySelector("#stageDonutChart"), stageOptions).render();
+
+            // 5. Finance Donut
+            const financeOptions = {
+                series: data.financialAggregates.series,
+                chart: { type: 'donut', height: 260, fontFamily: 'inherit' },
+                labels: data.financialAggregates.labels,
+                colors: ['#10b981', '#ef4444'],
+                legend: { position: 'bottom' },
+                dataLabels: { enabled: false }
+            };
+            new ApexCharts(document.querySelector("#financeDonutChart"), financeOptions).render();
+
+        } catch (err) {
+            console.error("Failed to load telemetry charts", err);
+        }
+    }
+
+    async function refreshLiveData() {
+        const icon = document.getElementById('refreshIcon');
+        if (icon) icon.classList.add('animate-spin');
+        try {
+            const resp = await fetch('/api/v1/telemetry/summary');
+            if (resp.ok) {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 400);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            if (icon) icon.classList.remove('animate-spin');
+        }
+    }
+</script>
+}

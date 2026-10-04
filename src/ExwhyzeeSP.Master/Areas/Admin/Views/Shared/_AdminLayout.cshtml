@@ -1,0 +1,1132 @@
+@using Microsoft.AspNetCore.Identity
+@using ExwhyzeeSP.Core.Models
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject UserManager<MasterAdminUser> UserManager
+@{
+    var routeArea = ViewContext.RouteData.Values["area"]?.ToString() ?? "Admin";
+    var routeController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Dashboard";
+    var routeAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    
+    var userPrincipal = HttpContextAccessor.HttpContext?.User;
+    var userEmail = userPrincipal?.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? (userPrincipal?.Identity?.Name ?? "superadmin@exwhyzee.ng");
+    
+    var isSuperAdmin = userPrincipal?.IsInRole(MasterRoles.SuperAdmin) == true;
+    var isAdmin = userPrincipal?.IsInRole(MasterRoles.Admin) == true;
+    var isAccountant = userPrincipal?.IsInRole(MasterRoles.Accountant) == true;
+    var isContentManager = userPrincipal?.IsInRole(MasterRoles.ContentManager) == true;
+    var isReadOnly = userPrincipal?.IsInRole(MasterRoles.ReadOnly) == true;
+
+    var userRole = isSuperAdmin ? MasterRoles.SuperAdmin :
+                   isAdmin ? MasterRoles.Admin :
+                   isAccountant ? MasterRoles.Accountant :
+                   isContentManager ? MasterRoles.ContentManager :
+                   isReadOnly ? MasterRoles.ReadOnly : "Staff";
+
+    string firstName = "SuperAdmin";
+    if (userPrincipal?.Identity?.IsAuthenticated == true)
+    {
+        var dbUser = await UserManager.GetUserAsync(userPrincipal);
+        if (!string.IsNullOrWhiteSpace(dbUser?.FullName))
+        {
+            firstName = dbUser.FullName.Trim().Split(' ')[0];
+        }
+        else
+        {
+            var raw = userPrincipal.Identity?.Name ?? "Admin";
+            firstName = raw.Contains('@') ? raw.Split('@')[0] : raw.Split(' ')[0];
+        }
+    }
+    if (!string.IsNullOrEmpty(firstName))
+    {
+        firstName = char.ToUpper(firstName[0]) + firstName.Substring(1);
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} | ExwhyzeeSP Admin Portal" : "ExwhyzeeSP School Portal Admin")</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/img/icon-exwhyzeesp.jpg?v=2" />
+    <link rel="icon" type="image/jpeg" href="/img/icon-exwhyzeesp.jpg?v=2" />
+    <link rel="apple-touch-icon" href="/img/icon-exwhyzeesp.jpg?v=2" />
+
+    <!-- Google Fonts & Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@@phosphor-icons/web@2.1.1/src/index.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@3.2.0/tabler-icons.min.css" />
+
+    <!-- Dreams Core Tailwind Admin Assets -->
+    <link rel="stylesheet" href="/theme/dreamscore/assets/script-DbEScXyL.css?v=3" />
+
+    <!-- Interactive Page Tour Styles (Driver.js) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css" />
+    <link rel="stylesheet" href="/css/portal-tour.css?v=1" />
+
+    <style>
+        /* Explicit Font-Face Fallback Definitions */
+        @@font-face {
+            font-family: 'lucide';
+            src: url('/theme/dreamscore/assets/lucide-DfBtY06I.woff2') format('woff2'),
+                 url('/tailwind/assets/lucide-DfBtY06I.woff2') format('woff2'),
+                 url('/assets/lucide-DfBtY06I.woff2') format('woff2'),
+                 url('/lucide-DfBtY06I.woff2') format('woff2'),
+                 url('/theme/dreamscore/assets/lucide-BD0zp2Cs.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @@font-face {
+            font-family: 'Phosphor';
+            src: url('/theme/dreamscore/assets/Phosphor-DtdjzkpE.woff2') format('woff2'),
+                 url('/assets/Phosphor-DtdjzkpE.woff2') format('woff2'),
+                 url('/Phosphor-DtdjzkpE.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        [class^="icon-"], [class*=" icon-"] {
+            font-family: 'lucide' !important;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: inline-block;
+        }
+
+        /* Custom Overrides & Enhancements for ExwhyzeeSP Dreams Core */
+        :root {
+            --brand-primary: #0284c7;
+            --brand-accent: #0369a1;
+        }
+        .sidebar-brand-img {
+            max-height: 38px;
+            width: auto;
+            object-fit: contain;
+        }
+        .nav-item-active {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #38bdf8 !important;
+            font-weight: 600 !important;
+        }
+        .nav-item-active i {
+            color: #38bdf8 !important;
+        }
+
+        /* Dropdowns & Menus */
+        .hs-dropdown {
+            position: relative !important;
+        }
+        .hs-dropdown-menu {
+            display: none !important;
+            position: absolute !important;
+            z-index: 1000 !important;
+        }
+        .hs-dropdown.open > .hs-dropdown-menu,
+        .hs-dropdown.is-open > .hs-dropdown-menu,
+        .hs-dropdown-menu.show,
+        .hs-dropdown-menu.is-active,
+        .hs-dropdown-menu:not(.hidden) {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            transform: translateY(0) !important;
+        }
+
+        /* Sidebar Submenus */
+        li.has-submenu > .sidebar-submenu {
+            display: none !important;
+            padding-left: 1.25rem !important;
+            margin-top: 0.25rem !important;
+            margin-bottom: 0.25rem !important;
+            list-style: none !important;
+        }
+        li.has-submenu.is-open > .sidebar-submenu,
+        li.has-submenu.open > .sidebar-submenu {
+            display: block !important;
+        }
+        li.has-submenu.is-open > .sidebar-link .sidebar-chevron,
+        li.has-submenu.open > .sidebar-link .sidebar-chevron {
+            transform: rotate(90deg) !important;
+        }
+        .sidebar-chevron {
+            transition: transform 0.2s ease-in-out !important;
+        }
+
+        /* Sidebar collapsed mode */
+        .app-shell.is-collapsed .app-sidebar {
+            width: 80px !important;
+        }
+        .app-shell.is-collapsed .sidebar-label,
+        .app-shell.is-collapsed .sidebar-group-title,
+        .app-shell.is-collapsed .sidebar-chevron,
+        .app-shell.is-collapsed .sidebar-meta,
+        .app-shell.is-collapsed .workspace-text,
+        .app-shell.is-collapsed .sidebar-search,
+        .app-shell.is-collapsed .sidebar-favorites,
+        .app-shell.is-collapsed .sidebar-submenu {
+            display: none !important;
+        }
+        .app-shell.is-collapsed .sidebar-logo-full {
+            display: none !important;
+        }
+        .app-shell.is-collapsed .sidebar-logo-small {
+            display: block !important;
+        }
+        .app-shell.is-collapsed .sidebar-link {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        /* Header and Page Search Bar Styling */
+        .header-search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 320px;
+        }
+        .header-search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-tertiary);
+            font-size: 15px;
+            z-index: 2;
+        }
+        .header-search-input {
+            width: 100%;
+            height: 38px;
+            padding-left: 40px !important;
+            padding-right: 16px !important;
+            font-size: 13px !important;
+            border-radius: 9999px !important;
+            background: var(--surface-sunken) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-primary) !important;
+            outline: none !important;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .header-search-input:focus {
+            border-color: var(--color-primary-500) !important;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15) !important;
+        }
+
+        /* Modal & Backdrop Styling */
+        .modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 1055 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            outline: 0 !important;
+            background-color: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(4px);
+            display: none !important;
+        }
+        .modal.show, .modal.is-active {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .modal:not(.show):not(.is-active) {
+            display: none !important;
+        }
+        .modal-dialog {
+            position: relative !important;
+            width: 100% !important;
+            max-width: 540px !important;
+            margin: 1.5rem auto !important;
+            pointer-events: auto !important;
+            padding: 0 1rem;
+        }
+        .modal-content {
+            position: relative !important;
+            display: flex !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            pointer-events: auto !important;
+        }
+        .btn-close {
+            box-sizing: content-box;
+            width: 1em;
+            height: 1em;
+            padding: .25em .25em;
+            color: #94a3b8;
+            background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2394a3b8'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+            border: 0;
+            border-radius: .375rem;
+            opacity: .7;
+            cursor: pointer;
+        }
+        .btn-close:hover { opacity: 1; }
+
+        /* Guaranteed Responsive Grid Fallbacks & Alignment */
+        .grid { display: grid !important; }
+        .flex { display: flex !important; }
+        .inline-flex { display: inline-flex !important; }
+        .flex-wrap { flex-wrap: wrap !important; }
+        .flex-nowrap { flex-wrap: nowrap !important; }
+        .flex-col { flex-direction: column !important; }
+        .flex-row { flex-direction: row !important; }
+        .flex-1 { flex: 1 1 0% !important; min-width: 0 !important; }
+        .justify-between { justify-content: space-between !important; }
+        .justify-end { justify-content: flex-end !important; }
+        .justify-start { justify-content: flex-start !important; }
+        .justify-center { justify-content: center !important; }
+        .items-center { align-items: center !important; }
+        .items-start { align-items: flex-start !important; }
+        .items-end { align-items: flex-end !important; }
+        .ms-auto, .ml-auto { margin-inline-start: auto !important; margin-left: auto !important; }
+        .me-auto, .mr-auto { margin-inline-end: auto !important; margin-right: auto !important; }
+        .w-full { width: 100% !important; }
+        .shrink-0 { flex-shrink: 0 !important; }
+        .float-end, .float-right { float: right !important; }
+
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+        .grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+
+        .col-span-1 { grid-column: span 1 / span 1 !important; }
+        .col-span-2 { grid-column: span 2 / span 2 !important; }
+        .col-span-3 { grid-column: span 3 / span 3 !important; }
+        .col-span-4 { grid-column: span 4 / span 4 !important; }
+        .col-span-5 { grid-column: span 5 / span 5 !important; }
+        .col-span-6 { grid-column: span 6 / span 6 !important; }
+        .col-span-7 { grid-column: span 7 / span 7 !important; }
+        .col-span-8 { grid-column: span 8 / span 8 !important; }
+        .col-span-9 { grid-column: span 9 / span 9 !important; }
+        .col-span-10 { grid-column: span 10 / span 10 !important; }
+        .col-span-11 { grid-column: span 11 / span 11 !important; }
+        .col-span-12 { grid-column: span 12 / span 12 !important; }
+
+        @@media (min-width: 640px) {
+            .sm\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+            .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+            .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+            .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+            .sm\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+            .sm\:col-span-1 { grid-column: span 1 / span 1 !important; }
+            .sm\:col-span-2 { grid-column: span 2 / span 2 !important; }
+            .sm\:col-span-3 { grid-column: span 3 / span 3 !important; }
+            .sm\:col-span-4 { grid-column: span 4 / span 4 !important; }
+            .sm\:col-span-6 { grid-column: span 6 / span 6 !important; }
+            .sm\:col-span-12 { grid-column: span 12 / span 12 !important; }
+            .sm\:flex-row { flex-direction: row !important; }
+            .sm\:items-center { align-items: center !important; }
+            .sm\:justify-between { justify-content: space-between !important; }
+            .sm\:ms-auto { margin-inline-start: auto !important; margin-left: auto !important; }
+            .sm\:w-auto { width: auto !important; }
+        }
+        @@media (min-width: 768px) {
+            .md\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+            .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+            .md\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+            .md\:col-span-1 { grid-column: span 1 / span 1 !important; }
+            .md\:col-span-2 { grid-column: span 2 / span 2 !important; }
+            .md\:col-span-3 { grid-column: span 3 / span 3 !important; }
+            .md\:col-span-4 { grid-column: span 4 / span 4 !important; }
+            .md\:col-span-6 { grid-column: span 6 / span 6 !important; }
+            .md\:col-span-8 { grid-column: span 8 / span 8 !important; }
+            .md\:col-span-12 { grid-column: span 12 / span 12 !important; }
+            .md\:flex-row { flex-direction: row !important; }
+            .md\:items-center { align-items: center !important; }
+            .md\:justify-between { justify-content: space-between !important; }
+            .md\:ms-auto { margin-inline-start: auto !important; margin-left: auto !important; }
+        }
+        @@media (min-width: 1024px) {
+            .lg\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+            .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+            .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+            .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+            .lg\:col-span-1 { grid-column: span 1 / span 1 !important; }
+            .lg\:col-span-2 { grid-column: span 2 / span 2 !important; }
+            .lg\:col-span-3 { grid-column: span 3 / span 3 !important; }
+            .lg\:col-span-4 { grid-column: span 4 / span 4 !important; }
+            .lg\:col-span-5 { grid-column: span 5 / span 5 !important; }
+            .lg\:col-span-6 { grid-column: span 6 / span 6 !important; }
+            .lg\:col-span-7 { grid-column: span 7 / span 7 !important; }
+            .lg\:col-span-8 { grid-column: span 8 / span 8 !important; }
+            .lg\:col-span-9 { grid-column: span 9 / span 9 !important; }
+            .lg\:col-span-10 { grid-column: span 10 / span 10 !important; }
+            .lg\:col-span-11 { grid-column: span 11 / span 11 !important; }
+            .lg\:col-span-12 { grid-column: span 12 / span 12 !important; }
+            .lg\:flex-row { flex-direction: row !important; }
+            .lg\:items-center { align-items: center !important; }
+            .lg\:justify-between { justify-content: space-between !important; }
+            .lg\:ms-auto { margin-inline-start: auto !important; margin-left: auto !important; }
+        }
+        @@media (min-width: 1280px) {
+            .xl\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+            .xl\:col-span-1 { grid-column: span 1 / span 1 !important; }
+            .xl\:col-span-2 { grid-column: span 2 / span 2 !important; }
+            .xl\:col-span-3 { grid-column: span 3 / span 3 !important; }
+            .xl\:col-span-4 { grid-column: span 4 / span 4 !important; }
+            .xl\:col-span-6 { grid-column: span 6 / span 6 !important; }
+            .xl\:col-span-8 { grid-column: span 8 / span 8 !important; }
+            .xl\:col-span-12 { grid-column: span 12 / span 12 !important; }
+        }
+        .header-search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* Mobile sidebar visibility */
+        @@media (max-width: 1023px) {
+            #appSidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 999;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            #appSidebar.is-mobile-open {
+                transform: translateX(0);
+            }
+        }
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+        .sidebar-backdrop.is-active {
+            display: block;
+        }
+
+        /* Layout Grid & Card Helpers for Forms & Detail Views */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -0.75rem;
+            margin-left: -0.75rem;
+        }
+        .row > * {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
+        }
+        .g-2 { margin-right: -0.5rem; margin-left: -0.5rem; }
+        .g-2 > * { padding-right: 0.5rem; padding-left: 0.5rem; margin-bottom: 0.5rem; }
+        .g-3 { margin-right: -0.75rem; margin-left: -0.75rem; }
+        .g-3 > * { padding-right: 0.75rem; padding-left: 0.75rem; margin-bottom: 0.75rem; }
+        .g-4 { margin-right: -1rem; margin-left: -1rem; }
+        .g-4 > * { padding-right: 1rem; padding-left: 1rem; margin-bottom: 1rem; }
+
+        @@media (min-width: 768px) {
+            .col-md-2 { flex: 0 0 auto; width: 16.666667%; }
+            .col-md-3 { flex: 0 0 auto; width: 25%; }
+            .col-md-4 { flex: 0 0 auto; width: 33.333333%; }
+            .col-md-5 { flex: 0 0 auto; width: 41.666667%; }
+            .col-md-6 { flex: 0 0 auto; width: 50%; }
+            .col-md-7 { flex: 0 0 auto; width: 58.333333%; }
+            .col-md-8 { flex: 0 0 auto; width: 66.666667%; }
+            .col-md-9 { flex: 0 0 auto; width: 75%; }
+            .col-md-10 { flex: 0 0 auto; width: 83.333333%; }
+            .col-md-12 { flex: 0 0 auto; width: 100%; }
+        }
+
+        @@media (min-width: 1024px) {
+            .col-lg-3 { flex: 0 0 auto; width: 25%; }
+            .col-lg-4 { flex: 0 0 auto; width: 33.333333%; }
+            .col-lg-5 { flex: 0 0 auto; width: 41.666667%; }
+            .col-lg-6 { flex: 0 0 auto; width: 50%; }
+            .col-lg-7 { flex: 0 0 auto; width: 58.333333%; }
+            .col-lg-8 { flex: 0 0 auto; width: 66.666667%; }
+            .col-lg-9 { flex: 0 0 auto; width: 75%; }
+            .col-lg-12 { flex: 0 0 auto; width: 100%; }
+        }
+
+        .card {
+            background-color: var(--surface-raised, #ffffff);
+            border: 1px solid var(--border-subtle, #e2e8f0);
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-subtle, #e2e8f0);
+            background-color: var(--surface-raised, #ffffff);
+        }
+        .card-body {
+            padding: 1.25rem;
+        }
+        .form-control, .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.6rem 0.85rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text-primary, #1e293b);
+            background-color: var(--surface-card, #ffffff);
+            background-clip: padding-box;
+            border: 1px solid var(--border-subtle, #cbd5e1);
+            border-radius: 0.5rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-primary-500, #0284c7);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(2, 132, 199, 0.15);
+        }
+        .form-label {
+            display: inline-block;
+            margin-bottom: 0.4rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-primary, #1e293b);
+        }
+        .input-group {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            width: 100%;
+        }
+        .input-group > .form-control {
+            position: relative;
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+        .input-group-text {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.85rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--text-secondary, #64748b);
+            background-color: var(--surface-sunken, #f8fafc);
+            border: 1px solid var(--border-subtle, #cbd5e1);
+        }
+        .input-group > :not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .input-group > :not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-left: -1px;
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="bg-[var(--surface-base)] text-[var(--text-primary)] antialiased font-sans">
+    <div id="sidebarMobileBackdrop" class="sidebar-backdrop"></div>
+
+    <div class="app-shell" id="appShell">
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="app-sidebar sidebar-pattern scroll-thin" id="appSidebar" aria-label="Sidebar">
+
+            <!-- Logo + Collapse Toggle -->
+            <div class="flex items-center justify-between h-16 px-4 shrink-0 border-b border-[var(--sidebar-border)]">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="flex items-center gap-2.5 min-w-0 rounded-xl px-2 py-1.5 text-decoration-none">
+                    <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP" class="sidebar-logo-full sidebar-brand-img rounded" />
+                    <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Exwhyzee SP" class="sidebar-logo-small size-8 object-cover rounded-full border border-info hidden" />
+                </a>
+                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0" aria-label="Collapse sidebar">
+                    <i class="icon-panel-left-close text-[17px]"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar-inner flex-1 overflow-y-auto scroll-thin px-3 pb-20 mt-2" aria-label="Sidebar navigation">
+                <ul id="sidebarMenu" role="menu">
+
+                    <!-- CORE PLATFORM -->
+                    <li class="sidebar-group-title text-uppercase">Main Menu</li>
+
+                    <li>
+                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="sidebar-link @(routeController == "Dashboard" ? "nav-item-active is-active" : "")">
+                            <i class="icon-layout-dashboard text-[16px]"></i>
+                            <span class="sidebar-label">Dashboard</span>
+                        </a>
+                    </li>
+
+                    @if (isSuperAdmin || isAdmin)
+                    {
+                        <li>
+                            <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" class="sidebar-link @(routeController == "Tenants" && routeAction != "Create" ? "nav-item-active is-active" : "")">
+                                <i class="icon-school text-[16px]"></i>
+                                <span class="sidebar-label">Schools</span>
+                                <span class="sidebar-badge badge-solid-primary sidebar-meta">Active</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Tenants" asp-action="Create" class="sidebar-link @(routeController == "Tenants" && routeAction == "Create" ? "nav-item-active is-active" : "")">
+                                <i class="icon-plus-circle text-[16px]"></i>
+                                <span class="sidebar-label">Add New School</span>
+                            </a>
+                        </li>
+                    }
+
+                    <!-- USERS & ACCESS CONTROL -->
+                    @if (isSuperAdmin || isAdmin || isReadOnly)
+                    {
+                        <li class="sidebar-group-title text-uppercase">Users &amp; Roles</li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="AdminUsers" asp-action="Index" class="sidebar-link @(routeController == "AdminUsers" && routeAction != "Create" ? "nav-item-active is-active" : "")">
+                                <i class="icon-user-cog text-[16px]"></i>
+                                <span class="sidebar-label">Platform Users</span>
+                            </a>
+                        </li>
+
+                        @if (isSuperAdmin || isAdmin)
+                        {
+                            <li>
+                                <a asp-area="Admin" asp-controller="AdminUsers" asp-action="Create" class="sidebar-link @(routeController == "AdminUsers" && routeAction == "Create" ? "nav-item-active is-active" : "")">
+                                    <i class="icon-user-plus text-[16px]"></i>
+                                    <span class="sidebar-label">Add Platform User</span>
+                                </a>
+                            </li>
+                        }
+                    }
+
+                    <!-- FINANCE & LEDGER -->
+                    @if (isSuperAdmin || isAdmin || isAccountant)
+                    {
+                        <li class="sidebar-group-title text-uppercase">Finance &amp; Ledger</li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Billing" asp-action="Index" class="sidebar-link @(routeController == "Billing" ? "nav-item-active is-active" : "")">
+                                <i class="icon-wallet text-[16px]"></i>
+                                <span class="sidebar-label">School Billing &amp; Ledger</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="PricingPlans" asp-action="Index" class="sidebar-link @(routeController == "PricingPlans" ? "nav-item-active is-active" : "")">
+                                <i class="icon-tag text-[16px]"></i>
+                                <span class="sidebar-label">Subscription Tiers</span>
+                            </a>
+                        </li>
+                    }
+
+                    <!-- MARKETING & OUTREACH -->
+                    @if (isSuperAdmin || isAdmin || isContentManager)
+                    {
+                        <li class="sidebar-group-title text-uppercase">Marketing &amp; Growth</li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Marketing" asp-action="Index" class="sidebar-link @(routeController == "Marketing" && (routeAction == "Index" || string.IsNullOrEmpty(routeAction)) ? "nav-item-active is-active" : "")">
+                                <i class="bi bi-megaphone text-[16px]"></i>
+                                <span class="sidebar-label">Campaigns Overview</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Marketing" asp-action="Contacts" class="sidebar-link @(routeController == "Marketing" && routeAction == "Contacts" ? "nav-item-active is-active" : "")">
+                                <i class="icon-users text-[16px]"></i>
+                                <span class="sidebar-label">Audience Contacts</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Marketing" asp-action="Import" class="sidebar-link @(routeController == "Marketing" && routeAction == "Import" ? "nav-item-active is-active" : "")">
+                                <i class="icon-upload text-[16px]"></i>
+                                <span class="sidebar-label">Import Excel/CSV Leads</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Marketing" asp-action="Templates" class="sidebar-link @(routeController == "Marketing" && routeAction == "Templates" ? "nav-item-active is-active" : "")">
+                                <i class="icon-file-text text-[16px]"></i>
+                                <span class="sidebar-label">Email Templates</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Marketing" asp-action="CreateCampaign" class="sidebar-link @(routeController == "Marketing" && routeAction == "CreateCampaign" ? "nav-item-active is-active" : "")">
+                                <i class="icon-send text-[16px]"></i>
+                                <span class="sidebar-label">Send Broadcast</span>
+                            </a>
+                        </li>
+                    }
+
+                    <!-- ANALYTICS & REPORTS -->
+                    @if (isSuperAdmin || isAdmin || isAccountant)
+                    {
+                        <li class="sidebar-group-title text-uppercase">Analytics &amp; Reports</li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Analytics" asp-action="Index" class="sidebar-link @(routeController == "Analytics" && routeAction == "Index" ? "nav-item-active is-active" : "")">
+                                <i class="icon-bar-chart-4 text-[16px]"></i>
+                                <span class="sidebar-label">Analytics Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Analytics" asp-action="Demographics" class="sidebar-link @(routeController == "Analytics" && routeAction == "Demographics" ? "nav-item-active is-active" : "")">
+                                <i class="icon-globe text-[16px]"></i>
+                                <span class="sidebar-label">School Demographics</span>
+                            </a>
+                        </li>
+
+                        @if (isSuperAdmin || isAdmin)
+                        {
+                            <li>
+                                <a asp-area="Admin" asp-controller="Analytics" asp-action="TelemetryLive" class="sidebar-link @(routeController == "Analytics" && routeAction == "TelemetryLive" ? "nav-item-active is-active" : "")">
+                                    <i class="icon-activity text-[16px]"></i>
+                                    <span class="sidebar-label">System Health</span>
+                                </a>
+                            </li>
+                        }
+                    }
+
+                    <!-- CONTENT & CMS -->
+                    @if (isSuperAdmin || isAdmin || isContentManager)
+                    {
+                        <li class="sidebar-group-title text-uppercase">Public Portal &amp; CMS</li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="KnowledgeBaseAdmin" asp-action="Index" class="sidebar-link @(routeController == "KnowledgeBaseAdmin" ? "nav-item-active is-active" : "")">
+                                <i class="icon-book-open text-[16px]"></i>
+                                <span class="sidebar-label">Knowledge Guides</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="BlogPosts" asp-action="Index" class="sidebar-link @(routeController == "BlogPosts" ? "nav-item-active is-active" : "")">
+                                <i class="icon-newspaper text-[16px]"></i>
+                                <span class="sidebar-label">News &amp; Blog Posts</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Testimonies" asp-action="Index" class="sidebar-link @(routeController == "Testimonies" ? "nav-item-active is-active" : "")">
+                                <i class="icon-message-square-quote text-[16px]"></i>
+                                <span class="sidebar-label">Testimonials</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="CmsPages" asp-action="Index" class="sidebar-link @(routeController == "CmsPages" ? "nav-item-active is-active" : "")">
+                                <i class="icon-file-text text-[16px]"></i>
+                                <span class="sidebar-label">Policy &amp; Legal CMS</span>
+                            </a>
+                        </li>
+                    }
+
+                    <!-- SECURITY & AUDIT -->
+                    @if (isSuperAdmin || isAdmin || isContentManager)
+                    {
+                        <li class="sidebar-group-title text-uppercase">Security &amp; System</li>
+
+                        @if (isSuperAdmin || isAdmin)
+                        {
+                            <li>
+                                <a asp-controller="Account" asp-action="ActivityLog" asp-area="" class="sidebar-link @(routeController == "Account" && routeAction == "ActivityLog" ? "nav-item-active is-active" : "")">
+                                    <i class="icon-shield-check text-[16px]"></i>
+                                    <span class="sidebar-label">Audit &amp; SSO Logs</span>
+                                </a>
+                            </li>
+                        }
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="EmailLogs" asp-action="Index" class="sidebar-link @(routeController == "EmailLogs" ? "nav-item-active is-active" : "")">
+                                <i class="icon-mail text-[16px]"></i>
+                                <span class="sidebar-label">Email Logs &amp; Delivery</span>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+
+            <!-- User profile footer / Logout -->
+            <div class="p-3 border-t shrink-0 border-[var(--sidebar-border)]">
+                <div class="w-full flex items-center gap-2.5 rounded-lg p-2 transition-colors bg-[rgb(255_255_255_/_0.04)]">
+                    <a asp-controller="Account" asp-action="Profile" asp-area="" class="flex items-center gap-2.5 min-w-0 flex-1 text-decoration-none">
+                        <span class="relative shrink-0">
+                            <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Avatar" class="size-8 rounded-full object-cover border border-[rgb(255_255_255_/_0.2)]">
+                            <span class="absolute -bottom-0.5 -end-0.5 size-2.5 rounded-full bg-[var(--color-success-500)] border-2 border-[var(--sidebar-bg)]"></span>
+                        </span>
+                        <span class="workspace-text text-left min-w-0">
+                            <span class="flex items-center gap-1.5">
+                                <span class="block text-[12.5px] font-semibold text-white truncate">@firstName</span>
+                                <span class="inline-flex items-center px-1 py-px rounded text-[8.5px] font-bold uppercase tracking-wide shrink-0 bg-[var(--color-primary-600)] text-white">@userRole</span>
+                            </span>
+                            <span class="block text-[10.5px] truncate text-[var(--sidebar-text)]">@userEmail</span>
+                        </span>
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="workspace-text header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-7 shrink-0 border-0 bg-transparent" title="Sign Out" aria-label="Sign out">
+                            <i class="icon-log-out text-[14px]"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- ================= MAIN CONTENT SHELL ================= -->
+        <div class="app-main flex-1 flex flex-col min-w-0">
+
+            <!-- ================= HEADER ================= -->
+            <header class="app-header relative bg-[var(--surface-raised)] border-b border-[var(--border-subtle)]">
+                <div class="absolute inset-x-0 bottom-0 h-px pointer-events-none [background:linear-gradient(90deg,transparent,var(--color-primary-500)_20%,var(--color-accent-500)_50%,var(--color-primary-500)_80%,transparent)] opacity-[0.55]"></div>
+
+                <div class="flex items-center gap-3 px-4 lg:px-6 h-16">
+
+                    <!-- Mobile sidebar toggle -->
+                    <button type="button" id="mobileSidebarBtn" class="header-icon-btn lg:hidden" aria-label="Open menu">
+                        <i class="icon-menu text-[18px]"></i>
+                    </button>
+
+                    <!-- Desktop sidebar collapse toggle -->
+                    <button type="button" id="topbarSidebarToggle" class="header-icon-btn hidden lg:inline-flex" title="Toggle Sidebar" aria-label="Toggle sidebar collapse">
+                        <i class="icon-menu text-[18px]"></i>
+                    </button>
+
+                    <!-- Mobile Logo -->
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="lg:hidden shrink-0">
+                        <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Exwhyzee SP" class="size-8 object-cover rounded-full">
+                    </a>
+
+                    <!-- Global Search Bar -->
+                    <form asp-area="Admin" asp-controller="Tenants" asp-action="Index" method="get" class="header-search-wrapper hidden md:flex">
+                        <span class="header-search-icon">
+                            <i class="icon-search"></i>
+                        </span>
+                        <input type="text" name="searchString" placeholder="Search schools, domains..." class="header-search-input" />
+                    </form>
+
+                    <!-- Right Header Action Controls -->
+                    <div class="ms-auto flex items-center gap-2.5 lg:gap-3">
+
+                        <!-- Quick Create -->
+                        <div class="hs-dropdown relative hidden sm:block">
+                            <button type="button" class="hs-dropdown-toggle inline-flex items-center gap-2 h-10 ps-3.5 pe-3 rounded-full text-[12.5px] font-semibold text-white transition-all bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] shadow-sm" aria-haspopup="menu" aria-expanded="false">
+                                <i class="icon-plus text-[13px]"></i>
+                                <span>Quick Action</span>
+                                <i class="icon-chevron-down text-[9px] opacity-80"></i>
+                            </button>
+                            <div class="hs-dropdown-menu hidden transition-all duration-200 absolute end-0 top-full mt-2 w-56 p-1.5 z-50 rounded-xl shadow-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]" role="menu">
+                                <a asp-area="Admin" asp-controller="Tenants" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-decoration-none text-[var(--text-primary)]"><i class="icon-school text-[15px] text-[var(--color-primary-600)]"></i>Add New School</a>
+                                <a asp-area="Admin" asp-controller="AdminUsers" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-decoration-none text-[var(--text-primary)]"><i class="icon-user-plus text-[15px] text-[var(--color-primary-600)]"></i>Add Platform User</a>
+                                <a asp-area="Admin" asp-controller="Marketing" asp-action="CreateCampaign" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-decoration-none text-[var(--text-primary)]"><i class="icon-send text-[15px] text-[var(--color-primary-600)]"></i>Send Broadcast</a>
+                                <a asp-area="Admin" asp-controller="Billing" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-decoration-none text-[var(--text-primary)]"><i class="icon-wallet text-[15px] text-[var(--color-primary-600)]"></i>Create Invoice</a>
+                            </div>
+                        </div>
+
+                        <!-- Public Website Link -->
+                        <a href="/" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-semibold bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors text-decoration-none" title="Visit Public Landing Page">
+                            <i class="icon-globe text-[14px]"></i>
+                            <span>Public Site</span>
+                        </a>
+
+                        <!-- Interactive Page Tour Guide Trigger -->
+                        <button type="button" id="pageTourTriggerBtn" onclick="window.startPortalTour(true)" class="relative grid place-items-center size-8 rounded-full transition-all hover:scale-105 bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20 shadow-sm" title="Start Interactive Page Tour Guide" aria-label="Start Page Tour">
+                            <i class="icon-help-circle text-[15px]"></i>
+                            <span class="tour-pulse-badge"></span>
+                        </button>
+
+                        <!-- Theme switcher -->
+                        <div class="hs-dropdown relative">
+                            <button type="button" class="hs-dropdown-toggle grid place-items-center size-8 rounded-full transition-transform hover:scale-105 bg-[color-mix(in_oklab,var(--color-warning-500)_16%,transparent)] text-[var(--color-warning-600)]" aria-haspopup="menu" aria-expanded="false" aria-label="Theme">
+                                <i class="icon-sun-medium text-[14px]" id="themeIcon"></i>
+                            </button>
+                            <div class="hs-dropdown-menu hidden transition-all duration-200 absolute end-0 top-full mt-2 w-40 p-1.5 z-50 rounded-xl shadow-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]" role="menu">
+                                <button type="button" data-theme-set="light" class="theme-option w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-start"><i class="icon-sun-medium text-[15px]"></i>Light</button>
+                                <button type="button" data-theme-set="dark" class="theme-option w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-start"><i class="icon-moon text-[15px]"></i>Dark</button>
+                                <button type="button" data-theme-set="system" class="theme-option w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-start"><i class="icon-monitor text-[15px]"></i>System</button>
+                            </div>
+                        </div>
+
+                        <!-- User profile Dropdown -->
+                        <div class="hs-dropdown relative">
+                            <button type="button" class="hs-dropdown-toggle flex items-center gap-2 h-10 ps-1 pe-2.5 rounded-full transition-colors hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)]" aria-haspopup="menu" aria-expanded="false">
+                                <span class="relative shrink-0 rounded-full p-[2px] [background:conic-gradient(from_180deg,var(--color-primary-500),var(--color-accent-500),var(--color-primary-500))]">
+                                    <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Avatar" class="size-7 rounded-full object-cover block border-2 border-[var(--surface-base)]">
+                                </span>
+                                <span class="hidden lg:flex flex-col items-start leading-none text-left">
+                                    <span class="text-[12px] font-semibold text-[var(--text-primary)]">@firstName</span>
+                                    <span class="text-[10px] text-[var(--text-tertiary)]">@userRole</span>
+                                </span>
+                                <i class="hidden lg:block icon-chevron-down text-[10px] text-[var(--text-tertiary)]"></i>
+                            </button>
+                            <div class="hs-dropdown-menu hidden transition-all duration-200 absolute end-0 top-full mt-2 w-64 !p-0 overflow-hidden z-50 rounded-2xl shadow-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]" role="menu">
+                                <div class="px-4 py-3 bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)]">
+                                    <p class="text-[13px] font-bold text-[var(--text-primary)]">@firstName</p>
+                                    <p class="text-[11px] text-[var(--text-tertiary)] truncate">@userEmail</p>
+                                </div>
+                                <div class="p-1.5">
+                                    <a asp-controller="Account" asp-action="Profile" asp-area="" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-decoration-none"><i class="icon-user text-[15px] text-[var(--color-primary-600)]"></i>My Profile</a>
+                                    <a asp-area="Admin" asp-controller="AdminUsers" asp-action="Index" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-decoration-none"><i class="icon-user-cog text-[15px] text-[var(--color-primary-600)]"></i>Platform Users &amp; Roles</a>
+                                    <a asp-controller="Account" asp-action="ChangePassword" asp-area="" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-decoration-none"><i class="icon-key text-[15px] text-[var(--color-primary-600)]"></i>Change Password</a>
+                                    <a asp-controller="Account" asp-action="TwoFactor" asp-area="" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-decoration-none"><i class="icon-shield-check text-[15px] text-[var(--color-success-600)]"></i>Two-Factor (2FA)</a>
+                                    <a asp-controller="Account" asp-action="ActivityLog" asp-area="" class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] text-decoration-none"><i class="icon-history text-[15px] text-[var(--color-warning-600)]"></i>Activity &amp; Audit Log</a>
+                                    <button type="button" onclick="window.startPortalTour(true)" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium hover:bg-[var(--surface-sunken)] text-[var(--text-primary)] border-0 bg-transparent text-start"><i class="icon-compass text-[15px] text-[var(--color-primary-600)]"></i>Interactive Page Tour</button>
+                                </div>
+                                <div class="p-1.5 border-t border-[var(--border-subtle)]">
+                                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 border-0 bg-transparent text-start">
+                                            <i class="icon-log-out text-[15px]"></i>
+                                            <span>Sign Out</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </header>
+
+            <!-- ================= BODY CONTENT ================= -->
+            <main class="main-content flex-1 p-4 lg:p-6 overflow-y-auto">
+                <!-- Alerts Container -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="mb-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-3">
+                        <i class="icon-check-circle text-[18px]"></i>
+                        <span class="text-sm font-semibold">@TempData["SuccessMessage"]</span>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="mb-4 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3">
+                        <i class="icon-alert-triangle text-[18px]"></i>
+                        <span class="text-sm font-semibold">@TempData["ErrorMessage"]</span>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+
+            <!-- ================= FOOTER ================= -->
+            <footer class="app-footer px-4 lg:px-6 py-3 border-t border-[var(--border-subtle)] bg-[var(--surface-raised)] flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-[var(--text-tertiary)]">
+                <div>&copy; @DateTime.UtcNow.Year ExwhyzeeSP Admin Portal. All Rights Reserved.</div>
+                <div class="flex items-center gap-3">
+                    <span>School Management Platform</span>
+                    <span>&middot;</span>
+                    <a href="https://exwhyzee.ng" target="_blank" class="hover:underline text-[var(--text-secondary)]">Exwhyzee Technologies</a>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="/theme/dreamscore/assets/script-CFI7pXVP.js"></script>
+    <script type="module" src="/theme/dreamscore/assets/datatable-Dd9gTTxu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/preline@2.7.0/dist/preline.min.js"></script>
+
+    <!-- Comprehensive UI Interaction Controller for Dreams Core -->
+    <script>
+        (function() {
+            function initializeAppInteractions() {
+                const shell = document.getElementById('appShell');
+                const sidebar = document.getElementById('appSidebar');
+                const collapseBtn = document.getElementById('sidebarCollapseBtn');
+                const topbarToggleBtn = document.getElementById('topbarSidebarToggle');
+                const mobileBtn = document.getElementById('mobileSidebarBtn');
+                const backdrop = document.getElementById('sidebarMobileBackdrop');
+                const storageKey = 'dreamscore-sidebar-collapsed';
+
+                // 1. Sidebar Collapse (Desktop)
+                function toggleDesktopSidebar() {
+                    if (!shell) return;
+                    shell.classList.toggle('is-collapsed');
+                    const isCollapsed = shell.classList.contains('is-collapsed');
+                    localStorage.setItem(storageKey, isCollapsed ? '1' : '0');
+                }
+
+                if (localStorage.getItem(storageKey) === '1' && shell) {
+                    shell.classList.add('is-collapsed');
+                }
+
+                collapseBtn?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleDesktopSidebar();
+                });
+
+                topbarToggleBtn?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleDesktopSidebar();
+                });
+
+                // 2. Mobile Sidebar Drawer
+                mobileBtn?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sidebar?.classList.toggle('is-mobile-open');
+                    backdrop?.classList.toggle('is-active');
+                });
+
+                backdrop?.addEventListener('click', function() {
+                    sidebar?.classList.remove('is-mobile-open');
+                    backdrop?.classList.remove('is-active');
+                });
+
+                // 3. Universal Event Delegation for Submenus, Dropdowns, Theme, and Modals
+                document.addEventListener('click', function(e) {
+                    // A. Sidebar Submenu Toggle (Marketing Hub, etc.)
+                    const submenuToggle = e.target.closest('[data-submenu-toggle], .has-submenu > .sidebar-link, .has-submenu > button');
+                    if (submenuToggle) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const parentLi = submenuToggle.closest('li.has-submenu');
+                        if (parentLi) {
+                            parentLi.classList.toggle('is-open');
+                            parentLi.classList.toggle('open');
+                        }
+                        return;
+                    }
+
+                    // B. Dropdown Toggle System (.hs-dropdown-toggle)
+                    const dropdownToggle = e.target.closest('.hs-dropdown-toggle');
+                    if (dropdownToggle) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const dropdown = dropdownToggle.closest('.hs-dropdown');
+                        if (dropdown) {
+                            const menu = dropdown.querySelector('.hs-dropdown-menu');
+                            const isOpen = dropdown.classList.contains('open') || dropdown.classList.contains('is-open');
+
+                            // Close all other dropdowns
+                            document.querySelectorAll('.hs-dropdown').forEach(d => {
+                                if (d !== dropdown) {
+                                    d.classList.remove('open', 'is-open');
+                                    const m = d.querySelector('.hs-dropdown-menu');
+                                    if (m) {
+                                        m.classList.add('hidden');
+                                        m.style.display = 'none';
+                                    }
+                                }
+                            });
+
+                            if (isOpen) {
+                                dropdown.classList.remove('open', 'is-open');
+                                if (menu) {
+                                    menu.classList.add('hidden');
+                                    menu.style.display = 'none';
+                                }
+                            } else {
+                                dropdown.classList.add('open', 'is-open');
+                                if (menu) {
+                                    menu.classList.remove('hidden');
+                                    menu.style.display = 'block';
+                                }
+                            }
+                        }
+                        return;
+                    }
+
+                    // C. Theme Switcher Option
+                    const themeBtn = e.target.closest('[data-theme-set]');
+                    if (themeBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const theme = themeBtn.getAttribute('data-theme-set');
+                        localStorage.setItem('dreamscore-theme', theme);
+                        applyTheme(theme);
+                        const dropdown = themeBtn.closest('.hs-dropdown');
+                        if (dropdown) {
+                            dropdown.classList.remove('open', 'is-open');
+                            const menu = dropdown.querySelector('.hs-dropdown-menu');
+                            if (menu) {
+                                menu.classList.add('hidden');
+                                menu.style.display = 'none';
+                            }
+                        }
+                        return;
+                    }
+
+                    // D. Click outside to close any open dropdown
+                    if (!e.target.closest('.hs-dropdown')) {
+                        document.querySelectorAll('.hs-dropdown').forEach(dropdown => {
+                            dropdown.classList.remove('open', 'is-open');
+                            const menu = dropdown.querySelector('.hs-dropdown-menu');
+                            if (menu) {
+                                menu.classList.add('hidden');
+                                menu.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+
+                // 4. Theme Initialization
+                const savedTheme = localStorage.getItem('dreamscore-theme') || 'system';
+                applyTheme(savedTheme);
+
+                function applyTheme(theme) {
+                    const root = document.documentElement;
+                    const themeIcon = document.getElementById('themeIcon');
+                    if (theme === 'dark') {
+                        root.classList.add('dark');
+                        root.setAttribute('data-theme', 'dark');
+                        if (themeIcon) {
+                            themeIcon.className = 'icon-moon text-[14px]';
+                        }
+                    } else if (theme === 'light') {
+                        root.classList.remove('dark');
+                        root.setAttribute('data-theme', 'light');
+                        if (themeIcon) {
+                            themeIcon.className = 'icon-sun-medium text-[14px]';
+                        }
+                    } else {
+                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        if (prefersDark) {
+                            root.classList.add('dark');
+                            root.setAttribute('data-theme', 'dark');
+                            if (themeIcon) themeIcon.className = 'icon-moon text-[14px]';
+                        } else {
+                            root.classList.remove('dark');
+                            root.setAttribute('data-theme', 'light');
+                            if (themeIcon) themeIcon.className = 'icon-sun-medium text-[14px]';
+                        }
+                    }
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeAppInteractions);
+            } else {
+                initializeAppInteractions();
+            }
+        })();
+    </script>
+
+    <!-- Interactive Tour Guide Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+    <script src="/js/portal-tour.js?v=1"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

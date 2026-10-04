@@ -1,0 +1,255 @@
+@model ExwhyzeeSP.Master.Controllers.EditAdminUserViewModel
+@{
+    ViewData["Title"] = "Edit Administrator";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header ============ -->
+    <div class="surface-card p-5 lg:p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Users">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-14 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 grid place-items-center border border-sky-500/20 shadow-xs">
+                    <i class="icon-user text-[26px]"></i>
+                    @if (Model.IsActive)
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" title="Active"></span>
+                    }
+                    else
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-3.5 rounded-full bg-rose-500 border-2 border-white dark:border-slate-900" title="Suspended"></span>
+                    }
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">@Model.FullName</h1>
+                        @if (Model.IsSuperAdminRoot)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
+                                <i class="icon-shield-check text-[11px]"></i> Root SuperAdmin
+                            </span>
+                        }
+                        @if (Model.IsActive)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                <i class="icon-circle-check text-[10px]"></i> Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
+                                <i class="icon-circle-x text-[10px]"></i> Suspended
+                            </span>
+                        }
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-secondary)] mt-1 flex items-center gap-2 flex-wrap">
+                        <span>Email: <strong class="text-[var(--text-primary)] font-mono">@Model.Email</strong></span>
+                        <span>&middot;</span>
+                        <span>Current Role: <span class="px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 font-semibold text-[11px]">@Model.Role</span></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="ActivityLog" asp-controller="Account" asp-area="" asp-route-search="@Model.Email" class="btn btn-outline border-sky-500/30 text-sky-600 hover:bg-sky-500/10 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none" title="Inspect Security Audit Logs for @Model.Email">
+                    <i class="bi bi-clock-history text-[14px]"></i>
+                    <span>Audit Logs</span>
+                </a>
+                <a asp-action="ResetPassword" asp-route-id="@Model.Id" class="btn btn-outline border-amber-500/30 text-amber-600 hover:bg-amber-500/10 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-key text-[14px]"></i>
+                    <span>Reset Password</span>
+                </a>
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to Users</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Edit Form ============ -->
+    <form asp-action="Edit" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs font-semibold" role="alert"></div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+
+            <!-- Left Main Column (8 cols) -->
+            <div class="xl:col-span-8 space-y-4">
+
+                <!-- 1. Administrator Profile -->
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-user text-[16px] text-sky-600"></i>
+                                <span>Administrator Profile Details</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Primary name, login credentials, and contact info.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label asp-for="FullName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Full Name <span class="text-rose-500">*</span></label>
+                            <input asp-for="FullName" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] font-semibold focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" required />
+                            <span asp-validation-for="FullName" class="text-xs text-rose-600 mt-1 block"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label asp-for="Email" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Email Address (Username) <span class="text-rose-500">*</span></label>
+                                <input asp-for="Email" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" required />
+                                <span asp-validation-for="Email" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label asp-for="PhoneNumber" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Phone Number</label>
+                                <input asp-for="PhoneNumber" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" />
+                                <span asp-validation-for="PhoneNumber" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Role Assignment & Live Scope -->
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-shield-check text-[16px] text-sky-600"></i>
+                                <span>Security Role &amp; Access Level</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Control administrative permissions and functional scope.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label asp-for="Role" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Assigned Role <span class="text-rose-500">*</span></label>
+                        @if (Model.IsSuperAdminRoot)
+                        {
+                            <input type="hidden" asp-for="Role" value="@ExwhyzeeSP.Core.Models.MasterRoles.SuperAdmin" />
+                            <div class="w-full h-10 px-3.5 py-2 text-xs rounded-lg border border-rose-200 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 font-bold flex items-center gap-2">
+                                <i class="icon-shield-check text-sm"></i>
+                                <span>SuperAdmin (Permanent Root System Owner)</span>
+                            </div>
+                            <p class="text-[11px] text-[var(--text-secondary)] mt-1.5">
+                                This root system account holds permanent unrestricted governance across all tenants.
+                            </p>
+                        }
+                        else
+                        {
+                            <select asp-for="Role" asp-items="ViewBag.Roles" id="roleSelector" class="w-full h-10 px-3.5 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] font-semibold focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" onchange="updateRolePreview()"></select>
+                            <span asp-validation-for="Role" class="text-xs text-rose-600 mt-1 block"></span>
+                        }
+                    </div>
+
+                    <!-- Dynamic Role Scope Preview Card -->
+                    <div id="roleScopeCard" class="p-4 rounded-xl border border-sky-200/80 dark:border-sky-900/40 bg-sky-50/50 dark:bg-sky-950/20 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span id="rolePreviewTitle" class="text-xs font-bold text-sky-900 dark:text-sky-300">@Model.Role Role Capabilities</span>
+                            <span class="text-[10.5px] px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-900 text-sky-800 dark:text-sky-200 font-semibold">Active Scope</span>
+                        </div>
+                        <p id="rolePreviewDesc" class="text-xs text-sky-800 dark:text-sky-300/80 leading-relaxed">
+                            Loading permissions for selected role...
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 cols) -->
+            <div class="xl:col-span-4 space-y-4">
+
+                <!-- Account Status Card -->
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <i class="icon-sliders text-[16px] text-sky-600"></i>
+                        <span>Account Access &amp; Lifecycle</span>
+                    </h2>
+
+                    @if (Model.IsSuperAdminRoot)
+                    {
+                        <div class="p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/40 dark:bg-emerald-950/20 flex items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 block">Root SuperAdmin Active</span>
+                                <span class="text-[11px] text-emerald-600 dark:text-emerald-300">Root account is permanently locked active.</span>
+                            </div>
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-bold text-[var(--text-primary)] block">Active Status</span>
+                                <span class="text-[11px] text-[var(--text-secondary)]">If disabled, this operator will be blocked from logging in.</span>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" asp-for="IsActive" class="sr-only peer" id="isActiveSwitch" />
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                            </label>
+                        </div>
+                    }
+
+                    <div class="pt-2">
+                        <button type="submit" class="btn btn-primary w-full text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors">
+                            <i class="icon-check-circle text-[15px]"></i>
+                            <span>Update Administrator</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fast Action Links -->
+                <div class="surface-card p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                    <h3 class="font-bold text-xs text-[var(--text-primary)] mb-2">Quick Security Operations</h3>
+                    <a asp-action="ResetPassword" asp-route-id="@Model.Id" class="btn btn-outline border-amber-500/30 text-amber-600 hover:bg-amber-500/10 text-xs font-semibold px-3 py-2 rounded-lg w-full flex items-center justify-center gap-1.5 text-decoration-none shadow-xs">
+                        <i class="icon-key text-[13px]"></i>
+                        <span>Reset Operator Password</span>
+                    </a>
+                    <a asp-action="ActivityLog" asp-controller="Account" asp-area="" asp-route-search="@Model.Email" class="btn btn-outline border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold px-3 py-2 rounded-lg w-full flex items-center justify-center gap-1.5 text-decoration-none shadow-xs">
+                        <i class="bi bi-clock-history text-[13px]"></i>
+                        <span>View Security Audit Logs</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const roleDescriptions = {
+            'SuperAdmin': 'Root account: unrestricted governance across all schools, tenant databases, subscriptions, billing, CMS, and exclusive log purging rights.',
+            'Admin': 'Grants full day-to-day administrative powers: provisioning new school databases, running migrations, managing billing, launching marketing broadcasts, and managing platform user accounts.',
+            'Accountant': 'Grants access to financial ledgers: managing school subscription invoices, recording offline bank transfers, issuing receipts, configuring pricing tiers, and viewing revenue reports.',
+            'ContentManager': 'Grants access to public marketing & CMS: writing blog articles, configuring legal policies (Terms/Privacy), organizing knowledge base guides, managing testimonials, and dispatching email/WhatsApp broadcasts.',
+            'ReadOnly': 'Auditor inspection tier: allows viewing the school directory, platform metrics, and dashboards without permission to create, edit, delete, or run migrations.'
+        };
+
+        function updateRolePreview() {
+            const selector = document.getElementById('roleSelector');
+            const selected = selector ? selector.value : '@Model.Role';
+            const title = document.getElementById('rolePreviewTitle');
+            const desc = document.getElementById('rolePreviewDesc');
+
+            if (title) title.textContent = `${selected} Role Capabilities`;
+            if (desc) desc.textContent = roleDescriptions[selected] || 'Role permissions configured.';
+        }
+
+        document.addEventListener('DOMContentLoaded', updateRolePreview);
+    </script>
+}

@@ -1,0 +1,353 @@
+@model ExwhyzeeSP.Core.Models.MarketingTemplate
+@{
+    ViewData["Title"] = "Create Marketing Template";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-6">
+
+    <!-- Page Header & Action Toolbar -->
+    <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2">
+                <a asp-action="Templates" class="size-8 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center text-decoration-none transition-colors" title="Back to Templates">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                </a>
+                <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Create Marketing Template</h1>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] border border-[var(--color-primary-500)]/20">
+                    Template Designer
+                </span>
+            </div>
+            <p class="text-xs sm:text-[13px] text-[var(--text-secondary)] mt-0.5 ps-10">
+                Design reusable, responsive HTML email templates with dynamic personalization variables.
+            </p>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+            <a asp-action="Templates" class="btn btn-outline border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-xl shadow-sm text-decoration-none transition-colors">
+                <i class="icon-arrow-left text-[14px]"></i>
+                <span>Cancel</span>
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-center gap-2.5">
+                <i class="icon-alert-triangle text-[16px]"></i>
+                <div>@Html.Raw(TempData["ErrorMessage"])</div>
+            </div>
+            <button type="button" class="text-rose-600 dark:text-rose-400 hover:opacity-75" onclick="this.parentElement.remove();">&times;</button>
+        </div>
+    }
+
+    <form method="post" asp-action="CreateTemplate" id="templateForm" class="space-y-6">
+        @Html.AntiForgeryToken()
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left Form Area -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <div class="surface-card p-5 lg:p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm space-y-4">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2 pb-3 border-b border-[var(--border-subtle)]">
+                        <i class="icon-file-text text-[15px] text-[var(--color-primary-600)]"></i>
+                        <span>Template Metadata &amp; Headers</span>
+                    </h2>
+
+                    <div class="space-y-4 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="sm:col-span-2">
+                                <label asp-for="TemplateName" class="block font-semibold text-[var(--text-primary)] mb-1">Template Name *</label>
+                                <input asp-for="TemplateName" class="w-full h-10 px-3.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-500)] text-xs transition-all" placeholder="e.g. End of Term Results Pitch" required />
+                            </div>
+                            <div>
+                                <label asp-for="Category" class="block font-semibold text-[var(--text-primary)] mb-1">Category</label>
+                                <select asp-for="Category" class="w-full h-10 px-3 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-500)] text-xs transition-all">
+                                    <option value="ProductPitch">Product Pitch</option>
+                                    <option value="SpecialOffer">Special Offer</option>
+                                    <option value="Announcement">Announcement</option>
+                                    <option value="Newsletter">Newsletter</option>
+                                    <option value="SummitInvite">Summit / Event</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label asp-for="Subject" class="block font-semibold text-[var(--text-primary)] mb-1">Email Subject Line *</label>
+                            <input asp-for="Subject" id="templateSubject" class="w-full h-10 px-3.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-500)] text-xs transition-all" placeholder="e.g. Modernize Report Cards at {{SchoolName}}" required />
+                        </div>
+
+                        <div>
+                            <label asp-for="PreheaderText" class="block font-semibold text-[var(--text-primary)] mb-1">Preheader / Snippet Text</label>
+                            <input asp-for="PreheaderText" class="w-full h-10 px-3.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-500)] text-xs transition-all" placeholder="Brief summary preview shown in recipient email clients" />
+                        </div>
+
+                        <div>
+                            <label asp-for="Description" class="block font-semibold text-[var(--text-primary)] mb-1">Internal Description / Notes</label>
+                            <input asp-for="Description" class="w-full h-10 px-3.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-500)] text-xs transition-all" placeholder="When to use this template..." />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dual-Mode Editor Section -->
+                <div class="surface-card p-5 lg:p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                            <i class="icon-edit-3 text-[15px] text-emerald-500"></i>
+                            <span>HTML Template Body</span>
+                        </h2>
+
+                        <!-- Editor Mode Tabs Switcher -->
+                        <div class="inline-flex items-center p-1 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)]">
+                            <button type="button" id="tabBtnVisual" class="px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs" onclick="switchEditorMode('visual')">
+                                <i class="icon-type text-[13px]"></i>
+                                <span>Visual / Rich Text</span>
+                            </button>
+                            <button type="button" id="tabBtnHtml" class="px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="switchEditorMode('html')">
+                                <i class="icon-code text-[13px]"></i>
+                                <span>HTML Source Code</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 text-xs">
+                        <!-- VISUAL EDITOR MODE CONTAINER -->
+                        <div id="visualEditorWrapper" class="space-y-2">
+                            <!-- Rich Text Formatting Toolbar -->
+                            <div class="p-2 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] flex flex-wrap items-center gap-1">
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center font-bold text-xs" title="Bold" onclick="execVisualCmd('bold')">B</button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center italic text-xs" title="Italic" onclick="execVisualCmd('italic')">I</button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center underline text-xs" title="Underline" onclick="execVisualCmd('underline')">U</button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center line-through text-xs" title="Strikethrough" onclick="execVisualCmd('strikeThrough')">S</button>
+                                
+                                <div class="w-px h-5 bg-[var(--border-subtle)] mx-1"></div>
+
+                                <select class="h-7 px-2 rounded-lg bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[11px] text-[var(--text-primary)] focus:outline-none" onchange="execVisualCmd('formatBlock', this.value); this.value='';">
+                                    <option value="">Heading / Paragraph</option>
+                                    <option value="<p>">Normal Paragraph</option>
+                                    <option value="<h1>">Heading 1</option>
+                                    <option value="<h2>">Heading 2</option>
+                                    <option value="<h3>">Heading 3</option>
+                                    <option value="<blockquote>">Quote</option>
+                                </select>
+
+                                <div class="w-px h-5 bg-[var(--border-subtle)] mx-1"></div>
+
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Align Left" onclick="execVisualCmd('justifyLeft')"><i class="icon-align-left text-[13px]"></i></button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Align Center" onclick="execVisualCmd('justifyCenter')"><i class="icon-align-center text-[13px]"></i></button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Align Right" onclick="execVisualCmd('justifyRight')"><i class="icon-align-right text-[13px]"></i></button>
+
+                                <div class="w-px h-5 bg-[var(--border-subtle)] mx-1"></div>
+
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Bullet List" onclick="execVisualCmd('insertUnorderedList')"><i class="icon-list text-[13px]"></i></button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Numbered List" onclick="execVisualCmd('insertOrderedList')"><i class="icon-list-ordered text-[13px]"></i></button>
+
+                                <div class="w-px h-5 bg-[var(--border-subtle)] mx-1"></div>
+
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Insert Link" onclick="insertLinkPrompt()"><i class="icon-link text-[13px]"></i></button>
+                                <button type="button" class="size-7 rounded-lg hover:bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] grid place-items-center" title="Remove Link" onclick="execVisualCmd('unlink')"><i class="icon-link-2-off text-[13px]"></i></button>
+
+                                <div class="w-px h-5 bg-[var(--border-subtle)] mx-1"></div>
+
+                                <button type="button" class="px-2 h-7 rounded-lg bg-[var(--surface-raised)] border border-[var(--border-subtle)] hover:bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] text-[11px] font-semibold flex items-center gap-1" title="Insert Button" onclick="insertCtaButtonPrompt()">
+                                    <i class="icon-mouse-pointer-click text-[11px]"></i>
+                                    <span>+ Button</span>
+                                </button>
+
+                                <select class="h-7 px-2 rounded-lg bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[11px] font-semibold text-[var(--color-primary-600)] focus:outline-none ms-auto" onchange="if(this.value){ insertTagAtCursor(this.value); this.value=''; }">
+                                    <option value="">Insert Tag &darr;</option>
+                                    <option value="{{FullName}}">{{FullName}}</option>
+                                    <option value="{{FirstName}}">{{FirstName}}</option>
+                                    <option value="{{SchoolName}}">{{SchoolName}}</option>
+                                    <option value="{{Role}}">{{Role}}</option>
+                                    <option value="{{State}}">{{State}}</option>
+                                    <option value="{{Email}}">{{Email}}</option>
+                                    <option value="{{CurrentYear}}">{{CurrentYear}}</option>
+                                </select>
+                            </div>
+
+                            <div id="visualEditorContent" contenteditable="true" class="w-full min-h-[380px] p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-500)] overflow-y-auto leading-relaxed shadow-inner" style="min-height: 380px;"></div>
+                        </div>
+
+                        <!-- RAW HTML SOURCE CODE MODE CONTAINER -->
+                        <div id="htmlEditorWrapper" class="hidden space-y-2">
+                            <textarea asp-for="BodyHtml" id="bodyHtmlInput" class="w-full h-[430px] p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-primary)] font-mono text-xs leading-relaxed focus:outline-none focus:border-[var(--color-primary-500)] transition-all" rows="18" spellcheck="false" required placeholder="<!DOCTYPE html>&#10;<html>&#10;<body>...</body>&#10;</html>"></textarea>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                            <label class="flex items-center gap-2.5 cursor-pointer">
+                                <input class="rounded text-[var(--color-primary-600)] size-4" type="checkbox" asp-for="IsDefault" id="isDefaultSwitch" />
+                                <span class="text-xs font-semibold text-[var(--text-primary)]">Set as Default Marketing Pitch Template</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="surface-card p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm flex items-center justify-between">
+                    <a asp-action="Templates" class="btn btn-outline border-[var(--border-subtle)] text-xs font-semibold px-4 py-2.5 rounded-xl text-decoration-none">Cancel</a>
+                    <button type="submit" class="btn btn-primary text-xs font-semibold px-6 py-2.5 rounded-xl shadow-sm" onclick="if(currentEditorMode==='visual') syncVisualToHtml();">Save Template</button>
+                </div>
+
+            </div>
+
+            <!-- Right Merge Tags & Live Preview Area -->
+            <div class="lg:col-span-5 space-y-6">
+
+                <!-- Merge Tag Helper Box -->
+                <div class="surface-card p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm space-y-3">
+                    <h3 class="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <i class="icon-tag text-[14px] text-[var(--color-primary-600)]"></i>
+                        <span>Click-to-Insert Merge Tags</span>
+                    </h3>
+                    <p class="text-[11px] text-[var(--text-secondary)]">Click any tag below to insert it into your email body:</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{FullName}}')">&#123;&#123;FullName&#125;&#125;</button>
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{FirstName}}')">&#123;&#123;FirstName&#125;&#125;</button>
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{SchoolName}}')">&#123;&#123;SchoolName&#125;&#125;</button>
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{Role}}')">&#123;&#123;Role&#125;&#125;</button>
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{State}}')">&#123;&#123;State&#125;&#125;</button>
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{Email}}')">&#123;&#123;Email&#125;&#125;</button>
+                        <button type="button" class="px-2.5 py-1 rounded-lg text-xs font-mono bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-all" onclick="insertTagAtCursor('{{CurrentYear}}')">&#123;&#123;CurrentYear&#125;&#125;</button>
+                    </div>
+                </div>
+
+                <!-- Live Sandbox Pane -->
+                <div class="surface-card rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm overflow-hidden sticky top-6">
+                    <div class="px-5 py-3.5 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/40 flex items-center justify-between">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-2">
+                            <i class="icon-monitor text-[14px] text-[var(--color-primary-600)]"></i>
+                            <span>Live Sandbox Preview</span>
+                        </h3>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            Simulated Data
+                        </span>
+                    </div>
+                    <div class="p-0 bg-slate-100 dark:bg-slate-900">
+                        <iframe id="liveIframe" style="width: 100%; height: 500px; border: none;" sandbox="allow-same-origin"></iframe>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    let currentEditorMode = 'visual';
+
+    function switchEditorMode(mode) {
+        currentEditorMode = mode;
+        const visualWrapper = document.getElementById('visualEditorWrapper');
+        const htmlWrapper = document.getElementById('htmlEditorWrapper');
+        const tabBtnVisual = document.getElementById('tabBtnVisual');
+        const tabBtnHtml = document.getElementById('tabBtnHtml');
+        const visualContent = document.getElementById('visualEditorContent');
+        const htmlTextarea = document.getElementById('bodyHtmlInput');
+
+        if (mode === 'visual') {
+            visualContent.innerHTML = htmlTextarea.value;
+            visualWrapper.classList.remove('hidden');
+            htmlWrapper.classList.add('hidden');
+
+            tabBtnVisual.className = 'px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs';
+            tabBtnHtml.className = 'px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+        } else {
+            htmlTextarea.value = visualContent.innerHTML;
+            visualWrapper.classList.add('hidden');
+            htmlWrapper.classList.remove('hidden');
+
+            tabBtnHtml.className = 'px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs';
+            tabBtnVisual.className = 'px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+        }
+        updatePreview();
+    }
+
+    function execVisualCmd(command, value = null) {
+        document.getElementById('visualEditorContent').focus();
+        document.execCommand(command, false, value);
+        syncVisualToHtml();
+    }
+
+    function insertLinkPrompt() {
+        const url = prompt('Enter the destination URL:');
+        if (url) execVisualCmd('createLink', url);
+    }
+
+    function insertCtaButtonPrompt() {
+        const text = prompt('Enter Button Label:', 'Learn More & Get Started');
+        if (!text) return;
+        const link = prompt('Enter Button Link URL:', 'https://exwhyzee.ng/Demo');
+        if (!link) return;
+
+        const btnHtml = `<div style="text-align: center; margin: 24px 0;"><a href="${link}" style="background-color: #0284c7; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">${text}</a></div>`;
+        if (currentEditorMode === 'visual') {
+            document.getElementById('visualEditorContent').focus();
+            document.execCommand('insertHTML', false, btnHtml);
+            syncVisualToHtml();
+        } else {
+            insertTagAtCursor(btnHtml);
+        }
+    }
+
+    function insertTagAtCursor(tag) {
+        if (currentEditorMode === 'visual') {
+            const visualEditor = document.getElementById('visualEditorContent');
+            visualEditor.focus();
+            document.execCommand('insertHTML', false, tag);
+            syncVisualToHtml();
+        } else {
+            const textarea = document.getElementById('bodyHtmlInput');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            textarea.value = text.substring(0, start) + tag + text.substring(end);
+            textarea.focus();
+            textarea.selectionEnd = start + tag.length;
+            syncHtmlToVisual();
+        }
+    }
+
+    function syncVisualToHtml() {
+        const visualContent = document.getElementById('visualEditorContent');
+        const htmlTextarea = document.getElementById('bodyHtmlInput');
+        htmlTextarea.value = visualContent.innerHTML;
+        updatePreview();
+    }
+
+    function syncHtmlToVisual() {
+        const visualContent = document.getElementById('visualEditorContent');
+        const htmlTextarea = document.getElementById('bodyHtmlInput');
+        visualContent.innerHTML = htmlTextarea.value;
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const rawHtml = document.getElementById('bodyHtmlInput').value || "<p style='color:#666;text-align:center;padding:40px;'>Enter HTML content to preview...</p>";
+        let previewHtml = rawHtml
+            .replaceAll('{{FullName}}', 'Dr. Anthony Uche')
+            .replaceAll('{{FirstName}}', 'Anthony')
+            .replaceAll('{{SchoolName}}', 'Premier International Academy')
+            .replaceAll('{{Email}}', 'admin@premieracademy.edu.ng')
+            .replaceAll('{{Role}}', 'Director of Academics')
+            .replaceAll('{{State}}', 'Lagos')
+            .replaceAll('{{CurrentYear}}', new Date().getFullYear());
+
+        const iframe = document.getElementById('liveIframe');
+        iframe.srcdoc = previewHtml;
+    }
+
+    document.getElementById('visualEditorContent').addEventListener('input', syncVisualToHtml);
+    document.getElementById('bodyHtmlInput').addEventListener('input', syncHtmlToVisual);
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        const html = document.getElementById('bodyHtmlInput').value;
+        if (html) {
+            document.getElementById('visualEditorContent').innerHTML = html;
+        }
+        updatePreview();
+    });
+</script>
+}

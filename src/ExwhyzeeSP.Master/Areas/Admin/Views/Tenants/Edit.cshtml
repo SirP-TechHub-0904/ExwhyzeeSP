@@ -1,0 +1,466 @@
+@model TenantSchool
+@{
+    ViewData["Title"] = $"Edit School - {Model.SchoolName}";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Schools">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] grid place-items-center border border-[var(--color-primary-500)]/20 shadow-xs">
+                    <i class="icon-school text-[28px]"></i>
+                    @if (Model.IsActive)
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-4 rounded-full bg-emerald-500 border-2 border-[var(--surface-raised)]" title="Active"></span>
+                    }
+                    else
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-4 rounded-full bg-rose-500 border-2 border-[var(--surface-raised)]" title="Disabled"></span>
+                    }
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">@Model.SchoolName</h1>
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge-soft badge-success">
+                                <i class="icon-circle-check text-[9px]"></i> Active School
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-soft badge-danger">
+                                <i class="icon-circle-x text-[9px]"></i> Disabled
+                            </span>
+                        }
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1 flex items-center gap-2 flex-wrap">
+                        <span>Portal ID: <strong class="text-[var(--text-primary)]">#@Model.Id</strong></span>
+                        <span>&middot;</span>
+                        <span>URL: <code class="font-mono font-semibold text-[var(--color-primary-600)]">@(!string.IsNullOrWhiteSpace(Model.SubDomain) ? $"{Model.SubDomain}.exwhyzee.ng" : "Unassigned")</code></span>
+                        <span>&middot;</span>
+                        <span>Created: @Model.DateCreated.ToString("MMM dd, yyyy")</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-eye text-[14px]"></i>
+                    <span>Overview</span>
+                </a>
+                <a asp-action="AccessControl" asp-route-id="@Model.Id" class="btn btn-outline border-rose-500/30 text-rose-600 hover:bg-rose-500/10 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-shield text-[14px]"></i>
+                    <span>Gatekeeper</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============ Edit Form ============ -->
+    <form asp-action="Edit" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="DateCreated" />
+        <div asp-validation-summary="ModelOnly" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs" role="alert"></div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+
+            <!-- Left Main Column (8 cols) -->
+            <div class="xl:col-span-8 space-y-4">
+
+                <!-- 1. School Identity & Web Routing -->
+                <div class="surface-card p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-school text-[16px] text-[var(--color-primary-600)]"></i>
+                                <span>School Profile &amp; Domain Routing</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Primary school branding and custom URL endpoints.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label asp-for="SchoolName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">School Name <span class="text-rose-500">*</span></label>
+                            <input asp-for="SchoolName" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. St. Jude Catholic High School" required />
+                            <span asp-validation-for="SchoolName" class="text-xs text-rose-600 mt-1 block"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label asp-for="SubDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Default Subdomain</label>
+                                <div class="flex items-center">
+                                    <input asp-for="SubDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="stjude" />
+                                    <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-xs font-mono text-[var(--text-secondary)] shrink-0">.exwhyzee.ng</span>
+                                </div>
+                                <span asp-validation-for="SubDomain" class="text-xs text-rose-600 mt-1 block"></span>
+                                <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">Main portal URL for students and staff.</span>
+                            </div>
+
+                            <div>
+                                <label asp-for="HostDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Custom Domain (Optional)</label>
+                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.stjudehigh.sch.ng" />
+                                <span asp-validation-for="HostDomain" class="text-xs text-rose-600 mt-1 block"></span>
+                                <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">Custom white-label domain mapped to this school.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Database Connection & System Setup -->
+                <div class="surface-card p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-database text-[16px] text-[var(--color-primary-600)]"></i>
+                                <span>Database Connection Settings</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Encrypted SQL database parameters for this school's schema.</p>
+                        </div>
+                        <div class="inline-flex rounded-lg border border-[var(--border-subtle)] p-0.5 bg-[var(--surface-sunken)]">
+                            <button type="button" class="px-3 py-1 text-xs font-semibold rounded-md transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs" id="btnModeBuilder" onclick="switchConnInputMode('builder')">
+                                Guided Form
+                            </button>
+                            <button type="button" class="px-3 py-1 text-xs font-medium rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]" id="btnModeRaw" onclick="switchConnInputMode('raw')">
+                                Raw String
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- GUIDED BUILDER -->
+                    <div id="builderFormGroup" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server / Data Source Host <span class="text-rose-500">*</span></label>
+                                <input type="text" id="bldServer" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50,1433" oninput="assembleConnectionString()" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Database Name <span class="text-rose-500">*</span></label>
+                                <input type="text" id="bldDatabase" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. ExwhyzeeSP_MasterDb" oninput="assembleConnectionString()" />
+                            </div>
+                        </div>
+
+                        <!-- Authentication Type -->
+                        <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-2">
+                            <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Authentication Type</label>
+                            <div class="flex items-center gap-6 text-xs">
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="bldAuthType" id="bldAuthSql" value="sql" checked onchange="toggleBuilderAuth()" class="text-[var(--color-primary-600)] focus:ring-0" />
+                                    <span class="font-medium text-[var(--text-primary)]">Standard Password Authentication</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="bldAuthType" id="bldAuthWin" value="windows" onchange="toggleBuilderAuth()" class="text-[var(--color-primary-600)] focus:ring-0" />
+                                    <span class="font-medium text-[var(--text-primary)]">Windows / Integrated Security</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Credentials -->
+                        <div id="bldSqlAuthInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Username <span class="text-rose-500">*</span></label>
+                                <input type="text" id="bldUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. usr_divine or sa" oninput="assembleConnectionString()" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Password <span class="text-rose-500">*</span></label>
+                                <div class="flex items-center">
+                                    <input type="password" id="bldPassword" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Enter database password" oninput="assembleConnectionString()" />
+                                    <button type="button" class="h-10 px-3.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="togglePasswordVisibility('bldPassword', this)">
+                                        <i class="icon-eye text-[14px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Connection Flags -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <label class="inline-flex items-center gap-2 cursor-pointer p-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                                <input type="checkbox" id="bldTrustCert" checked onchange="assembleConnectionString()" class="rounded text-[var(--color-primary-600)]" />
+                                <span class="text-[var(--text-secondary)]">Trust Server Certificate (<code class="font-mono text-[11px]">TrustServerCertificate=True</code>)</span>
+                            </label>
+                            <label class="inline-flex items-center gap-2 cursor-pointer p-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                                <input type="checkbox" id="bldMars" checked onchange="assembleConnectionString()" class="rounded text-[var(--color-primary-600)]" />
+                                <span class="text-[var(--text-secondary)]">Multiple Active Result Sets (<code class="font-mono text-[11px]">MultipleActiveResultSets=True</code>)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Connection String Textarea -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label asp-for="ConnectionString" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Final Assembled Connection String <span class="text-rose-500">*</span></label>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-tertiary)]" id="connStringCharCount">0 chars</span>
+                        </div>
+                        <textarea asp-for="ConnectionString" id="connStringInput" class="w-full p-3 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none leading-relaxed" rows="3" placeholder="Server=127.0.0.1,1433;Database=SchoolDb;User Id=usr_school;Password=...;TrustServerCertificate=True;MultipleActiveResultSets=True;" required oninput="onRawConnStringInput()"></textarea>
+                        <span asp-validation-for="ConnectionString" class="text-xs text-rose-600 mt-1 block"></span>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-3 border-t border-[var(--border-subtle)]">
+                        <span class="text-[11.5px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                            <i class="icon-info text-[14px] text-[var(--color-primary-600)]"></i> Form values are automatically formatted into connection settings.
+                        </span>
+                        <button type="button" id="btnTestConn" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                            <i class="icon-zap text-[13px]"></i>
+                            <span>Test Connection Ping</span>
+                        </button>
+                    </div>
+                    <div id="testConnResult" class="text-xs font-semibold hidden p-3 rounded-lg"></div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 cols) -->
+            <div class="xl:col-span-4 space-y-4">
+
+                <!-- Operational Status Card -->
+                <div class="surface-card p-5 space-y-4">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-3">
+                        <i class="icon-sliders text-[16px] text-[var(--color-primary-600)]"></i>
+                        <span>Operational Availability</span>
+                    </h2>
+
+                    <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Active Status</span>
+                            <span class="text-[11px] text-[var(--text-secondary)]">When enabled, users can log into this portal.</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" asp-for="IsActive" class="sr-only peer" />
+                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary-600)]"></div>
+                        </label>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-2">
+                        <span class="text-xs font-bold text-[var(--text-primary)] block">Granular Feature Gates</span>
+                        <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+                            Configure lockout notices, landing page suspension, or term debt locks.
+                        </p>
+                        <a asp-action="AccessControl" asp-route-id="@Model.Id" class="btn btn-outline border-rose-500/30 text-rose-600 hover:bg-rose-500/10 text-xs font-semibold px-3 py-2 rounded-lg w-full flex items-center justify-center gap-1.5 text-decoration-none shadow-sm">
+                            <i class="icon-shield text-[13px]"></i>
+                            <span>Gatekeeper &amp; Access Control</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Save & Action Controls -->
+                <div class="surface-card p-5 space-y-3">
+                    <button type="submit" class="btn btn-primary w-full text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="icon-check text-[14px]"></i>
+                        <span>Update School Settings</span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline border-secondary w-full text-xs font-semibold py-2 rounded-lg flex items-center justify-center text-decoration-none">
+                        <span>Cancel</span>
+                    </a>
+                </div>
+
+                <!-- Metadata Information -->
+                <div class="surface-card p-5 space-y-2.5 text-xs">
+                    <h3 class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px] mb-2">School Record Details</h3>
+                    <div class="flex justify-between py-1.5 border-b border-[var(--border-subtle)]">
+                        <span class="text-[var(--text-tertiary)]">Portal Record ID</span>
+                        <span class="font-mono font-bold text-[var(--text-primary)]">#@Model.Id</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-[var(--border-subtle)]">
+                        <span class="text-[var(--text-tertiary)]">Registered On</span>
+                        <span class="text-[var(--text-secondary)] font-medium">@Model.DateCreated.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    @if (Model.LastModified.HasValue)
+                    {
+                        <div class="flex justify-between py-1.5">
+                            <span class="text-[var(--text-tertiary)]">Last Modified</span>
+                            <span class="text-[var(--text-secondary)] font-medium">@Model.LastModified.Value.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let isBuilderUpdatingRaw = false;
+
+        function assembleConnectionString() {
+            const server = (document.getElementById('bldServer').value || '').trim();
+            const database = (document.getElementById('bldDatabase').value || '').trim();
+            const authType = document.querySelector('input[name="bldAuthType"]:checked').value;
+            const user = (document.getElementById('bldUser').value || '').trim();
+            const pass = document.getElementById('bldPassword').value || '';
+            const trustCert = document.getElementById('bldTrustCert').checked;
+            const mars = document.getElementById('bldMars').checked;
+
+            if (!server && !database) {
+                return;
+            }
+
+            let parts = [];
+            if (server) parts.push(`Server=${server}`);
+            if (database) parts.push(`Database=${database}`);
+
+            if (authType === 'windows') {
+                parts.push('Trusted_Connection=True');
+            } else {
+                if (user) parts.push(`User Id=${user}`);
+                if (pass) parts.push(`Password=${pass}`);
+            }
+
+            if (trustCert) parts.push('TrustServerCertificate=True');
+            if (mars) parts.push('MultipleActiveResultSets=True');
+
+            const fullString = parts.join(';') + (parts.length > 0 ? ';' : '');
+
+            isBuilderUpdatingRaw = true;
+            const connInput = document.getElementById('connStringInput');
+            connInput.value = fullString;
+            updateCharCount(fullString);
+            isBuilderUpdatingRaw = false;
+        }
+
+        function toggleBuilderAuth() {
+            const authType = document.querySelector('input[name="bldAuthType"]:checked').value;
+            const sqlGroup = document.getElementById('bldSqlAuthInputs');
+            sqlGroup.style.display = authType === 'windows' ? 'none' : 'grid';
+            assembleConnectionString();
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'icon-eye-off text-[14px]';
+            } else {
+                input.type = 'password';
+                icon.className = 'icon-eye text-[14px]';
+            }
+        }
+
+        function switchConnInputMode(mode) {
+            const builderForm = document.getElementById('builderFormGroup');
+            const btnBuilder = document.getElementById('btnModeBuilder');
+            const btnRaw = document.getElementById('btnModeRaw');
+
+            if (mode === 'builder') {
+                builderForm.style.display = 'block';
+                btnBuilder.className = 'px-3 py-1 text-xs font-semibold rounded-md transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs';
+                btnRaw.className = 'px-3 py-1 text-xs font-medium rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+                assembleConnectionString();
+            } else {
+                builderForm.style.display = 'none';
+                btnRaw.className = 'px-3 py-1 text-xs font-semibold rounded-md transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs';
+                btnBuilder.className = 'px-3 py-1 text-xs font-medium rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+            }
+        }
+
+        function onRawConnStringInput() {
+            if (isBuilderUpdatingRaw) return;
+            const raw = document.getElementById('connStringInput').value;
+            updateCharCount(raw);
+            parseRawToBuilder(raw);
+        }
+
+        function updateCharCount(str) {
+            const badge = document.getElementById('connStringCharCount');
+            badge.innerText = `${(str || '').length} chars`;
+        }
+
+        function parseRawToBuilder(raw) {
+            if (!raw) return;
+            const pairs = raw.split(';').map(p => p.trim()).filter(p => p.length > 0);
+            const map = {};
+            for (let pair of pairs) {
+                const idx = pair.indexOf('=');
+                if (idx > -1) {
+                    const key = pair.substring(0, idx).trim().toLowerCase();
+                    const val = pair.substring(idx + 1).trim();
+                    map[key] = val;
+                }
+            }
+
+            if (map['server'] || map['data source']) {
+                document.getElementById('bldServer').value = map['server'] || map['data source'];
+            }
+            if (map['database'] || map['initial catalog']) {
+                document.getElementById('bldDatabase').value = map['database'] || map['initial catalog'];
+            }
+            if (map['trusted_connection'] === 'true' || map['integrated security'] === 'sspi' || map['integrated security'] === 'true') {
+                document.getElementById('bldAuthWin').checked = true;
+                toggleBuilderAuth();
+            } else if (map['user id'] || map['uid'] || map['user']) {
+                document.getElementById('bldAuthSql').checked = true;
+                document.getElementById('bldUser').value = map['user id'] || map['uid'] || map['user'] || '';
+                if (map['password'] || map['pwd']) {
+                    document.getElementById('bldPassword').value = map['password'] || map['pwd'] || '';
+                }
+                toggleBuilderAuth();
+            }
+            if (map['trustservercertificate']) {
+                document.getElementById('bldTrustCert').checked = map['trustservercertificate'].toLowerCase() === 'true';
+            }
+            if (map['multipleactiveresultsets']) {
+                document.getElementById('bldMars').checked = map['multipleactiveresultsets'].toLowerCase() === 'true';
+            }
+        }
+
+        // Test existing connection string
+        document.getElementById('btnTestConn').addEventListener('click', async function () {
+            const connStr = document.getElementById('connStringInput').value;
+            const resultDiv = document.getElementById('testConnResult');
+            resultDiv.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-600', 'bg-rose-500/10', 'text-rose-600', 'bg-amber-500/10', 'text-amber-600');
+            
+            if (!connStr || connStr.trim() === '') {
+                resultDiv.classList.add('bg-amber-500/10', 'text-amber-600');
+                resultDiv.innerHTML = '<span class="inline-flex items-center gap-1.5"><i class="icon-alert-triangle"></i> Please enter server details first.</span>';
+                return;
+            }
+            resultDiv.classList.add('bg-[var(--surface-sunken)]', 'text-[var(--text-secondary)]');
+            resultDiv.innerHTML = '<span class="inline-flex items-center gap-1.5"><i class="icon-loader animate-spin"></i> Testing connection to school server...</span>';
+
+            try {
+                const response = await fetch('@Url.Action("TestConnection", "Tenants")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connectionString: connStr })
+                });
+                const data = await response.json();
+                resultDiv.classList.remove('bg-[var(--surface-sunken)]', 'text-[var(--text-secondary)]');
+                if (data.success) {
+                    resultDiv.classList.add('bg-emerald-500/10', 'text-emerald-600', 'dark:text-emerald-400');
+                    resultDiv.innerHTML = `<span class="inline-flex items-center gap-1.5"><i class="icon-check-circle"></i> ${data.message}</span>`;
+                } else {
+                    resultDiv.classList.add('bg-rose-500/10', 'text-rose-600', 'dark:text-rose-400');
+                    resultDiv.innerHTML = `<span class="inline-flex items-center gap-1.5"><i class="icon-alert-circle"></i> ${data.message}</span>`;
+                }
+            } catch (err) {
+                resultDiv.classList.remove('bg-[var(--surface-sunken)]', 'text-[var(--text-secondary)]');
+                resultDiv.classList.add('bg-rose-500/10', 'text-rose-600', 'dark:text-rose-400');
+                resultDiv.innerHTML = `<span class="inline-flex items-center gap-1.5"><i class="icon-alert-circle"></i> Error: ${err.message}</span>`;
+            }
+        });
+
+        // Parse initial model value into builder on page load
+        const initialConn = document.getElementById('connStringInput').value;
+        if (initialConn) {
+            parseRawToBuilder(initialConn);
+            updateCharCount(initialConn);
+        }
+    </script>
+}

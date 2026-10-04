@@ -1,0 +1,88 @@
+@model IEnumerable<ExwhyzeeSP.Core.Models.Testimony>
+@{
+    ViewData["Title"] = "Testimonials & Success Stories";
+    ViewData["MetaDescription"] = "See how schools, principals, educators, and accountants achieve efficiency and academic excellence with Exwhyzee SP.";
+    Layout = "_PublicLayout";
+}
+
+<!-- Banner Section Start -->
+<div class="sisf-banner position-relative">
+   <div class="banner-img">
+      <figure>
+         <img src="/assets/images/page-banner.png" alt="Exwhyzee SP Testimonials">
+      </figure>
+   </div>
+   <div class="sisf-page-title sisf-m sisf-title--standard sisf-alignment--center">
+      <div class="sisf-m-inner container">
+         <div class="sisf-breadcrumbs mb-2">
+            <a class="sisf-breadcrumbs-link text-white" href="/">
+            <span>Home</span>
+            </a>
+            <span class="sisf-breadcrumbs-separator text-white mx-2"><i class="fa-solid fa-chevron-right"></i></span>
+            <span class="sisf-breadcrumbs-current text-white">Testimonials</span>
+         </div>
+         <div class="sisf-m-content sisf-content-grid ">
+            <h1 class="sisf-m-title text-white sis-text-anime-style-3 entry-title">School Success Stories</h1>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Banner Section End -->
+
+<div class="py-5 bg-light">
+   <div class="container py-4">
+      <div class="text-center mb-5" data-aos="fade-up">
+         <span class="badge bg-primary px-3 py-2 text-uppercase mb-2">Verified School Reviews</span>
+         <h2 class="display-6 fw-bold">What School Leaders Say About Exwhyzee SP</h2>
+         <p class="text-muted mx-auto" style="max-width: 650px;">From single-campus primary academies to large secondary institutions and group of schools.</p>
+      </div>
+
+      <div class="row g-4">
+         @if (Model != null && Model.Any())
+         {
+            @foreach (var item in Model)
+            {
+               <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                  <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white d-flex flex-column justify-content-between">
+                     <div>
+                        <div class="text-warning mb-3">
+                           @for (int i = 0; i < (item.Rating > 0 ? item.Rating : 5); i++)
+                           {
+                              <i class="fa-solid fa-star"></i>
+                           }
+                        </div>
+                        <p class="text-muted">"@item.Description"</p>
+                     </div>
+                     <div>
+                        <hr>
+                        <div class="d-flex align-items-center gap-3">
+                           <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px; font-size: 16px;">
+                              @(!string.IsNullOrEmpty(item.Title) ? item.Title.Substring(0, 1) : "E")
+                           </div>
+                           <div>
+                              <h6 class="fw-bold mb-0">@item.Title</h6>
+                              <span class="small text-muted d-block">@item.Position</span>
+                              @if (!string.IsNullOrEmpty(item.SchoolName))
+                              {
+                                 <span class="small text-primary fw-semibold">@item.SchoolName</span>
+                              }
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            }
+         }
+         else
+         {
+            <div class="col-12 text-center py-5">
+               <p class="text-muted">No testimonials found.</p>
+            </div>
+         }
+      </div>
+
+      <div class="text-center mt-5" data-aos="fade-up">
+         <a href="/Demo" class="sis-btn-default shadow-none py-3 px-4">Join Hundreds of Satisfied Schools <i class="fa-solid fa-arrow-right-long"></i></a>
+      </div>
+   </div>
+</div>

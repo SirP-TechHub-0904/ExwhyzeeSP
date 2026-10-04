@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ExwhyzeeSP.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExwhyzeeSP.Core\ExwhyzeeSP.Core.csproj" />
+    <ProjectReference Include="..\ExwhyzeeSP.Data\ExwhyzeeSP.Data.csproj" />
+    <ProjectReference Include="..\ExwhyzeeSP.Services\ExwhyzeeSP.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
+    <PackageReference Include="System.Management" Version="10.0.12" />
+    <PackageReference Include="X.PagedList" Version="10.5.7" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="10.5.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="ExwhyzeeSP.Services" />
+    <Using Include="ExwhyzeeSP.Core.Dtos" />
+    <Using Include="ExwhyzeeSP.Web.Models" />
+    <Using Include="ExwhyzeeSP.Core.Models" />
+    <Using Include="ExwhyzeeSP.Core.Entities" />
+    <Using Include="ExwhyzeeSP.Data.Contexts" />
+    <Using Include="Microsoft.AspNetCore.Mvc.Rendering" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+    <Using Include="Microsoft.AspNetCore.Identity" />
+    <Using Include="Microsoft.AspNet.Identity.Owin" />
+    <Using Include="Microsoft.AspNetCore.Authentication" />
+    <Using Include="System.Security.Claims" />
+    <Using Include="System.Security.Principal" />
+    <Using Include="X.PagedList" />
+    <Using Include="X.PagedList.Extensions" />
+  </ItemGroup>
+
+</Project>

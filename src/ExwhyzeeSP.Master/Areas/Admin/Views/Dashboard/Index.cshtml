@@ -1,0 +1,447 @@
+@model ExwhyzeeSP.Master.Models.DashboardTabViewModel
+@{
+    ViewData["Title"] = "Platform Statistics Dashboard";
+}
+
+<div class="space-y-6">
+
+    <!-- ============ Header Title & Primary Action Controls ============ -->
+    <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="font-display font-bold text-2xl tracking-tight text-[var(--text-primary)]">Platform Statistics &amp; Overview</h1>
+            <p class="text-[13px] text-[var(--text-tertiary)] mt-0.5">Real-time metrics, financial ledger summaries, student enrolment data, and school status.</p>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+            <a asp-area="Admin" asp-controller="Tenants" asp-action="Create" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12.5px] font-semibold text-white bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] shadow-sm transition-all text-decoration-none">
+                <i class="icon-plus text-[14px]"></i>
+                <span>Add New School</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ============ MASTER TAB NAVIGATION BAR ============ -->
+    <div class="border-b border-[var(--border-subtle)] pb-px flex items-center justify-between gap-4 overflow-x-auto scroll-thin">
+        <nav class="flex items-center gap-2" role="tablist" id="dashboardTabNav">
+            <button type="button" class="dashboard-tab-btn @(Model.ActiveTab == "schools" ? "active" : "")" data-tab="schools">
+                <i class="icon-school text-[15px]"></i>
+                <span>Schools Statistics</span>
+            </button>
+
+            <button type="button" class="dashboard-tab-btn @(Model.ActiveTab == "finance" ? "active" : "")" data-tab="finance">
+                <i class="icon-wallet text-[15px]"></i>
+                <span>Finance &amp; Invoicing</span>
+            </button>
+
+            <button type="button" class="dashboard-tab-btn @(Model.ActiveTab == "academics" ? "active" : "")" data-tab="academics">
+                <i class="icon-users text-[15px]"></i>
+                <span>Academic &amp; Students</span>
+            </button>
+
+            <button type="button" class="dashboard-tab-btn @(Model.ActiveTab == "marketing" ? "active" : "")" data-tab="marketing">
+                <i class="icon-send text-[15px]"></i>
+                <span>Marketing &amp; Growth</span>
+            </button>
+
+            <button type="button" class="dashboard-tab-btn @(Model.ActiveTab == "content" ? "active" : "")" data-tab="content">
+                <i class="icon-book-open text-[15px]"></i>
+                <span>Content &amp; Public CMS</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ============ DATE RANGE FILTER TOOLBAR ============ -->
+    <div class="surface-card p-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] me-1">
+                <i class="icon-calendar text-[13px] text-[var(--color-primary-600)] me-1"></i> Range:
+            </span>
+            <div class="inline-flex items-center p-1 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] flex-wrap gap-1" id="dateRangeControls">
+                <button type="button" class="date-range-btn @(Model.DateRange == "year" ? "active" : "")" data-range="year">This Year</button>
+                <button type="button" class="date-range-btn @(Model.DateRange == "month" ? "active" : "")" data-range="month">This Month</button>
+                <button type="button" class="date-range-btn @(Model.DateRange == "term" ? "active" : "")" data-range="term">This Term</button>
+                <button type="button" class="date-range-btn @(Model.DateRange == "week" ? "active" : "")" data-range="week">This Week</button>
+                <button type="button" class="date-range-btn @(Model.DateRange == "today" ? "active" : "")" data-range="today">Today</button>
+                <button type="button" class="date-range-btn @(Model.DateRange == "custom" ? "active" : "")" data-range="custom">Custom</button>
+            </div>
+
+            <!-- Custom Date Range Picker Container -->
+            <div id="customDateInputs" class="@(Model.DateRange == "custom" ? "flex" : "hidden") items-center gap-1.5 flex-wrap ms-1">
+                <div class="flex items-center gap-1">
+                    <span class="text-xs text-[var(--text-tertiary)] font-medium">From:</span>
+                    <input type="date" id="customStartDate" class="text-xs py-1 px-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-base)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-600)]" value="@(Model.StartDate?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-xs text-[var(--text-tertiary)] font-medium">To:</span>
+                    <input type="date" id="customEndDate" class="text-xs py-1 px-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-base)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--color-primary-600)]" value="@(Model.EndDate?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd"))" />
+                </div>
+                <button type="button" id="btnApplyCustomDate" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-white bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] transition-colors shadow-sm">
+                    Apply
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 ms-auto">
+            <button type="button" id="btnRefreshTab" class="btn btn-outline text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5" title="Refresh Statistics">
+                <i class="icon-refresh-cw text-[13px]" id="refreshIcon"></i>
+                <span>Refresh Data</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ DYNAMIC TAB CONTAINER WITH INTEGRATED SPINNER ============ -->
+    <div class="relative" style="min-height: 280px;">
+
+        <!-- Loading Overlay (Shown while switching tabs or ranges) -->
+        <div id="tabLoadingOverlay" class="hidden absolute inset-0 z-20 bg-[var(--surface-base)]/70 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center p-8 transition-opacity duration-200">
+            <div class="size-12 rounded-full border-4 border-[var(--color-primary-500)]/20 border-t-[var(--color-primary-600)] animate-spin mb-3"></div>
+            <p class="text-sm font-semibold text-[var(--text-primary)]">Loading Statistics...</p>
+            <span class="text-xs text-[var(--text-tertiary)] mt-0.5">Fetching latest metrics &amp; top rankings</span>
+        </div>
+
+        <!-- Dynamic Content Body -->
+        <div id="dashboardTabContainer">
+            <partial name="_DashboardTabContent" model="Model" />
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .dashboard-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1rem;
+        border-radius: 0.75rem 0.75rem 0 0;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--text-tertiary);
+        border-bottom: 2px solid transparent;
+        transition: all 0.15s ease-in-out;
+        white-space: nowrap;
+        background: transparent;
+    }
+    .dashboard-tab-btn:hover {
+        color: var(--text-primary);
+        background-color: var(--surface-sunken);
+    }
+    .dashboard-tab-btn.active {
+        color: var(--color-primary-600);
+        border-bottom-color: var(--color-primary-600);
+        background-color: color-mix(in oklab, var(--color-primary-500) 8%, transparent);
+    }
+
+    .date-range-btn {
+        padding: 0.25rem 0.625rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-tertiary);
+        transition: all 0.15s ease-in-out;
+        background: transparent;
+    }
+    .date-range-btn:hover {
+        color: var(--text-primary);
+    }
+    .date-range-btn.active {
+        background-color: var(--surface-raised);
+        color: var(--text-primary);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+</style>
+
+@section Scripts {
+    <!-- Include Chart.js for smooth multi-view canvas graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script>
+        (function () {
+            let currentTab = '@Model.ActiveTab';
+            let currentRange = '@Model.DateRange';
+            let chartInstance = null;
+            let currentChartType = 'bar'; // default view: bar
+
+            const tabContainer = document.getElementById('dashboardTabContainer');
+            const loadingOverlay = document.getElementById('tabLoadingOverlay');
+            const refreshBtn = document.getElementById('btnRefreshTab');
+            const refreshIcon = document.getElementById('refreshIcon');
+            const customDateInputs = document.getElementById('customDateInputs');
+            const customStartDate = document.getElementById('customStartDate');
+            const customEndDate = document.getElementById('customEndDate');
+            const btnApplyCustomDate = document.getElementById('btnApplyCustomDate');
+
+            // 1. Initial Chart Render on Page Load
+            renderActiveChart(currentChartType);
+
+            // 2. Tab Switch Handler
+            document.querySelectorAll('#dashboardTabNav .dashboard-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const newTab = this.getAttribute('data-tab');
+                    if (newTab === currentTab) return;
+
+                    document.querySelectorAll('#dashboardTabNav .dashboard-tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    currentTab = newTab;
+                    // Update URL history without reload
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('tab', currentTab);
+                    newUrl.searchParams.set('range', currentRange);
+                    window.history.pushState({}, '', newUrl);
+
+                    fetchTabContent();
+                });
+            });
+
+            // 3. Date Range Switch Handler
+            document.querySelectorAll('#dateRangeControls .date-range-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const newRange = this.getAttribute('data-range');
+
+                    document.querySelectorAll('#dateRangeControls .date-range-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    currentRange = newRange;
+
+                    if (newRange === 'custom') {
+                        customDateInputs?.classList.remove('hidden');
+                        customDateInputs?.classList.add('flex');
+                        return; // User will click Apply to load
+                    } else {
+                        customDateInputs?.classList.remove('flex');
+                        customDateInputs?.classList.add('hidden');
+                    }
+
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('tab', currentTab);
+                    newUrl.searchParams.set('range', currentRange);
+                    newUrl.searchParams.delete('startDate');
+                    newUrl.searchParams.delete('endDate');
+                    window.history.pushState({}, '', newUrl);
+
+                    fetchTabContent();
+                });
+            });
+
+            // Custom Range Apply Button Handler
+            btnApplyCustomDate?.addEventListener('click', function () {
+                const sDate = customStartDate?.value;
+                const eDate = customEndDate?.value;
+
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.set('tab', currentTab);
+                newUrl.searchParams.set('range', 'custom');
+                if (sDate) newUrl.searchParams.set('startDate', sDate);
+                if (eDate) newUrl.searchParams.set('endDate', eDate);
+                window.history.pushState({}, '', newUrl);
+
+                fetchTabContent();
+            });
+
+            // 4. Refresh Button
+            refreshBtn?.addEventListener('click', function () {
+                refreshIcon?.classList.add('animate-spin');
+                fetchTabContent(() => {
+                    setTimeout(() => refreshIcon?.classList.remove('animate-spin'), 400);
+                });
+            });
+
+            // 5. Asynchronous Dynamic Tab Fetcher (Lazy Loading)
+            async function fetchTabContent(callback) {
+                loadingOverlay?.classList.remove('hidden');
+
+                try {
+                    let url = `/Admin/Dashboard/GetTabContent?tab=${encodeURIComponent(currentTab)}&range=${encodeURIComponent(currentRange)}`;
+                    if (currentRange === 'custom') {
+                        if (customStartDate?.value) url += `&startDate=${encodeURIComponent(customStartDate.value)}`;
+                        if (customEndDate?.value) url += `&endDate=${encodeURIComponent(customEndDate.value)}`;
+                    }
+
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Failed to load tab statistics');
+
+                    const html = await response.text();
+                    if (tabContainer) {
+                        tabContainer.innerHTML = html;
+                    }
+
+                    // Re-render chart for the newly loaded tab
+                    renderActiveChart(currentChartType);
+                    attachChartControlListeners();
+                } catch (err) {
+                    console.error('Error loading tab:', err);
+                } finally {
+                    loadingOverlay?.classList.add('hidden');
+                    if (callback) callback();
+                }
+            }
+
+            // 6. Multi-View Chart Renderer (Bar, Area, Donut)
+            function renderActiveChart(viewType) {
+                const canvas = document.getElementById('dashboardActiveChart');
+                if (!canvas) return;
+
+                const payloadElem = document.getElementById('chartConfigPayload');
+                if (!payloadElem) return;
+
+                let payload = {};
+                try {
+                    payload = JSON.parse(payloadElem.textContent || '{}');
+                } catch (e) {
+                    console.error('Failed to parse chart payload', e);
+                    return;
+                }
+
+                if (chartInstance) {
+                    chartInstance.destroy();
+                    chartInstance = null;
+                }
+
+                const ctx = canvas.getContext('2d');
+                currentChartType = viewType;
+
+                const isDark = document.documentElement.classList.contains('dark');
+                const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+                const textColor = isDark ? '#94a3b8' : '#64748b';
+
+                if (viewType === 'donut') {
+                    // DONUT / PROPORTION VIEW
+                    chartInstance = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: payload.donutLabels || [],
+                            datasets: [{
+                                data: payload.donutValues || [],
+                                backgroundColor: [
+                                    '#0284c7', // sky-600
+                                    '#10b981', // emerald-500
+                                    '#f59e0b', // amber-500
+                                    '#8b5cf6', // violet-500
+                                    '#f43f5e'  // rose-500
+                                ],
+                                borderWidth: 2,
+                                borderColor: isDark ? '#1e293b' : '#ffffff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { color: textColor, font: { family: 'inherit', size: 12 } }
+                                }
+                            },
+                            cutout: '65%'
+                        }
+                    });
+                } else if (viewType === 'area') {
+                    // SMOOTH AREA / TREND VIEW
+                    chartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: payload.labels || [],
+                            datasets: [
+                                {
+                                    label: payload.series1 || 'Metric',
+                                    data: payload.values1 || [],
+                                    borderColor: '#0284c7',
+                                    backgroundColor: 'rgba(2, 132, 199, 0.12)',
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6
+                                },
+                                {
+                                    label: payload.series2 || 'Comparison',
+                                    data: payload.values2 || [],
+                                    borderColor: '#10b981',
+                                    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                    labels: { color: textColor, font: { family: 'inherit', size: 12 } }
+                                }
+                            },
+                            scales: {
+                                x: { grid: { color: gridColor }, ticks: { color: textColor } },
+                                y: { grid: { color: gridColor }, ticks: { color: textColor } }
+                            }
+                        }
+                    });
+                } else {
+                    // DEFAULT GROUPED BAR VIEW
+                    chartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: payload.labels || [],
+                            datasets: [
+                                {
+                                    label: payload.series1 || 'Primary Value',
+                                    data: payload.values1 || [],
+                                    backgroundColor: 'rgba(2, 132, 199, 0.85)',
+                                    borderRadius: 6,
+                                    maxBarThickness: 36
+                                },
+                                {
+                                    label: payload.series2 || 'Secondary Value',
+                                    data: payload.values2 || [],
+                                    backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                                    borderRadius: 6,
+                                    maxBarThickness: 36
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                    labels: { boxWidth: 12, color: textColor, font: { family: 'inherit', size: 12 } }
+                                }
+                            },
+                            scales: {
+                                x: { grid: { color: gridColor }, ticks: { color: textColor } },
+                                y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, precision: 0 } }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // 7. Graph Type Switcher Controls (Bar vs Area vs Donut)
+            function attachChartControlListeners() {
+                document.querySelectorAll('#chartViewControls .chart-mode-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const targetType = this.getAttribute('data-chart-type');
+                        document.querySelectorAll('#chartViewControls .chart-mode-btn').forEach(b => {
+                            b.classList.remove('active', 'bg-[var(--surface-raised)]', 'text-[var(--text-primary)]', 'shadow-sm');
+                            b.classList.add('text-[var(--text-tertiary)]');
+                        });
+                        this.classList.add('active', 'bg-[var(--surface-raised)]', 'text-[var(--text-primary)]', 'shadow-sm');
+                        this.classList.remove('text-[var(--text-tertiary)]');
+
+                        renderActiveChart(targetType);
+                    });
+                });
+            }
+
+            attachChartControlListeners();
+
+        })();
+    </script>
+}

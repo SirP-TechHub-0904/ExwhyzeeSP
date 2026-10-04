@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Access Restricted";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow border-0 p-4">
+                <div class="card-body">
+                    <div class="rounded-circle bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-danger">Access Restricted</h3>
+                    <p class="text-muted">
+                        You do not have permission to access this administrative module. Please contact your SuperAdmin if you believe this is in error.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-speedometer2 me-1"></i> Return to Dashboard
+                        </a>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="bi bi-globe2 me-1"></i> Public Website
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

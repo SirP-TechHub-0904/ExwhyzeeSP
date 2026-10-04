@@ -1,0 +1,26 @@
+@model ExwhyzeeSP.Core.Entities.UI.SiteNewsPostList
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    @Html.Raw(ViewBag.head)
+    @Html.Raw(ViewBag.overridecss)
+</head>
+
+<body>
+
+    @foreach (var x in ViewBag.post)
+    {
+        @Html.Raw(x.Content)
+    }
+
+    @Html.Raw(ViewBag.footerJs)
+</body>
+</html>
+
+

@@ -1,0 +1,39 @@
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Account Suspended";
+    var email = ViewBag.Email as string;
+}
+
+<!-- Auth Card -->
+<div class="auth-card text-center animate-rise-in">
+    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-danger-subtle text-danger mb-3" style="width: 64px; height: 64px; font-size: 28px;">
+        <i class="bi bi-slash-circle-fill"></i>
+    </div>
+
+    <h4 class="fw-bold text-white mb-2">Account Access Suspended</h4>
+    <p class="text-secondary small mb-4">
+        Your Master Platform administrator privileges have been temporarily deactivated.
+    </p>
+
+    <div class="p-3 rounded-3 mb-4 text-start" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2);">
+        <div class="d-flex align-items-start gap-2 text-danger small mb-2">
+            <i class="bi bi-shield-lock-fill mt-1"></i>
+            <div>
+                <strong>Security Notice:</strong>
+                <div class="text-light opacity-75">Sign-in requests for <code class="text-warning">@(string.IsNullOrEmpty(email) ? "your account" : email)</code> are currently restricted by policy.</div>
+            </div>
+        </div>
+        <div class="text-secondary small pt-2 border-top border-danger border-opacity-10">
+            If you believe this status was applied in error or need reactivation, please reach out directly to your organization's Master Super Administrator.
+        </div>
+    </div>
+
+    <div class="d-grid gap-2">
+        <a asp-action="Login" class="btn btn-primary-custom py-2.5">
+            <i class="bi bi-arrow-left me-1"></i> Return to Sign In
+        </a>
+        <a href="mailto:superadmin@exwhyzee.ng" class="btn btn-outline-secondary py-2 small text-light border-opacity-25">
+            <i class="bi bi-envelope me-1"></i> Contact SuperAdmin Support
+        </a>
+    </div>
+</div>

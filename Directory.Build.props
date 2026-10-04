@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8625;CS0168;CS0219;CS0618;SYSLIB0014;MVC1000;CA1416;CA2022</NoWarn>
+  </PropertyGroup>
+</Project>

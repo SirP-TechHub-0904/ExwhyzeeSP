@@ -1,0 +1,292 @@
+@model ExwhyzeeSP.Master.Controllers.DetailsAdminUserViewModel
+@{
+    ViewData["Title"] = "Operator Details - " + Model.User.FullName;
+    Layout = "_AdminLayout";
+    var isReadOnly = (bool)(ViewBag.IsReadOnlyUser ?? false);
+    var primaryRole = Model.Roles.FirstOrDefault() ?? Model.User.RoleTitle;
+}
+
+<div class="space-y-5 max-w-6xl mx-auto">
+
+    <!-- ============ Hero Profile Header ============ -->
+    <div class="surface-card p-5 lg:p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Users">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-bold grid place-items-center text-xl shadow-sm">
+                    @((!string.IsNullOrEmpty(Model.User.FullName) ? Model.User.FullName[0].ToString() : "U").ToUpper())
+                    @if (Model.User.IsActive)
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-4 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" title="Active"></span>
+                    }
+                    else
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-4 rounded-full bg-rose-500 border-2 border-white dark:border-slate-900" title="Suspended"></span>
+                    }
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap mb-1">
+                        <h1 class="font-display font-bold text-[22px] tracking-tight text-[var(--text-primary)]">@Model.User.FullName</h1>
+                        
+                        @if (Model.IsSuperAdminRoot)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60">
+                                <i class="icon-shield-check text-[11px]"></i> Root SuperAdmin
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300">
+                                @primaryRole
+                            </span>
+                        }
+
+                        @if (Model.User.IsActive)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                <i class="icon-circle-check text-[10px]"></i> Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
+                                <i class="icon-circle-x text-[10px]"></i> Suspended
+                            </span>
+                        }
+
+                        @if (Model.User.RequirePasswordChange)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60" title="User must reset password on next login">
+                                <i class="icon-key text-[10px]"></i> Password Reset Pending
+                            </span>
+                        }
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-secondary)] flex items-center gap-3 flex-wrap">
+                        <span>Email: <strong class="text-[var(--text-primary)] font-mono">@Model.User.Email</strong></span>
+                        <span>&middot;</span>
+                        <span>Phone: <strong class="text-[var(--text-primary)] font-mono">@(string.IsNullOrEmpty(Model.User.PhoneNumber) ? "Not Provided" : Model.User.PhoneNumber)</strong></span>
+                        <span>&middot;</span>
+                        <span>Joined: @Model.User.CreatedDate.ToString("MMMM dd, yyyy")</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Toolbar Buttons -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto flex-wrap">
+                @if (!isReadOnly && !Model.IsSuperAdminRoot)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.User.Id" class="btn btn-primary text-xs font-semibold px-3.5 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none bg-sky-600 hover:bg-sky-700 text-white transition-colors">
+                        <i class="icon-edit-3 text-[14px]"></i>
+                        <span>Edit Profile &amp; Role</span>
+                    </a>
+
+                    <a asp-action="ResetPassword" asp-route-id="@Model.User.Id" class="btn btn-outline border-amber-500/40 text-amber-600 hover:bg-amber-500/10 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                        <i class="icon-key text-[14px]"></i>
+                        <span>Reset Password</span>
+                    </a>
+                }
+
+                <a asp-controller="Account" asp-action="ActivityLog" asp-area="" asp-route-search="@Model.User.Email" class="btn btn-outline border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none" title="View Audit Logs for @Model.User.Email">
+                    <i class="bi bi-clock-history text-[13px]"></i>
+                    <span>Audit Logs (@Model.AuditLogCount)</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Content Grid ============ -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+        <!-- Left Column: Details & Security (7 cols) -->
+        <div class="lg:col-span-7 space-y-5">
+
+            <!-- 1. Profile & Account Metadata -->
+            <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <i class="icon-user text-[16px] text-sky-600"></i>
+                    <span>Profile &amp; Session Metadata</span>
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                    <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+                        <span class="text-[var(--text-tertiary)] block text-[11px] mb-0.5">Operator ID</span>
+                        <code class="font-mono text-[11px] text-[var(--text-primary)] select-all">@Model.User.Id</code>
+                    </div>
+
+                    <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+                        <span class="text-[var(--text-tertiary)] block text-[11px] mb-0.5">Username</span>
+                        <strong class="font-mono text-[var(--text-primary)]">@Model.User.UserName</strong>
+                    </div>
+
+                    <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+                        <span class="text-[var(--text-tertiary)] block text-[11px] mb-0.5">Last Login Time</span>
+                        <strong class="text-[var(--text-primary)]">@(Model.User.LastLoginUtc.HasValue ? Model.User.LastLoginUtc.Value.ToString("MMM dd, yyyy HH:mm UTC") : "Never logged in")</strong>
+                    </div>
+
+                    <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30">
+                        <span class="text-[var(--text-tertiary)] block text-[11px] mb-0.5">Last Known IP</span>
+                        <code class="font-mono text-[var(--text-primary)]">@(string.IsNullOrEmpty(Model.User.LastLoginIp) ? "N/A" : Model.User.LastLoginIp)</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Security & 2FA Controls -->
+            <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <i class="icon-shield-check text-[16px] text-sky-600"></i>
+                    <span>Security &amp; Multi-Factor Controls</span>
+                </h2>
+
+                <div class="space-y-3 text-xs">
+                    <!-- 2FA Status Row -->
+                    <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <strong class="text-[var(--text-primary)]">Two-Factor Authentication (2FA)</strong>
+                                @if (Model.User.TwoFactorEnabled)
+                                {
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">Enabled</span>
+                                }
+                                else
+                                {
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Disabled</span>
+                                }
+                            </div>
+                            <span class="text-[11px] text-[var(--text-secondary)] block mt-0.5">
+                                Verification Channel: @(Model.User.TwoFactorChannel ?? "None")
+                            </span>
+                        </div>
+
+                        @if (!isReadOnly && Model.User.TwoFactorEnabled)
+                        {
+                            <form asp-action="Disable2Fa" asp-route-id="@Model.User.Id" method="post" onsubmit="return confirm('Are you sure you want to disable 2FA for this operator? They will log in using password only.');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline border-rose-300 dark:border-rose-900 text-rose-600 dark:text-rose-400 hover:bg-rose-50 text-[11.5px] font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                                    <i class="icon-shield-off text-[13px]"></i>
+                                    <span>Reset 2FA</span>
+                                </button>
+                            </form>
+                        }
+                    </div>
+
+                    <!-- Password Requirement Row -->
+                    <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between gap-4">
+                        <div>
+                            <strong class="text-[var(--text-primary)] block">Mandatory Password Change</strong>
+                            <span class="text-[11px] text-[var(--text-secondary)]">
+                                @(Model.User.RequirePasswordChange ? "User must change password on their next sign-in." : "No password change is currently mandated.")
+                            </span>
+                        </div>
+
+                        @if (!isReadOnly && !Model.IsSuperAdminRoot)
+                        {
+                            <form asp-action="ToggleRequirePasswordChange" asp-route-id="@Model.User.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline @(Model.User.RequirePasswordChange ? "border-slate-300 text-slate-700 dark:text-slate-300" : "border-amber-400 text-amber-600 hover:bg-amber-50") text-[11.5px] font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                                    <span>@(Model.User.RequirePasswordChange ? "Cancel Mandate" : "Force Reset on Login")</span>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Status & Credentials Dispatch (5 cols) -->
+        <div class="lg:col-span-5 space-y-5">
+
+            <!-- 1. Account Status & Suspension -->
+            <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <i class="icon-slash text-[16px] text-rose-500"></i>
+                    <span>Account Lifecycle &amp; Status</span>
+                </h2>
+
+                @if (Model.IsSuperAdminRoot)
+                {
+                    <div class="p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/40 dark:bg-emerald-950/20 text-xs">
+                        <strong class="text-emerald-800 dark:text-emerald-300 block mb-1">Root SuperAdmin Protected</strong>
+                        <p class="text-emerald-700 dark:text-emerald-400 leading-relaxed text-[11.5px]">
+                            This root platform account cannot be suspended or deactivated to prevent administrative lockout.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3.5 rounded-xl border @(Model.User.IsActive ? "border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/40 dark:bg-emerald-950/20" : "border-rose-200 dark:border-rose-900/40 bg-rose-50/40 dark:bg-rose-950/20")">
+                            <div class="flex items-center justify-between mb-1">
+                                <strong class="text-[var(--text-primary)]">Current Access State</strong>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold @(Model.User.IsActive ? "bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200" : "bg-rose-200 dark:bg-rose-900 text-rose-800 dark:text-rose-200")">
+                                    @(Model.User.IsActive ? "ACTIVE" : "SUSPENDED")
+                                </span>
+                            </div>
+                            @if (!Model.User.IsActive && !string.IsNullOrEmpty(Model.User.SuspensionReason))
+                            {
+                                <p class="text-rose-700 dark:text-rose-300 mt-1 text-[11.5px]">
+                                    <strong>Reason:</strong> @Model.User.SuspensionReason
+                                </p>
+                            }
+                        </div>
+
+                        @if (!isReadOnly)
+                        {
+                            <form asp-action="ToggleStatus" asp-route-id="@Model.User.Id" method="post" class="space-y-3">
+                                @Html.AntiForgeryToken()
+                                @if (Model.User.IsActive)
+                                {
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase mb-1">Reason for Suspension (Optional)</label>
+                                        <input type="text" name="reason" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[var(--text-primary)] focus:outline-none focus:border-rose-500" placeholder="e.g. Temporary leave / Role review" />
+                                    </div>
+                                    <button type="submit" class="btn btn-outline border-rose-300 dark:border-rose-900 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-bold w-full py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2" onclick="return confirm('Are you sure you want to SUSPEND this operator account? They will be immediately blocked from signing in.');">
+                                        <i class="icon-user-x text-[15px]"></i>
+                                        <span>Suspend Operator Account</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold w-full py-2.5 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2" onclick="return confirm('Are you sure you want to REACTIVATE this operator account?');">
+                                        <i class="icon-user-check text-[15px]"></i>
+                                        <span>Reactivate Operator Account</span>
+                                    </button>
+                                }
+                            </form>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- 2. Dispatch Access Email -->
+            @if (!isReadOnly)
+            {
+                <div class="surface-card p-5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                        <i class="icon-mail text-[16px] text-sky-600"></i>
+                        <span>Credentials Onboarding Dispatch</span>
+                    </h2>
+                    <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+                        Send an automated welcome notification to <strong class="text-[var(--text-primary)] font-mono">@Model.User.Email</strong> with portal sign-in instructions.
+                    </p>
+                    <form asp-action="SendWelcomeEmail" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="userId" value="@Model.User.Id" />
+                        <button type="submit" class="btn btn-outline border-sky-300 dark:border-sky-800 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 text-xs font-bold w-full py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i class="icon-send text-[14px]"></i>
+                            <span>Email Portal Sign-In Instructions</span>
+                        </button>
+                    </form>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

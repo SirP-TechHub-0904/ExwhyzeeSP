@@ -1,0 +1,456 @@
+@model ExwhyzeeSP.Master.Models.TwoFactorManageViewModel
+@{
+    ViewData["Title"] = "Two-Factor Authentication (2FA)";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var activeChannel = Model.PreferredChannel ?? "Email";
+    var isEnabled = Model.Is2faEnabled;
+}
+
+<div class="space-y-6">
+
+    <!-- Page Header & Action Controls -->
+    <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Two-Factor Authentication (2FA)</h1>
+                @if (isEnabled)
+                {
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                        <i class="bi bi-shield-check text-xs"></i> 2FA Enabled &amp; Active
+                    </span>
+                }
+                else
+                {
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60">
+                        <i class="bi bi-exclamation-triangle text-xs"></i> 2FA Disabled (Recommended to Enable)
+                    </span>
+                }
+            </div>
+            <p class="text-xs sm:text-[13px] text-[var(--text-secondary)]">
+                Add an extra layer of multi-factor protection to your master administrator account.
+            </p>
+        </div>
+
+        <a asp-action="Profile" class="btn btn-outline border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none transition-colors shrink-0">
+            <i class="bi bi-arrow-left text-[14px]"></i>
+            <span>Back to Profile</span>
+        </a>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-3 shadow-sm">
+            <i class="bi bi-check-circle-fill text-[18px]"></i>
+            <span class="text-xs font-semibold">@TempData["SuccessMessage"]</span>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3 shadow-sm">
+            <i class="bi bi-exclamation-triangle-fill text-[18px]"></i>
+            <span class="text-xs font-semibold">@TempData["ErrorMessage"]</span>
+        </div>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center gap-3 shadow-sm">
+            <i class="bi bi-info-circle-fill text-[18px]"></i>
+            <span class="text-xs font-semibold">@TempData["InfoMessage"]</span>
+        </div>
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Main Form & Method Selection (8 cols) -->
+        <div class="lg:col-span-8 space-y-6">
+
+            @if (isEnabled)
+            {
+                <!-- Current Active 2FA Banner -->
+                <div class="surface-card rounded-2xl border border-emerald-200 dark:border-emerald-900/40 p-6 shadow-sm bg-gradient-to-br from-emerald-50/40 to-white dark:from-emerald-950/20 dark:to-slate-900">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md">
+                            <i class="bi bi-shield-check text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-base font-bold text-[var(--text-primary)]">Your Account is Protected with 2FA</h3>
+                            <p class="text-xs text-[var(--text-secondary)] mt-1">
+                                Every sign-in requires both your master password and secondary verification.
+                            </p>
+
+                            <div class="mt-4 p-3.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3">
+                                <div>
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] block">Active Verification Channel:</span>
+                                    <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2 mt-0.5">
+                                        @if (activeChannel == "Google")
+                                        {
+                                            <i class="bi bi-phone text-base"></i>
+                                            <span>Google Authenticator (TOTP App)</span>
+                                        }
+                                        else if (activeChannel == "Microsoft")
+                                        {
+                                            <i class="bi bi-shield-lock text-base"></i>
+                                            <span>Microsoft Authenticator (TOTP App)</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-envelope text-base"></i>
+                                            <span>Email OTP (@Model.UserEmail)</span>
+                                        }
+                                    </span>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                    Enforced
+                                </span>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-emerald-200/60 dark:border-emerald-900/40 flex items-center justify-between flex-wrap gap-3">
+                                <span class="text-xs text-[var(--text-secondary)]">Need to disable or switch authentication mode?</span>
+                                <form asp-action="ToggleTwoFactor" method="post" onsubmit="return confirm('Are you sure you want to disable 2FA? This will lower your administrator account security.');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="enable" value="false" />
+                                    <button type="submit" class="btn btn-outline border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer">
+                                        <i class="bi bi-slash-circle text-xs"></i>
+                                        <span>Disable 2FA Protection</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- 2FA Channel Configuration -->
+            <div class="surface-card rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm">
+                <div class="border-b border-slate-100 dark:border-slate-800/80 pb-4 mb-5">
+                    <h2 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <i class="bi bi-lock-fill text-[18px] text-sky-500"></i>
+                        <span>@(isEnabled ? "Switch 2FA Verification Channel" : "Choose Your 2FA Authentication Method")</span>
+                    </h2>
+                    <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                        Select from the 3 supported verification methods below to secure your sign-in process.
+                    </p>
+                </div>
+
+                <form asp-action="ToggleTwoFactor" method="post" id="twoFactorForm" class="space-y-6" onsubmit="return validateTwoFactorSubmission(event)">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="enable" value="true" />
+
+                    <!-- 3 Authentication Options Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+
+                        <!-- 1. Google Authenticator -->
+                        <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 bg-white dark:bg-slate-900 hover:border-sky-400 channel-card" id="cardGoogle" onclick="selectChannel('Google')">
+                            <input type="radio" name="channel" value="Google" class="sr-only" @(activeChannel == "Google" ? "checked" : "") />
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 flex items-center justify-center border border-red-200 dark:border-red-900/40">
+                                    <i class="bi bi-phone text-lg"></i>
+                                </div>
+                                <span class="size-4 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center channel-indicator" id="indGoogle">
+                                    <span class="size-2 rounded-full bg-sky-600 hidden"></span>
+                                </span>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Google Authenticator</span>
+                            <span class="text-[11px] text-[var(--text-secondary)] mt-1 block leading-relaxed">
+                                Time-based OTP generated locally on your mobile app every 30s.
+                            </span>
+                            <span class="inline-block mt-3 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 w-fit">
+                                TOTP App
+                            </span>
+                        </label>
+
+                        <!-- 2. Microsoft Authenticator -->
+                        <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 bg-white dark:bg-slate-900 hover:border-sky-400 channel-card" id="cardMicrosoft" onclick="selectChannel('Microsoft')">
+                            <input type="radio" name="channel" value="Microsoft" class="sr-only" @(activeChannel == "Microsoft" ? "checked" : "") />
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200 dark:border-blue-900/40">
+                                    <i class="bi bi-shield-lock text-lg"></i>
+                                </div>
+                                <span class="size-4 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center channel-indicator" id="indMicrosoft">
+                                    <span class="size-2 rounded-full bg-sky-600 hidden"></span>
+                                </span>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Microsoft Authenticator</span>
+                            <span class="text-[11px] text-[var(--text-secondary)] mt-1 block leading-relaxed">
+                                Corporate / enterprise TOTP security via Microsoft Authenticator app.
+                            </span>
+                            <span class="inline-block mt-3 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 w-fit">
+                                Enterprise App
+                            </span>
+                        </label>
+
+                        <!-- 3. Email OTP -->
+                        <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 bg-white dark:bg-slate-900 hover:border-sky-400 channel-card" id="cardEmail" onclick="selectChannel('Email')">
+                            <input type="radio" name="channel" value="Email" class="sr-only" @(activeChannel == "Email" ? "checked" : "") />
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-200 dark:border-emerald-900/40">
+                                    <i class="bi bi-envelope text-lg"></i>
+                                </div>
+                                <span class="size-4 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center channel-indicator" id="indEmail">
+                                    <span class="size-2 rounded-full bg-sky-600 hidden"></span>
+                                </span>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Email One-Time Code</span>
+                            <span class="text-[11px] text-[var(--text-secondary)] mt-1 block leading-relaxed">
+                                Dispatches an instant 6-digit verification code to your registered inbox.
+                            </span>
+                            <span class="inline-block mt-3 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 w-fit">
+                                No App Required
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <!-- TOTP App Setup Section (Google / Microsoft) -->
+                    <div id="authenticatorSetupBox" class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
+                                <i class="bi bi-qr-code text-[16px] text-sky-500"></i>
+                                <span id="authSetupTitle">Authenticator App Setup</span>
+                            </h3>
+                            <span class="text-[11px] text-slate-500 font-mono">Compatible with iOS &amp; Android</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                            <!-- QR Code Preview -->
+                            <div class="md:col-span-4 flex flex-col items-center p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=@Uri.EscapeDataString(Model.QrCodeUri ?? "")"
+                                     alt="2FA QR Code"
+                                     class="w-36 h-36 rounded-lg object-contain" />
+                                <span class="text-[10px] text-[var(--text-secondary)] mt-2 text-center font-medium">Scan with Authenticator App</span>
+                            </div>
+
+                            <!-- Setup Instructions & Secret Key -->
+                            <div class="md:col-span-8 space-y-3.5">
+                                <ol class="text-xs text-[var(--text-secondary)] space-y-2 list-decimal list-inside leading-relaxed">
+                                    <li>Open your <strong class="text-[var(--text-primary)]" id="appNameLabel">Google or Microsoft Authenticator</strong> app.</li>
+                                    <li>Scan the QR code, or manually enter the secret key below.</li>
+                                    <li>Enter the 6-digit confirmation code generated by your app.</li>
+                                </ol>
+
+                                <!-- Manual Entry Key Box -->
+                                <div>
+                                    <label class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Manual Setup Key:</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" id="secretKeyField" value="@Model.AuthenticatorKey" readonly class="w-full h-11 px-4 py-2 text-xs font-mono font-bold text-[var(--text-primary)] tracking-widest rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 outline-none shadow-xs" />
+                                        <button type="button" onclick="copySecretKey()" class="btn btn-outline border-slate-200 dark:border-slate-700 text-xs font-semibold h-11 px-4 rounded-xl shrink-0 flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer" title="Copy Key">
+                                            <i class="bi bi-clipboard text-[14px]"></i>
+                                            <span id="copyBtnText">Copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Verification Test Input -->
+                                <div class="pt-1">
+                                    <label class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Enter 6-Digit App Code To Confirm: <span class="text-rose-500">*</span></label>
+                                    <div class="space-y-1.5">
+                                        <input type="text" id="verificationCodeInput" name="verificationCode" maxlength="6" placeholder="000000" oninput="this.value = this.value.replace(/[^0-9]/g, ''); document.getElementById('codeError').classList.add('hidden');" class="w-48 h-11 px-4 text-base font-mono font-bold tracking-widest text-center text-sky-600 dark:text-sky-400 rounded-xl border border-sky-300 dark:border-sky-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-xs" />
+                                        <div id="codeError" class="hidden text-xs text-rose-600 font-semibold flex items-center gap-1">
+                                            <i class="bi bi-exclamation-circle text-xs"></i>
+                                            <span>Please enter the 6-digit code from your authenticator app.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email OTP Info Box -->
+                    <div id="emailInfoBox" class="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 text-xs space-y-1.5">
+                        <div class="flex items-center gap-2 font-bold text-emerald-700 dark:text-emerald-400">
+                            <i class="bi bi-envelope-check text-[16px]"></i>
+                            <span>Email One-Time Code (OTP) Delivery</span>
+                        </div>
+                        <p class="text-[var(--text-secondary)] leading-relaxed">
+                            Security OTP codes will be securely sent to your verified mailbox (<strong class="text-[var(--text-primary)] font-mono">@Model.UserEmail</strong>) upon every master login. No external apps are required.
+                        </p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                        <a asp-action="Profile" class="btn btn-outline border-slate-200 dark:border-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-decoration-none">
+                            Cancel
+                        </a>
+                        <button type="submit" id="submitBtn" class="btn btn-primary text-xs font-semibold px-6 py-2.5 rounded-xl flex items-center gap-2 shadow-sm bg-sky-600 hover:bg-sky-700 text-white transition-colors cursor-pointer">
+                            <i class="bi bi-shield-check text-[15px]"></i>
+                            <span id="submitBtnText">Update 2FA Settings</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- Right Side Security Info (4 cols) -->
+        <div class="lg:col-span-4 space-y-4">
+            <div class="surface-card rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center border border-sky-200 dark:border-sky-800/60">
+                        <i class="bi bi-shield-fill text-base"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-[var(--text-primary)]">Why Multi-Factor Auth?</h3>
+                        <p class="text-[11px] text-[var(--text-secondary)]">Enterprise-grade security controls</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3.5 text-xs text-[var(--text-secondary)]">
+                    <div class="flex items-start gap-2.5">
+                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm mt-0.5 shrink-0"></i>
+                        <div>
+                            <strong class="text-[var(--text-primary)] block">Credential Breach Immunity</strong>
+                            <span>Even if your password is exposed in a data breach, attackers cannot access the portal without your physical authenticator device.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5">
+                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm mt-0.5 shrink-0"></i>
+                        <div>
+                            <strong class="text-[var(--text-primary)] block">Google &amp; Microsoft App Support</strong>
+                            <span>Compatible with industry standard TOTP RFC-6238 authenticators (Google, Microsoft, 1Password, Authy).</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5">
+                        <i class="bi bi-check-circle-fill text-emerald-500 text-sm mt-0.5 shrink-0"></i>
+                        <div>
+                            <strong class="text-[var(--text-primary)] block">Instant Fraud Detection</strong>
+                            <span>Receiving an unexpected OTP or push immediately flags unauthorized sign-in attempts.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] text-[var(--text-secondary)]">
+                        <span class="font-bold text-[var(--text-primary)] block mb-1">Lost Authenticator Access?</span>
+                        Contact platform root administrator or security operations team for delegated reset recovery.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+    const isCurrently2faEnabled = @(isEnabled ? "true" : "false");
+    const currentlyActiveChannel = '@activeChannel';
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const initialChannel = document.querySelector('input[name="channel"]:checked')?.value || currentlyActiveChannel;
+        selectChannel(initialChannel);
+    });
+
+    function selectChannel(channel) {
+        // Reset radio borders & indicators
+        document.querySelectorAll('.channel-card').forEach(card => {
+            card.classList.remove('border-sky-500', 'ring-2', 'ring-sky-500/20', 'bg-sky-50/20', 'dark:bg-sky-950/20');
+            card.classList.add('border-slate-200', 'dark:border-slate-700');
+        });
+
+        document.querySelectorAll('.channel-indicator span').forEach(dot => {
+            dot.classList.add('hidden');
+        });
+
+        // Activate selected card
+        const targetCard = document.getElementById(`card${channel}`);
+        const targetRadio = document.querySelector(`input[name="channel"][value="${channel}"]`);
+        const targetIndicator = document.getElementById(`ind${channel}`)?.querySelector('span');
+
+        if (targetCard) {
+            targetCard.classList.add('border-sky-500', 'ring-2', 'ring-sky-500/20', 'bg-sky-50/20', 'dark:bg-sky-950/20');
+            targetCard.classList.remove('border-slate-200', 'dark:border-slate-700');
+        }
+
+        if (targetRadio) {
+            targetRadio.checked = true;
+        }
+
+        if (targetIndicator) {
+            targetIndicator.classList.remove('hidden');
+        }
+
+        const authBox = document.getElementById('authenticatorSetupBox');
+        const emailBox = document.getElementById('emailInfoBox');
+        const appNameLabel = document.getElementById('appNameLabel');
+        const authSetupTitle = document.getElementById('authSetupTitle');
+        const submitBtnText = document.getElementById('submitBtnText');
+        const submitBtn = document.getElementById('submitBtn');
+        const codeInput = document.getElementById('verificationCodeInput');
+        const codeError = document.getElementById('codeError');
+
+        if (codeError) codeError.classList.add('hidden');
+
+        if (channel === 'Google' || channel === 'Microsoft') {
+            if (authBox) authBox.style.display = 'block';
+            if (emailBox) emailBox.style.display = 'none';
+
+            if (channel === 'Google') {
+                if (appNameLabel) appNameLabel.innerText = 'Google Authenticator';
+                if (authSetupTitle) authSetupTitle.innerText = 'Google Authenticator Setup';
+                if (submitBtnText) submitBtnText.innerText = 'Verify Code & Enable Google 2FA';
+            } else {
+                if (appNameLabel) appNameLabel.innerText = 'Microsoft Authenticator';
+                if (authSetupTitle) authSetupTitle.innerText = 'Microsoft Authenticator Setup';
+                if (submitBtnText) submitBtnText.innerText = 'Verify Code & Enable Microsoft 2FA';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+            }
+        } else {
+            // Email OTP
+            if (authBox) authBox.style.display = 'none';
+            if (emailBox) emailBox.style.display = 'block';
+
+            if (isCurrently2faEnabled && currentlyActiveChannel === 'Email') {
+                if (submitBtnText) submitBtnText.innerText = 'Email OTP Currently Active';
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                }
+            } else {
+                if (submitBtnText) submitBtnText.innerText = isCurrently2faEnabled ? 'Switch to Email OTP' : 'Enable Email OTP';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
+            }
+        }
+    }
+
+    function validateTwoFactorSubmission(e) {
+        const selectedChannel = document.querySelector('input[name="channel"]:checked')?.value || 'Email';
+        if (selectedChannel === 'Google' || selectedChannel === 'Microsoft') {
+            const codeInput = document.getElementById('verificationCodeInput');
+            const codeVal = (codeInput?.value || '').trim();
+            if (!codeVal || codeVal.length < 6) {
+                e.preventDefault();
+                const codeError = document.getElementById('codeError');
+                if (codeError) {
+                    codeError.classList.remove('hidden');
+                }
+                codeInput?.focus();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function copySecretKey() {
+        const input = document.getElementById('secretKeyField');
+        if (input) {
+            navigator.clipboard.writeText(input.value.replace(/\s+/g, '')).then(() => {
+                const btnText = document.getElementById('copyBtnText');
+                if (btnText) {
+                    btnText.innerText = 'Copied!';
+                    setTimeout(() => { btnText.innerText = 'Copy'; }, 2000);
+                }
+            });
+        }
+    }
+</script>
+}

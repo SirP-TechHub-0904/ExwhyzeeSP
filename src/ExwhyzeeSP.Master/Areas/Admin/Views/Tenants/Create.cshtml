@@ -1,0 +1,597 @@
+@model ExwhyzeeSP.Master.Models.CreateTenantViewModel
+@using ExwhyzeeSP.Master.Models
+@{
+    ViewData["Title"] = "Deploy New School Portal";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Schools">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] grid place-items-center border border-[var(--color-primary-500)]/20 shadow-xs">
+                    <i class="icon-school text-[28px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">Deploy New School Portal</h1>
+                        <span class="badge-soft badge-primary">
+                            <i class="icon-sparkle text-[9px]"></i> Multi-Tenant Provisioning
+                        </span>
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1">
+                        Register a new school tenant, configure its dedicated subdomain routing, and provision database credentials.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to School List</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Create Form ============ -->
+    <form asp-action="Create" method="post" id="createSchoolForm" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs" role="alert"></div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+
+            <!-- Left Main Column (8 cols) -->
+            <div class="xl:col-span-8 space-y-4">
+
+                <!-- 1. School Identity & Web Routing -->
+                <div class="surface-card p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-school text-[16px] text-[var(--color-primary-600)]"></i>
+                                <span>1. School Profile &amp; Subdomain Routing</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Primary school branding and custom URL endpoints.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label asp-for="SchoolName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">School Name <span class="text-rose-500">*</span></label>
+                            <input asp-for="SchoolName" id="schoolNameInput" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. Divine Threshers Academy" required />
+                            <span asp-validation-for="SchoolName" class="text-xs text-rose-600 mt-1 block"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label asp-for="SubDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Default Subdomain <span class="text-rose-500">*</span></label>
+                                <div class="flex items-center">
+                                    <input asp-for="SubDomain" id="subdomainInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="divinethreshers" required />
+                                    <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-xs font-mono text-[var(--text-secondary)] shrink-0">.exwhyzee.ng</span>
+                                </div>
+                                <span asp-validation-for="SubDomain" class="text-xs text-rose-600 mt-1 block"></span>
+                                <div class="text-[11px] text-[var(--text-tertiary)] mt-1.5 flex items-center gap-1.5">
+                                    <span>Target:</span>
+                                    <code id="previewUrl" class="font-mono text-[var(--color-primary-600)] font-semibold">https://your-subdomain.exwhyzee.ng</code>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label asp-for="HostDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Custom Domain (Optional)</label>
+                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.divinethreshers.edu.ng" />
+                                <span asp-validation-for="HostDomain" class="text-xs text-rose-600 mt-1 block"></span>
+                                <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">School's proprietary domain if they don't want the default URL.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Database Provisioning Strategy -->
+                <div class="surface-card p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-database text-[16px] text-[var(--color-primary-600)]"></i>
+                                <span>2. School Data &amp; Storage Provisioning</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Choose how the school database will be created or mapped.</p>
+                        </div>
+                    </div>
+
+                    <!-- Provision Mode Selection Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="p-4 rounded-xl border-2 transition-all cursor-pointer bg-[var(--surface-card)] hover:border-[var(--color-primary-500)]" id="cardAutoDb" onclick="selectOption('auto')">
+                            <div class="flex items-start gap-3">
+                                <input type="radio" asp-for="ProvisionMode" id="optAuto" value="@ExwhyzeeSP.Master.Models.DatabaseProvisionMode.AutoCreateDatabase" checked class="mt-1 text-[var(--color-primary-600)]" />
+                                <div>
+                                    <span class="text-xs font-bold text-[var(--text-primary)] block">Automatic Creation (Recommended)</span>
+                                    <p class="text-[11.5px] text-[var(--text-secondary)] mt-1 leading-relaxed">
+                                        Creates a new isolated database schema (<code>db_school_...</code>), generates a dedicated user, and builds the connection string.
+                                    </p>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="p-4 rounded-xl border-2 transition-all cursor-pointer bg-[var(--surface-card)] hover:border-[var(--color-primary-500)]" id="cardExistingDb" onclick="selectOption('existing')">
+                            <div class="flex items-start gap-3">
+                                <input type="radio" asp-for="ProvisionMode" id="optExisting" value="@ExwhyzeeSP.Master.Models.DatabaseProvisionMode.ExistingConnectionString" class="mt-1 text-[var(--color-primary-600)]" />
+                                <div>
+                                    <span class="text-xs font-bold text-[var(--text-primary)] block">Custom Connection String</span>
+                                    <p class="text-[11.5px] text-[var(--text-secondary)] mt-1 leading-relaxed">
+                                        Connect to an existing database on an external or hosted SQL Server instance by entering the connection key.
+                                    </p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Mode A: Auto DB Form -->
+                    <div id="sectionAutoDb" class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-4">
+                        <h3 class="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="icon-server text-[14px] text-[var(--color-primary-600)]"></i> Master Server Details
+                        </h3>
+
+                        <div class="flex flex-col sm:flex-row gap-4" style="display: flex; flex-direction: row; gap: 16px; align-items: flex-start; width: 100%;">
+                            <div style="flex: 1 1 auto; min-width: 0;">
+                                <label asp-for="ServerHost" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server IP / Hostname</label>
+                                <input asp-for="ServerHost" id="serverHostInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50 or db.exwhyzee.ng" />
+                                <span asp-validation-for="ServerHost" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                            <div style="width: 140px; flex-shrink: 0;">
+                                <label asp-for="ServerPort" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Port (Optional)</label>
+                                <input asp-for="ServerPort" type="number" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="1433" />
+                                <span asp-validation-for="ServerPort" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-bold text-[var(--text-primary)] block">Windows / Integrated Security</span>
+                                <span class="text-[11px] text-[var(--text-secondary)]">Use local process identity to create the database.</span>
+                            </div>
+                            <input asp-for="UseIntegratedSecurity" type="checkbox" id="chkIntegrated" onchange="toggleIntegratedAuth()" class="rounded text-[var(--color-primary-600)]" />
+                        </div>
+
+                        <div id="authCredentialsGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+                            <div>
+                                <label asp-for="AdminUser" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Username</label>
+                                <input asp-for="AdminUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="sa" />
+                                <span asp-validation-for="AdminUser" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                            <div>
+                                <label asp-for="AdminPassword" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Password</label>
+                                <input asp-for="AdminPassword" type="password" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="Master Server SA Password" />
+                                <span asp-validation-for="AdminPassword" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Custom Naming -->
+                        <div class="pt-2 border-t border-[var(--border-subtle)]">
+                            <button type="button" class="text-xs font-semibold text-[var(--color-primary-600)] flex items-center gap-1.5" onclick="document.getElementById('advancedDbNaming').classList.toggle('hidden')">
+                                <i class="icon-sliders text-[13px]"></i>
+                                <span>Advanced: Custom Database &amp; User Identifiers</span>
+                            </button>
+                            <div class="hidden mt-3 p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-3" id="advancedDbNaming">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                        <label asp-for="CustomDatabaseName" class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Database Name</label>
+                                        <input asp-for="CustomDatabaseName" id="customDbName" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Default: db_school_[sub]" />
+                                    </div>
+                                    <div>
+                                        <label asp-for="CustomUsername" class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Dedicated User</label>
+                                        <input asp-for="CustomUsername" id="customUser" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Default: usr_[sub]" />
+                                    </div>
+                                    <div>
+                                        <label asp-for="CustomPassword" class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">User Password</label>
+                                        <div class="flex items-center">
+                                            <input asp-for="CustomPassword" id="customPass" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Auto-generated" />
+                                            <button type="button" class="h-9 px-3 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="generatePassword()" title="Generate Random Password">
+                                                <i class="icon-key text-[13px]"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mode B: Existing / Guided Builder Form -->
+                    <div id="sectionExistingDb" class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-4" style="display: none;">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="icon-sliders text-[14px] text-[var(--color-primary-600)]"></i> Connection String Builder
+                            </h3>
+                            <div class="inline-flex rounded-lg border border-[var(--border-subtle)] p-0.5 bg-[var(--surface-card)]">
+                                <button type="button" class="px-3 py-1 text-xs font-semibold rounded-md transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs" id="btnModeBuilder" onclick="switchConnInputMode('builder')">
+                                    Guided Form
+                                </button>
+                                <button type="button" class="px-3 py-1 text-xs font-medium rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]" id="btnModeRaw" onclick="switchConnInputMode('raw')">
+                                    Raw String
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Guided Form inputs -->
+                        <div id="builderFormGroup" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server / Host <span class="text-rose-500">*</span></label>
+                                    <input type="text" id="bldServer" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50,1433" oninput="assembleConnectionString()" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Database Name <span class="text-rose-500">*</span></label>
+                                    <input type="text" id="bldDatabase" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. db_school_divine" oninput="assembleConnectionString()" />
+                                </div>
+                            </div>
+
+                            <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-2">
+                                <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Authentication Type</label>
+                                <div class="flex items-center gap-6 text-xs">
+                                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="bldAuthType" id="bldAuthSql" value="sql" checked onchange="toggleBuilderAuth()" class="text-[var(--color-primary-600)]" />
+                                        <span class="font-medium text-[var(--text-primary)]">Standard SQL Authentication</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="bldAuthType" id="bldAuthWin" value="windows" onchange="toggleBuilderAuth()" class="text-[var(--color-primary-600)]" />
+                                        <span class="font-medium text-[var(--text-primary)]">Windows / Integrated Security</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="bldSqlAuthInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Username <span class="text-rose-500">*</span></label>
+                                    <input type="text" id="bldUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. usr_divine or sa" oninput="assembleConnectionString()" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Password <span class="text-rose-500">*</span></label>
+                                    <div class="flex items-center">
+                                        <input type="password" id="bldPassword" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Enter database password" oninput="assembleConnectionString()" />
+                                        <button type="button" class="h-10 px-3.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="togglePasswordVisibility('bldPassword', this)">
+                                            <i class="icon-eye text-[14px]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <label class="inline-flex items-center gap-2 cursor-pointer p-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)]">
+                                    <input type="checkbox" id="bldTrustCert" checked onchange="assembleConnectionString()" class="rounded text-[var(--color-primary-600)]" />
+                                    <span class="text-[var(--text-secondary)]">Trust Server Certificate (<code class="font-mono text-[11px]">TrustServerCertificate=True</code>)</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 cursor-pointer p-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)]">
+                                    <input type="checkbox" id="bldMars" checked onchange="assembleConnectionString()" class="rounded text-[var(--color-primary-600)]" />
+                                    <span class="text-[var(--text-secondary)]">Multiple Active Result Sets (<code class="font-mono text-[11px]">MultipleActiveResultSets=True</code>)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Assembled String Preview -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label asp-for="ConnectionString" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Final Connection Key / Settings</label>
+                                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--text-tertiary)]" id="connStringCharCount">0 chars</span>
+                            </div>
+                            <textarea asp-for="ConnectionString" id="connStringInput" class="w-full p-3 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none leading-relaxed" rows="3" placeholder="Server=127.0.0.1,1433;Database=SchoolDb;User Id=usr_school;Password=...;TrustServerCertificate=True;MultipleActiveResultSets=True;" oninput="onRawConnStringInput()"></textarea>
+                            <span asp-validation-for="ConnectionString" class="text-xs text-rose-600 mt-1 block"></span>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-3 border-t border-[var(--border-subtle)]">
+                            <span class="text-[11.5px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                                <i class="icon-info text-[14px] text-[var(--color-primary-600)]"></i> Form values are automatically formatted into connection settings.
+                            </span>
+                            <button type="button" id="btnTestConn" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                                <i class="icon-zap text-[13px]"></i>
+                                <span>Test Connection Ping</span>
+                            </button>
+                        </div>
+                        <div id="testConnResult" class="text-xs font-semibold hidden p-3 rounded-lg"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 cols) -->
+            <div class="xl:col-span-4 space-y-4">
+
+                <!-- Post Creation Setup & Switches -->
+                <div class="surface-card p-5 space-y-4">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-3">
+                        <i class="icon-sliders text-[16px] text-[var(--color-primary-600)]"></i>
+                        <span>3. Provisioning Automation</span>
+                    </h2>
+
+                    <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Run Migrations Immediately</span>
+                            <span class="text-[11px] text-[var(--text-secondary)]">Create all initial tables, roles, and default configuration.</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" asp-for="RunMigrationsImmediately" class="sr-only peer" checked id="chkMigration" />
+                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary-600)]"></div>
+                        </label>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-[var(--text-primary)] block">Activate School Immediately</span>
+                            <span class="text-[11px] text-[var(--text-secondary)]">Allow users to log in directly upon deployment.</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" asp-for="IsActive" class="sr-only peer" checked />
+                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-primary-600)]"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit & Actions -->
+                <div class="surface-card p-5 space-y-3">
+                    <button type="submit" class="btn btn-primary w-full text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow-sm" id="btnSubmit">
+                        <i class="icon-rocket text-[14px]"></i>
+                        <span>Create &amp; Deploy School Portal</span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline border-secondary w-full text-xs font-semibold py-2 rounded-lg flex items-center justify-center text-decoration-none">
+                        <span>Cancel</span>
+                    </a>
+                </div>
+
+                <!-- Deployment Architecture Note -->
+                <div class="surface-card p-5 space-y-2.5 text-xs">
+                    <h3 class="font-bold text-[var(--text-primary)] uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
+                        <i class="icon-info text-[13px] text-[var(--color-primary-600)]"></i> Architecture Note
+                    </h3>
+                    <p class="text-[var(--text-secondary)] leading-relaxed">
+                        Each tenant portal is provisioned with a secure subdomain router. All requests on <code>[subdomain].exwhyzee.ng</code> resolve automatically to this school's dedicated schema.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Subdomain dynamic slugifier & preview
+        const subInput = document.getElementById('subdomainInput');
+        const schoolInput = document.getElementById('schoolNameInput');
+        const previewUrl = document.getElementById('previewUrl');
+
+        schoolInput.addEventListener('input', function() {
+            if (!subInput.dataset.manual) {
+                const slug = schoolInput.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, '')
+                    .substring(0, 30);
+                subInput.value = slug;
+                updatePreview(slug);
+            }
+        });
+
+        subInput.addEventListener('input', function() {
+            subInput.dataset.manual = "true";
+            updatePreview(subInput.value);
+        });
+
+        function updatePreview(sub) {
+            const clean = sub.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '');
+            if (clean) {
+                previewUrl.innerText = `https://${clean}.exwhyzee.ng`;
+            } else {
+                previewUrl.innerText = `https://your-subdomain.exwhyzee.ng`;
+            }
+        }
+
+        // Option Toggling (Auto vs Existing)
+        function selectOption(type) {
+            if (type === 'auto') {
+                document.getElementById('optAuto').checked = true;
+                document.getElementById('sectionAutoDb').style.display = 'block';
+                document.getElementById('sectionExistingDb').style.display = 'none';
+                document.getElementById('cardAutoDb').classList.add('border-[var(--color-primary-500)]', 'bg-[var(--surface-sunken)]');
+                document.getElementById('cardExistingDb').classList.remove('border-[var(--color-primary-500)]', 'bg-[var(--surface-sunken)]');
+            } else {
+                document.getElementById('optExisting').checked = true;
+                document.getElementById('sectionAutoDb').style.display = 'none';
+                document.getElementById('sectionExistingDb').style.display = 'block';
+                document.getElementById('cardExistingDb').classList.add('border-[var(--color-primary-500)]', 'bg-[var(--surface-sunken)]');
+                document.getElementById('cardAutoDb').classList.remove('border-[var(--color-primary-500)]', 'bg-[var(--surface-sunken)]');
+            }
+        }
+
+        function toggleIntegratedAuth() {
+            const isIntegrated = document.getElementById('chkIntegrated').checked;
+            document.getElementById('authCredentialsGroup').style.display = isIntegrated ? 'none' : 'grid';
+        }
+
+        function generatePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@@#$%^&*';
+            let pass = '';
+            for (let i = 0; i < 16; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('customPass').value = pass;
+        }
+
+        // Connection String Builder Logic
+        let isBuilderUpdatingRaw = false;
+
+        function assembleConnectionString() {
+            const server = (document.getElementById('bldServer').value || '').trim();
+            const database = (document.getElementById('bldDatabase').value || '').trim();
+            const authType = document.querySelector('input[name="bldAuthType"]:checked').value;
+            const user = (document.getElementById('bldUser').value || '').trim();
+            const pass = document.getElementById('bldPassword').value || '';
+            const trustCert = document.getElementById('bldTrustCert').checked;
+            const mars = document.getElementById('bldMars').checked;
+
+            if (!server && !database) {
+                return;
+            }
+
+            let parts = [];
+            if (server) parts.push(`Server=${server}`);
+            if (database) parts.push(`Database=${database}`);
+
+            if (authType === 'windows') {
+                parts.push('Trusted_Connection=True');
+            } else {
+                if (user) parts.push(`User Id=${user}`);
+                if (pass) parts.push(`Password=${pass}`);
+            }
+
+            if (trustCert) parts.push('TrustServerCertificate=True');
+            if (mars) parts.push('MultipleActiveResultSets=True');
+
+            const fullString = parts.join(';') + (parts.length > 0 ? ';' : '');
+
+            isBuilderUpdatingRaw = true;
+            const connInput = document.getElementById('connStringInput');
+            connInput.value = fullString;
+            updateCharCount(fullString);
+            isBuilderUpdatingRaw = false;
+        }
+
+        function toggleBuilderAuth() {
+            const authType = document.querySelector('input[name="bldAuthType"]:checked').value;
+            const sqlGroup = document.getElementById('bldSqlAuthInputs');
+            sqlGroup.style.display = authType === 'windows' ? 'none' : 'grid';
+            assembleConnectionString();
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'icon-eye-off text-[14px]';
+            } else {
+                input.type = 'password';
+                icon.className = 'icon-eye text-[14px]';
+            }
+        }
+
+        function switchConnInputMode(mode) {
+            const builderForm = document.getElementById('builderFormGroup');
+            const btnBuilder = document.getElementById('btnModeBuilder');
+            const btnRaw = document.getElementById('btnModeRaw');
+
+            if (mode === 'builder') {
+                builderForm.style.display = 'block';
+                btnBuilder.className = 'px-3 py-1 text-xs font-semibold rounded-md transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs';
+                btnRaw.className = 'px-3 py-1 text-xs font-medium rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+                assembleConnectionString();
+            } else {
+                builderForm.style.display = 'none';
+                btnRaw.className = 'px-3 py-1 text-xs font-semibold rounded-md transition-all bg-[var(--surface-raised)] text-[var(--color-primary-600)] shadow-xs';
+                btnBuilder.className = 'px-3 py-1 text-xs font-medium rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]';
+            }
+        }
+
+        function onRawConnStringInput() {
+            if (isBuilderUpdatingRaw) return;
+            const raw = document.getElementById('connStringInput').value;
+            updateCharCount(raw);
+            parseRawToBuilder(raw);
+        }
+
+        function updateCharCount(str) {
+            const badge = document.getElementById('connStringCharCount');
+            badge.innerText = `${(str || '').length} chars`;
+        }
+
+        function parseRawToBuilder(raw) {
+            if (!raw) return;
+            const pairs = raw.split(';').map(p => p.trim()).filter(p => p.length > 0);
+            const map = {};
+            for (let pair of pairs) {
+                const idx = pair.indexOf('=');
+                if (idx > -1) {
+                    const key = pair.substring(0, idx).trim().toLowerCase();
+                    const val = pair.substring(idx + 1).trim();
+                    map[key] = val;
+                }
+            }
+
+            if (map['server'] || map['data source']) {
+                document.getElementById('bldServer').value = map['server'] || map['data source'];
+            }
+            if (map['database'] || map['initial catalog']) {
+                document.getElementById('bldDatabase').value = map['database'] || map['initial catalog'];
+            }
+            if (map['trusted_connection'] === 'true' || map['integrated security'] === 'sspi' || map['integrated security'] === 'true') {
+                document.getElementById('bldAuthWin').checked = true;
+                toggleBuilderAuth();
+            } else if (map['user id'] || map['uid'] || map['user']) {
+                document.getElementById('bldAuthSql').checked = true;
+                document.getElementById('bldUser').value = map['user id'] || map['uid'] || map['user'] || '';
+                if (map['password'] || map['pwd']) {
+                    document.getElementById('bldPassword').value = map['password'] || map['pwd'] || '';
+                }
+                toggleBuilderAuth();
+            }
+            if (map['trustservercertificate']) {
+                document.getElementById('bldTrustCert').checked = map['trustservercertificate'].toLowerCase() === 'true';
+            }
+            if (map['multipleactiveresultsets']) {
+                document.getElementById('bldMars').checked = map['multipleactiveresultsets'].toLowerCase() === 'true';
+            }
+        }
+
+        // Test existing connection string
+        document.getElementById('btnTestConn').addEventListener('click', async function () {
+            const connStr = document.getElementById('connStringInput').value;
+            const resultDiv = document.getElementById('testConnResult');
+            resultDiv.classList.remove('hidden', 'bg-emerald-500/10', 'text-emerald-600', 'bg-rose-500/10', 'text-rose-600', 'bg-amber-500/10', 'text-amber-600');
+            
+            if (!connStr || connStr.trim() === '') {
+                resultDiv.classList.add('bg-amber-500/10', 'text-amber-600');
+                resultDiv.innerHTML = '<span class="inline-flex items-center gap-1.5"><i class="icon-alert-triangle"></i> Please enter server details first.</span>';
+                return;
+            }
+            resultDiv.classList.add('bg-[var(--surface-sunken)]', 'text-[var(--text-secondary)]');
+            resultDiv.innerHTML = '<span class="inline-flex items-center gap-1.5"><i class="icon-loader animate-spin"></i> Testing connection to school server...</span>';
+
+            try {
+                const response = await fetch('@Url.Action("TestConnection", "Tenants")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connectionString: connStr })
+                });
+                const data = await response.json();
+                resultDiv.classList.remove('bg-[var(--surface-sunken)]', 'text-[var(--text-secondary)]');
+                if (data.success) {
+                    resultDiv.classList.add('bg-emerald-500/10', 'text-emerald-600');
+                    resultDiv.innerHTML = `<span class="inline-flex items-center gap-1.5"><i class="icon-check-circle"></i> ${data.message}</span>`;
+                } else {
+                    resultDiv.classList.add('bg-rose-500/10', 'text-rose-600');
+                    resultDiv.innerHTML = `<span class="inline-flex items-center gap-1.5"><i class="icon-alert-circle"></i> ${data.message}</span>`;
+                }
+            } catch (err) {
+                resultDiv.classList.remove('bg-[var(--surface-sunken)]', 'text-[var(--text-secondary)]');
+                resultDiv.classList.add('bg-rose-500/10', 'text-rose-600');
+                resultDiv.innerHTML = `<span class="inline-flex items-center gap-1.5"><i class="icon-alert-circle"></i> Error: ${err.message}</span>`;
+            }
+        });
+
+        // Initialize UI state
+        selectOption('auto');
+        updateCharCount(document.getElementById('connStringInput').value);
+
+        // Initialize UI state
+        selectOption('auto');
+        updateCharCount(document.getElementById('connStringInput').value);
+    </script>
+}

@@ -1,0 +1,44 @@
+@model ExwhyzeeSP.Master.Models.VerifyOtpViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Verify OTP";
+}
+
+<div class="auth-card">
+    <div class="text-center mb-4">
+        <div class="d-inline-flex p-3 rounded-circle bg-info-subtle text-info mb-2">
+            <i class="bi bi-shield-check fs-3"></i>
+        </div>
+        <h4 class="fw-bold text-white mb-1">Enter 6-Digit OTP</h4>
+        <p class="text-secondary small mb-0">We sent a one-time verification code to</p>
+        <div class="text-info fw-semibold small mt-1">@Model.Email</div>
+    </div>
+
+    <form asp-action="VerifyOtp" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Email" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 px-3 small rounded-3 mb-3 border-0 bg-danger-subtle text-danger"></div>
+
+        <div class="mb-4">
+            <label asp-for="OtpCode" class="form-label text-light small fw-semibold text-center d-block">6-Digit Verification Code</label>
+            <input asp-for="OtpCode" type="text" maxlength="6" class="form-control form-control-custom otp-input" placeholder="000000" autofocus autocomplete="one-time-code" required />
+            <span asp-validation-for="OtpCode" class="text-danger small mt-1 d-block text-center"></span>
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-submit-glow d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-patch-check-fill"></i>
+                <span>Verify &amp; Continue</span>
+            </button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3 d-flex justify-content-between align-items-center">
+        <a asp-action="ForgotPassword" class="text-secondary text-decoration-none small">Resend Code</a>
+        <a asp-action="Login" class="text-info text-decoration-none small">Back to Sign In</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,95 @@
+@model ExwhyzeeSP.Core.Models.MasterCmsPage
+@{
+    ViewData["Title"] = $"Edit {Model?.Title}";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Pages">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] grid place-items-center border border-[var(--color-primary-500)]/20 shadow-xs">
+                    <i class="icon-file-text text-[28px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">Edit: @Model?.Title</h1>
+                        <span class="badge-soft badge-secondary font-mono text-xs">/@Model?.Slug</span>
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1">
+                        Modify document body markup, policy terms, and live publication status.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a href="/@Model?.Slug" target="_blank" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-external-link text-[14px]"></i>
+                    <span>Preview Live</span>
+                </a>
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to List</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Form ============ -->
+    <form asp-action="Edit" asp-route-id="@Model?.Id" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Slug" />
+        <div asp-validation-summary="ModelOnly" class="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-medium text-rose-600 dark:text-rose-400"></div>
+
+        <div class="surface-card p-5 lg:p-6 space-y-4">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--text-tertiary)] flex items-center gap-2 pb-2 border-b border-[var(--border-subtle)]">
+                <i class="icon-file-text text-[15px] text-[var(--color-primary-500)]"></i>
+                Page Content &amp; Policy Text
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-2">
+                    <label asp-for="Title" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Page Title *</label>
+                    <input asp-for="Title" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs font-bold text-[var(--text-primary)]" required />
+                    <span asp-validation-for="Title" class="text-rose-500 text-[11px] mt-1 block"></span>
+                </div>
+
+                <div class="flex items-end">
+                    <div class="p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] w-full">
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input asp-for="IsPublished" type="checkbox" class="form-checkbox rounded text-[var(--color-primary-500)] size-4" id="publishedSwitch" />
+                            <span class="text-xs font-semibold text-[var(--text-primary)]">Published on Website</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-3">
+                    <label asp-for="Summary" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Short Summary / Subtitle</label>
+                    <input asp-for="Summary" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="Brief summary of policy..." />
+                </div>
+
+                <div class="sm:col-span-3">
+                    <label asp-for="Content" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">HTML Content / Document Body *</label>
+                    <textarea asp-for="Content" class="form-textarea w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs font-mono text-[var(--text-primary)]" rows="18" placeholder="Enter HTML content..." required></textarea>
+                    <span class="text-[11px] text-[var(--text-tertiary)] block mt-1">Use standard HTML headings (&lt;h3 id="..."&gt;), paragraphs, and lists. The ID attributes automatically power the sticky Table of Contents.</span>
+                    <span asp-validation-for="Content" class="text-rose-500 text-[11px] mt-1 block"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-[var(--border-subtle)]">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-4 py-2 rounded-lg text-decoration-none">Cancel</a>
+                <button type="submit" class="btn btn-primary text-xs font-semibold px-5 py-2 rounded-lg shadow-sm">Save Changes</button>
+            </div>
+        </div>
+    </form>
+</div>

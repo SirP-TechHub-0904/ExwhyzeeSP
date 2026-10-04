@@ -1,0 +1,336 @@
+@model IEnumerable<TenantSchool>
+@{
+    ViewData["Title"] = "School Portals";
+    var statuses = ViewBag.MigrationStatuses as Dictionary<int, ExwhyzeeSP.Services.Provisioning.TenantMigrationStatus> 
+        ?? new Dictionary<int, ExwhyzeeSP.Services.Provisioning.TenantMigrationStatus>();
+    
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int pageSize = ViewBag.PageSize ?? 12;
+    int totalItems = ViewBag.TotalItems ?? Model.Count();
+    int totalSchools = ViewBag.TotalSchools ?? totalItems;
+    int activeSchools = ViewBag.ActiveSchools ?? 0;
+    int pendingCount = ViewBag.PendingUpdatesCount ?? 0;
+    int errorCount = ViewBag.ConnectionErrorsCount ?? 0;
+    string? searchString = ViewBag.SearchString as string;
+    string? statusFilter = ViewBag.StatusFilter as string;
+
+    int startItem = totalItems == 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+    int endItem = Math.Min(currentPage * pageSize, totalItems);
+}
+
+<div class="space-y-6">
+
+    <!-- Page Header & Action Toolbar -->
+    <div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">School Portals</h1>
+            <p class="text-xs sm:text-[13px] text-[var(--text-secondary)] mt-0.5">
+                Managing <strong class="text-[var(--text-primary)]">@totalSchools</strong> enrolled schools and portal instances on the platform.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+            <form asp-area="Admin" asp-controller="Tenants" asp-action="MigrateAll" method="post" class="d-inline" onsubmit="return confirm('Update and refresh the system across all active schools?');">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline border-emerald-500/30 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm">
+                    <i class="icon-refresh-cw text-[14px]"></i>
+                    <span>Update All Schools</span>
+                </button>
+            </form>
+
+            <a asp-area="Admin" asp-controller="Tenants" asp-action="Create" class="btn btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                <i class="icon-plus text-[14px]"></i>
+                <span>Add School Portal</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- KPI Metric Stat Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 hover:border-[var(--color-primary-500)] transition-all text-decoration-none">
+            <div class="size-11 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 grid place-items-center shrink-0">
+                <i class="icon-school text-[20px]"></i>
+            </div>
+            <div>
+                <span class="text-[11.5px] font-medium text-[var(--text-tertiary)] block">Total Schools</span>
+                <span class="text-xl font-bold text-[var(--text-primary)] leading-tight">@totalSchools</span>
+            </div>
+        </a>
+
+        <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-statusFilter="active" class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 hover:border-emerald-500 transition-all text-decoration-none">
+            <div class="size-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 grid place-items-center shrink-0">
+                <i class="icon-check-circle text-[20px]"></i>
+            </div>
+            <div>
+                <span class="text-[11.5px] font-medium text-[var(--text-tertiary)] block">Active Portals</span>
+                <span class="text-xl font-bold text-emerald-600 dark:text-emerald-400 leading-tight">@activeSchools</span>
+            </div>
+        </a>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 @(pendingCount > 0 ? "ring-1 ring-amber-500/30" : "")">
+            <div class="size-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 grid place-items-center shrink-0">
+                <i class="icon-database text-[20px]"></i>
+            </div>
+            <div>
+                <span class="text-[11.5px] font-medium text-[var(--text-tertiary)] block">Pending Updates</span>
+                <span class="text-xl font-bold text-amber-600 dark:text-amber-400 leading-tight">@pendingCount</span>
+            </div>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 @(errorCount > 0 ? "ring-1 ring-rose-500/30" : "")">
+            <div class="size-11 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 grid place-items-center shrink-0">
+                <i class="icon-alert-triangle text-[20px]"></i>
+            </div>
+            <div>
+                <span class="text-[11.5px] font-medium text-[var(--text-tertiary)] block">Connection Alerts</span>
+                <span class="text-xl font-bold text-rose-600 dark:text-rose-400 leading-tight">@errorCount</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="surface-card p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]">
+        <form method="get" class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <input type="hidden" name="statusFilter" value="@statusFilter" />
+            <input type="hidden" name="pageSize" value="@pageSize" />
+
+            <!-- Search Input -->
+            <div class="relative flex-1">
+                <span class="absolute start-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]"><i class="icon-search text-[14px]"></i></span>
+                <input type="text" name="searchString" value="@searchString" class="w-full h-10 ps-9 pe-3 rounded-lg text-[13px] bg-[var(--surface-sunken)] border border-[var(--border-subtle)] focus:outline-none focus:border-[var(--color-primary-500)] text-[var(--text-primary)]" placeholder="Search by school name, subdomain, or domain..." />
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2">
+                <button type="submit" class="btn btn-primary text-xs font-semibold h-10 px-5 rounded-lg flex items-center justify-center gap-1.5">
+                    <i class="icon-search text-[13px]"></i>
+                    <span>Search</span>
+                </button>
+                @if (!string.IsNullOrWhiteSpace(searchString) || !string.IsNullOrWhiteSpace(statusFilter))
+                {
+                    <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" class="btn btn-outline text-xs font-semibold h-10 px-3.5 rounded-lg flex items-center justify-center text-[var(--text-secondary)] text-decoration-none">
+                        Reset Filters
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <!-- Directory Table Card with Smart Pagination -->
+    <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] overflow-hidden">
+        
+        <!-- Table Topbar -->
+        <div class="px-5 py-4 border-b border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+                <h3 class="text-[14px] font-bold text-[var(--text-primary)]">Registered Schools Catalog</h3>
+                <p class="text-[11.5px] text-[var(--text-tertiary)]">
+                    Showing <strong class="text-[var(--text-primary)]">@startItem–@endItem</strong> of <strong class="text-[var(--text-primary)]">@totalItems</strong> schools
+                </p>
+            </div>
+
+            <!-- Page Size Picker -->
+            <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                <span>Per Page:</span>
+                <div class="flex items-center gap-1">
+                    @foreach (var size in new[] { 12, 24, 48, 96 })
+                    {
+                        <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-page="1" asp-route-pageSize="@size" asp-route-searchString="@searchString" asp-route-statusFilter="@statusFilter" class="px-2.5 py-1 rounded text-xs font-medium text-decoration-none @(pageSize == size ? "bg-[var(--color-primary-600)] text-white" : "bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]")">
+                            @size
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] text-[var(--text-tertiary)] uppercase font-bold text-[10.5px] tracking-wider">
+                    <tr>
+                        <th class="px-5 py-3.5 w-10">#</th>
+                        <th class="px-4 py-3.5">School Name</th>
+                        <th class="px-4 py-3.5">Domain / Subdomain</th>
+                        <th class="px-4 py-3.5">Custom Domain</th>
+                        <th class="px-4 py-3.5">System Status</th>
+                        <th class="px-4 py-3.5">Portal Status</th>
+                        <th class="px-5 py-3.5 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[var(--border-subtle)]">
+                    @if (Model.Any())
+                    {
+                        int rowNum = startItem;
+                        @foreach (var school in Model)
+                        {
+                            statuses.TryGetValue(school.Id, out var status);
+                            <tr class="hover:bg-[var(--surface-sunken)] transition-colors">
+                                <td class="px-5 py-3.5 text-[var(--text-tertiary)] font-mono">@rowNum</td>
+                                <td class="px-4 py-3.5 font-semibold text-[var(--text-primary)]">
+                                    <div class="flex items-center gap-3">
+                                        <span class="grid place-items-center size-8 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--color-primary-600)] font-bold text-xs shrink-0">
+                                            @school.SchoolName.Substring(0, Math.Min(2, school.SchoolName.Length)).ToUpper()
+                                        </span>
+                                        <div>
+                                            <a asp-area="Admin" asp-controller="Tenants" asp-action="Details" asp-route-id="@school.Id" class="text-[var(--text-primary)] hover:text-[var(--color-primary-600)] font-semibold text-decoration-none">
+                                                @school.SchoolName
+                                            </a>
+                                            <span class="block text-[10.5px] text-[var(--text-tertiary)]">Registered @school.DateCreated.ToString("MMM dd, yyyy")</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3.5">
+                                    @if (!string.IsNullOrWhiteSpace(school.SubDomain))
+                                    {
+                                        <code class="px-2 py-0.5 rounded text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-sky-600 dark:text-sky-400 font-mono">@(school.SubDomain).exwhyzee.ng</code>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-[var(--text-tertiary)] italic text-xs">(not set)</span>
+                                    }
+                                </td>
+                                <td class="px-4 py-3.5 text-[var(--text-secondary)]">
+                                    @(string.IsNullOrWhiteSpace(school.HostDomain) ? "-" : school.HostDomain)
+                                </td>
+                                <td class="px-4 py-3.5">
+                                    @if (status != null)
+                                    {
+                                        if (!status.CanConnect)
+                                        {
+                                            <span class="badge-soft badge-danger text-[11px] inline-flex items-center gap-1" title="@status.ConnectionError">
+                                                <i class="icon-x-circle text-[12px]"></i> Error
+                                            </span>
+                                        }
+                                        else if (status.HasPendingMigrations)
+                                        {
+                                            <div class="inline-flex items-center gap-1.5">
+                                                <span class="badge-soft badge-warning text-[11px] inline-flex items-center gap-1" title="Pending: @string.Join(", ", status.PendingMigrations)">
+                                                    <i class="icon-alert-circle text-[12px]"></i> @status.PendingMigrations.Count Pending
+                                                </span>
+                                                <form asp-area="Admin" asp-controller="Tenants" asp-action="MigrateTenant" asp-route-id="@school.Id" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-outline border-amber-500/40 text-amber-600 dark:text-amber-400 !px-1.5 !py-0.5 !text-[10px] font-bold rounded">Update</button>
+                                                </form>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-soft badge-success text-[11px] inline-flex items-center gap-1">
+                                                <i class="icon-check-circle text-[12px]"></i> Up to Date
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-soft text-[var(--text-tertiary)] text-[11px]">Unknown</span>
+                                    }
+                                </td>
+                                <td class="px-4 py-3.5">
+                                    @if (!school.IsActive || school.SuspensionMode == TenantSuspensionMode.FullSuspension)
+                                    {
+                                        <span class="badge-soft badge-danger text-[11px] inline-flex items-center gap-1">
+                                            <span class="size-1.5 rounded-full bg-rose-500"></span> Suspended
+                                        </span>
+                                    }
+                                    else if (school.SuspensionMode == TenantSuspensionMode.PortalDashboardSuspensionOnly)
+                                    {
+                                        <span class="badge-soft badge-warning text-[11px] inline-flex items-center gap-1">
+                                            <span class="size-1.5 rounded-full bg-amber-500"></span> Restricted
+                                        </span>
+                                    }
+                                    else if (school.SuspensionMode == TenantSuspensionMode.MaintenanceMode)
+                                    {
+                                        <span class="badge-soft badge-info text-[11px] inline-flex items-center gap-1">
+                                            <span class="size-1.5 rounded-full bg-sky-500"></span> Maintenance
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-soft badge-success text-[11px] inline-flex items-center gap-1">
+                                            <span class="size-1.5 rounded-full bg-emerald-500"></span> Active
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-5 py-3.5 text-end">
+                                    <div class="inline-flex items-center gap-1">
+                                        <a asp-area="Admin" asp-controller="Tenants" asp-action="AccessControl" asp-route-id="@school.Id" class="grid place-items-center size-7 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors" title="Features & Access">
+                                            <i class="icon-shield-check text-[14px]"></i>
+                                        </a>
+                                        <a asp-area="Admin" asp-controller="Tenants" asp-action="Edit" asp-route-id="@school.Id" class="grid place-items-center size-7 rounded-lg text-[var(--text-secondary)] hover:text-[var(--color-primary-600)] hover:bg-[var(--surface-sunken)] transition-colors" title="Edit School Settings">
+                                            <i class="icon-edit-3 text-[14px]"></i>
+                                        </a>
+                                        <a asp-area="Admin" asp-controller="Tenants" asp-action="Details" asp-route-id="@school.Id" class="grid place-items-center size-7 rounded-lg text-[var(--text-secondary)] hover:text-[var(--color-primary-600)] hover:bg-[var(--surface-sunken)] transition-colors" title="View School Details">
+                                            <i class="icon-eye text-[14px]"></i>
+                                        </a>
+                                        <form asp-area="Admin" asp-controller="Tenants" asp-action="ToggleStatus" asp-route-id="@school.Id" method="post" class="d-inline" onsubmit="return confirm('Toggle active status for @school.SchoolName?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="grid place-items-center size-7 rounded-lg @(school.IsActive ? "text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30" : "text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30") transition-colors border-0 bg-transparent" title="@(school.IsActive ? "Suspend Portal" : "Activate Portal")">
+                                                <i class="icon-power text-[14px]"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            rowNum++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="px-5 py-8 text-center text-[var(--text-tertiary)]">
+                                <i class="icon-inbox text-3xl d-block mb-2 opacity-50"></i>
+                                <span>No schools found matching your query.</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Smart Pagination Footer Bar -->
+        @if (totalPages > 1)
+        {
+            <div class="px-5 py-3.5 bg-[var(--surface-sunken)] border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="text-xs text-[var(--text-secondary)]">
+                    Page <strong class="text-[var(--text-primary)]">@currentPage</strong> of <strong class="text-[var(--text-primary)]">@totalPages</strong> (<strong class="text-[var(--text-primary)]">@totalItems</strong> total schools)
+                </div>
+
+                <div class="flex items-center gap-1">
+                    <!-- First Page -->
+                    <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-page="1" asp-route-pageSize="@pageSize" asp-route-searchString="@searchString" asp-route-statusFilter="@statusFilter" class="grid place-items-center size-8 rounded-lg text-xs bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] @(currentPage == 1 ? "pointer-events-none opacity-40" : "")" title="First Page">
+                        <i class="icon-chevrons-left text-[14px]"></i>
+                    </a>
+
+                    <!-- Prev Page -->
+                    <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize" asp-route-searchString="@searchString" asp-route-statusFilter="@statusFilter" class="grid place-items-center size-8 rounded-lg text-xs bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] @(currentPage == 1 ? "pointer-events-none opacity-40" : "")" title="Previous Page">
+                        <i class="icon-chevron-left text-[14px]"></i>
+                    </a>
+
+                    <!-- Page Number Window -->
+                    @{
+                        int startPage = Math.Max(1, currentPage - 2);
+                        int endPage = Math.Min(totalPages, currentPage + 2);
+                    }
+
+                    @for (int p = startPage; p <= endPage; p++)
+                    {
+                        <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-page="@p" asp-route-pageSize="@pageSize" asp-route-searchString="@searchString" asp-route-statusFilter="@statusFilter" class="grid place-items-center min-w-8 h-8 px-2 rounded-lg text-xs font-semibold text-decoration-none @(p == currentPage ? "bg-[var(--color-primary-600)] text-white shadow-sm" : "bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]")">
+                            @p
+                        </a>
+                    }
+
+                    <!-- Next Page -->
+                    <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize" asp-route-searchString="@searchString" asp-route-statusFilter="@statusFilter" class="grid place-items-center size-8 rounded-lg text-xs bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] @(currentPage == totalPages ? "pointer-events-none opacity-40" : "")" title="Next Page">
+                        <i class="icon-chevron-right text-[14px]"></i>
+                    </a>
+
+                    <!-- Last Page -->
+                    <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" asp-route-page="@totalPages" asp-route-pageSize="@pageSize" asp-route-searchString="@searchString" asp-route-statusFilter="@statusFilter" class="grid place-items-center size-8 rounded-lg text-xs bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] @(currentPage == totalPages ? "pointer-events-none opacity-40" : "")" title="Last Page">
+                        <i class="icon-chevrons-right text-[14px]"></i>
+                    </a>
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>

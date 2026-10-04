@@ -1,0 +1,385 @@
+@model List<MasterTenantMetricSnapshot>
+@{
+    ViewData["Title"] = "System Health & Tenant API Inspector";
+    var avgLatency = Model.Any() ? Math.Round(Model.Average(m => m.ApiLatencyMs), 1) : 0;
+    var totalStorage = Model.Sum(m => m.StorageUsedMb);
+    var healthyCount = Model.Count(m => m.HealthStatus == TelemetryHealthStatus.Healthy);
+}
+
+<!-- Page Header & Action Toolbar -->
+<div class="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <div class="flex items-center gap-2 mb-1">
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Live Telemetry &amp; API Inspector</h1>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60" id="liveStreamBadge">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                Streaming Live
+            </span>
+        </div>
+        <p class="text-xs sm:text-[13px] text-[var(--text-secondary)]">
+            Real-time system health checks, response speed, storage usage, and activity updates across all enrolled schools.
+        </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+        <button type="button" onclick="pollLiveFeed()" id="btnManualPoll" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <i class="icon-refresh-cw text-[14px]" id="livePollSpinner"></i>
+            <span>Poll Now</span>
+        </button>
+        <button type="button" onclick="toggleAutoPolling()" id="btnTogglePolling" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <i class="icon-pause text-[14px]" id="togglePollIcon"></i>
+            <span id="togglePollText">Pause Stream</span>
+        </button>
+        <a asp-action="Index" class="btn btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none bg-sky-600 hover:bg-sky-700 text-white">
+            <i class="icon-bar-chart-2 text-[14px]"></i>
+            <span>Analytics Hub</span>
+        </a>
+    </div>
+</div>
+
+<!-- Telemetry Key Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Average Response Latency -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-sky-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Average API Latency</span>
+            <span class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                <i class="icon-zap text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-sky-600 dark:text-sky-400" id="cardAvgLatency">@avgLatency ms</h3>
+            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">High Speed</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-clock text-[12px] text-sky-500"></i>
+            <span>Sub-50ms target across all nodes</span>
+        </p>
+    </div>
+
+    <!-- Network Storage Utilized -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-indigo-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Total Storage Footprint</span>
+            <span class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <i class="icon-hard-drive text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-indigo-600 dark:text-indigo-400" id="cardTotalStorage">@((totalStorage / 1024.0).ToString("N2")) GB</h3>
+            <span class="text-xs font-medium text-[var(--text-secondary)]" id="cardStorageMb">(@totalStorage.ToString("N0") MB)</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-database text-[12px] text-indigo-500"></i>
+            <span>Media, DB indexes, and backups</span>
+        </p>
+    </div>
+
+    <!-- Online Health Status -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-emerald-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Active Online Nodes</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <i class="icon-activity text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400" id="cardHealthyNodes">@healthyCount / @Model.GroupBy(m => m.TenantSchoolId).Count()</h3>
+            <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">100% Nominal</span>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-shield-check text-[12px] text-emerald-500"></i>
+            <span>Zero critical anomalies detected</span>
+        </p>
+    </div>
+
+    <!-- Sync Ingestion Heartbeats -->
+    <div class="surface-card rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-1 bg-amber-500"></div>
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Feed Activity</span>
+            <span class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <i class="icon-radio text-sm"></i>
+            </span>
+        </div>
+        <div class="mt-2 flex items-baseline gap-2">
+            <h3 class="text-2xl font-bold tracking-tight text-amber-600 dark:text-amber-400" id="cardFeedCount">@Model.Count Stream Rows</h3>
+        </div>
+        <p class="text-[11px] text-[var(--text-secondary)] mt-1.5 flex items-center gap-1">
+            <i class="icon-refresh-cw text-[12px] text-amber-500"></i>
+            <span>Auto-polling every 10 seconds</span>
+        </p>
+    </div>
+</div>
+
+<!-- API Ingestion Guide & Sample Payload Box -->
+<div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden mb-6">
+    <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-900 text-white">
+        <div class="flex items-center gap-3">
+            <span class="px-2.5 py-1 rounded text-xs font-mono font-bold bg-emerald-500 text-white">POST</span>
+            <div>
+                <code class="text-sky-400 font-mono text-sm font-semibold">/api/v1/telemetry/report</code>
+                <p class="text-xs text-slate-400 mt-0.5">Automated telemetry ingest webhook payload specification</p>
+            </div>
+        </div>
+        <button type="button" onclick="copyApiPayload()" id="btnCopyPayload" class="btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors">
+            <i class="icon-copy text-xs"></i>
+            <span id="copyPayloadText">Copy JSON Template</span>
+        </button>
+    </div>
+    <div class="bg-slate-950 p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+<pre id="apiSampleCode" class="m-0 leading-relaxed text-slate-300"><code>{
+  "subDomain": "premier",
+  "totalStudents": 540,
+  "maleStudents": 281,
+  "femaleStudents": 259,
+  "earlyYearsStudents": 65,
+  "primaryStudents": 285,
+  "juniorSecondaryStudents": 110,
+  "seniorSecondaryStudents": 80,
+  "totalStaff": 45,
+  "academicStaff": 32,
+  "nonAcademicStaff": 13,
+  "dailyAttendanceRate": 96.4,
+  "totalFeesBilled": 64800000,
+  "totalFeesCollected": 60912000,
+  "totalPinsVerified": 756,
+  "cbtExamsConducted": 14,
+  "storageUsedMb": 384.5,
+  "apiLatencyMs": 28,
+  "clientVersion": "v2.5.0"
+}</code></pre>
+    </div>
+</div>
+
+<!-- Live Streamed Telemetry Table -->
+<div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden mb-6">
+    <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+        <div>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">Live Synchronized Telemetry Stream</h3>
+            <p class="text-xs text-[var(--text-secondary)]">Recent metric snapshots received across tenant school gateways</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-[var(--text-secondary)]" id="lastPollTime">Updated just now</span>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-[var(--text-primary)]">
+            <thead class="bg-slate-100/75 dark:bg-slate-800/60 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] border-b border-slate-200 dark:border-slate-700">
+                <tr>
+                    <th scope="col" class="py-3 px-4">School Institution</th>
+                    <th scope="col" class="py-3 px-4">Subdomain</th>
+                    <th scope="col" class="py-3 px-4 text-center">Health Status</th>
+                    <th scope="col" class="py-3 px-4 text-center">API Latency</th>
+                    <th scope="col" class="py-3 px-4 text-center">Storage Footprint</th>
+                    <th scope="col" class="py-3 px-4 text-center">Daily Attendance</th>
+                    <th scope="col" class="py-3 px-4 text-center">Client Version</th>
+                    <th scope="col" class="py-3 px-4 text-right">Last Recorded (UTC)</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="tableTelemetryFeedBody">
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var schoolName = item.TenantSchool?.SchoolName ?? $"School #{item.TenantSchoolId}";
+                        var subDomain = item.TenantSchool?.SubDomain ?? "default";
+
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4 font-semibold">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-xs border border-sky-100 dark:border-sky-900/40">
+                                        @schoolName.Substring(0, 1)
+                                    </div>
+                                    <span>@schoolName</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                    @subDomain
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    @item.HealthStatus
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
+                                    @item.ApiLatencyMs ms
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center font-mono">
+                                @item.StorageUsedMb.ToString("N1") MB
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold @(item.DailyAttendanceRate >= 90 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400" : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400")">
+                                    @item.DailyAttendanceRate%
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                    @item.ClientVersion
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right text-xs text-[var(--text-secondary)] font-mono">
+                                @item.RecordedAtUtc.ToString("MMM dd, yyyy HH:mm:ss")
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="py-8 text-center text-slate-400">
+                            <i class="icon-inbox text-3xl mb-2 block opacity-40"></i>
+                            <span>No live telemetry snapshots recorded yet.</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let isPolling = true;
+    let pollInterval = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        startPolling();
+    });
+
+    function startPolling() {
+        if (pollInterval) clearInterval(pollInterval);
+        pollInterval = setInterval(pollLiveFeed, 10000);
+    }
+
+    function toggleAutoPolling() {
+        isPolling = !isPolling;
+        const icon = document.getElementById('togglePollIcon');
+        const text = document.getElementById('togglePollText');
+        const badge = document.getElementById('liveStreamBadge');
+
+        if (isPolling) {
+            startPolling();
+            if (icon) icon.className = 'icon-pause text-[14px]';
+            if (text) text.innerText = 'Pause Stream';
+            if (badge) {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Streaming Live';
+            }
+        } else {
+            clearInterval(pollInterval);
+            if (icon) icon.className = 'icon-play text-[14px]';
+            if (text) text.innerText = 'Resume Stream';
+            if (badge) {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Stream Paused';
+            }
+        }
+    }
+
+    async function pollLiveFeed() {
+        const spinner = document.getElementById('livePollSpinner');
+        if (spinner) spinner.classList.add('animate-spin');
+
+        try {
+            const res = await fetch('/api/v1/telemetry/live-feed');
+            if (!res.ok) return;
+            const data = await res.json();
+
+            // Update top cards
+            if (data.metrics) {
+                const m = data.metrics;
+                if (document.getElementById('cardAvgLatency')) document.getElementById('cardAvgLatency').innerText = m.averageLatencyMs + ' ms';
+                if (document.getElementById('cardTotalStorage')) document.getElementById('cardTotalStorage').innerText = m.totalStorageGb + ' GB';
+                if (document.getElementById('cardStorageMb')) document.getElementById('cardStorageMb').innerText = '(' + Number(m.totalStorageMb).toLocaleString() + ' MB)';
+                if (document.getElementById('cardHealthyNodes')) document.getElementById('cardHealthyNodes').innerText = m.healthyNodes + ' / ' + m.totalMonitoredSchools;
+            }
+
+            // Update feed rows
+            if (data.feed && data.feed.length > 0) {
+                if (document.getElementById('cardFeedCount')) document.getElementById('cardFeedCount').innerText = data.feed.length + ' Stream Rows';
+                const tbody = document.getElementById('tableTelemetryFeedBody');
+                if (tbody) {
+                    tbody.innerHTML = data.feed.map(item => `
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4 font-semibold">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold text-xs border border-sky-100 dark:border-sky-900/40">
+                                        ${item.schoolName.substring(0, 1)}
+                                    </div>
+                                    <span>${item.schoolName}</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                    ${item.subDomain}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    ${item.healthStatus}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
+                                    ${item.apiLatencyMs} ms
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center font-mono">
+                                ${Number(item.storageUsedMb).toFixed(1)} MB
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${item.dailyAttendanceRate >= 90 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400' : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'}">
+                                    ${item.dailyAttendanceRate}%
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                    ${item.clientVersion || 'v2.5.0'}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right text-xs text-[var(--text-secondary)] font-mono">
+                                ${item.recordedAtUtc}
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            const pollTimeEl = document.getElementById('lastPollTime');
+            if (pollTimeEl) {
+                const now = new Date();
+                pollTimeEl.innerText = 'Updated ' + now.toLocaleTimeString();
+            }
+        } catch (err) {
+            console.error("Live feed poll error:", err);
+        } finally {
+            if (spinner) spinner.classList.remove('animate-spin');
+        }
+    }
+
+    function copyApiPayload() {
+        const text = document.getElementById('apiSampleCode').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btnText = document.getElementById('copyPayloadText');
+            if (btnText) {
+                const original = btnText.innerText;
+                btnText.innerText = 'Copied to Clipboard!';
+                setTimeout(() => {
+                    btnText.innerText = original;
+                }, 2000);
+            }
+        });
+    }
+</script>
+}

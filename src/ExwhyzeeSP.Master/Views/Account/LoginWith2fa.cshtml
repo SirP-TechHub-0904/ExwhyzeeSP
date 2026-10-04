@@ -1,0 +1,89 @@
+@model ExwhyzeeSP.Master.Models.LoginWith2faViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Two-Factor Verification";
+}
+
+<div class="auth-card">
+    <div class="text-center mb-4">
+        <div class="d-inline-flex p-3 rounded-circle mb-3" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); color: #34d399;">
+            <i class="bi bi-shield-lock-fill" style="font-size: 32px;"></i>
+        </div>
+        <h4 class="fw-bold text-white mb-1">Two-Factor Verification</h4>
+        @if (Model.Channel == "Google")
+        {
+            <p class="text-secondary small mb-0">Enter the 6-digit verification code from your <strong class="text-white">Google Authenticator</strong> app.</p>
+        }
+        else if (Model.Channel == "Microsoft")
+        {
+            <p class="text-secondary small mb-0">Enter the 6-digit verification code from your <strong class="text-white">Microsoft Authenticator</strong> app.</p>
+        }
+        else
+        {
+            <p class="text-secondary small mb-0">A 6-digit security code has been sent to <span class="text-white font-monospace">@Model.Email</span>.</p>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success d-flex align-items-center gap-2 py-2 px-3 small rounded-3 mb-3 border-0 bg-success-subtle text-success" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>@TempData["SuccessMessage"]</div>
+        </div>
+    }
+
+    <form asp-action="LoginWith2fa" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="RememberMe" />
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 px-3 small rounded-3 mb-3 border-0 bg-danger-subtle text-danger"></div>
+
+        <div class="mb-4">
+            <label asp-for="TwoFactorCode" class="form-label text-light small fw-semibold text-center d-block mb-2">6-Digit Security Code</label>
+            <div class="position-relative">
+                <input asp-for="TwoFactorCode" 
+                       type="text" 
+                       maxlength="6" 
+                       class="form-control form-control-custom text-center fw-bold font-monospace" 
+                       style="font-size: 26px; letter-spacing: 12px; height: 58px; background: rgba(15, 23, 42, 0.6); border: 2px solid rgba(56, 189, 248, 0.3);"
+                       placeholder="••••••" 
+                       autofocus 
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       autocomplete="one-time-code" 
+                       required />
+            </div>
+            <span asp-validation-for="TwoFactorCode" class="text-danger small mt-1.5 d-block text-center"></span>
+        </div>
+
+        <div class="form-check mb-4">
+            <input asp-for="RememberMachine" class="form-check-input bg-dark border-secondary" type="checkbox" id="rememberDeviceCheck" />
+            <label asp-for="RememberMachine" class="form-check-label text-secondary small" for="rememberDeviceCheck">
+                Remember this trusted device for 30 days
+            </label>
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-submit-glow d-flex align-items-center justify-content-center gap-2" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <i class="bi bi-shield-check"></i>
+                <span>Verify &amp; Enter Dashboard</span>
+            </button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3 d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+        <a asp-action="Login" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-1 hover-text-white">
+            <i class="bi bi-arrow-left"></i>
+            <span>Cancel Sign In</span>
+        </a>
+        <a href="mailto:support@exwhyzee.ng" class="text-secondary text-decoration-none small hover-text-white">
+            Need Help?
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

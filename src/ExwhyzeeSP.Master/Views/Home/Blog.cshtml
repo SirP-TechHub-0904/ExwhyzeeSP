@@ -1,0 +1,167 @@
+@model IEnumerable<ExwhyzeeSP.Core.Models.Blog>
+@{
+    ViewData["Title"] = "News, Case Studies & Educational Insights";
+    Layout = "_PublicLayout";
+    var categories = ViewBag.Categories as IEnumerable<ExwhyzeeSP.Core.Models.BlogCategory>;
+    var selectedCat = ViewBag.SelectedCategory as long?;
+    var search = ViewBag.Search as string;
+}
+
+<!-- Page Banner -->
+<section class="page-banner" style="background: linear-gradient(rgba(10, 24, 50, 0.85), rgba(10, 24, 50, 0.95)), url('/assets/images/page-banner.png') center/cover no-repeat; padding: 100px 0 60px;">
+    <div class="container text-center text-white">
+        <h1 class="display-4 fw-bold mb-3">News &amp; EdTech Insights</h1>
+        <p class="lead text-light mb-4" style="max-width: 750px; margin: 0 auto;">
+            Latest product updates, educational technology trends, case studies, and best practices for modern school management.
+        </p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center bg-transparent p-0 m-0">
+                <li class="breadcrumb-item"><a href="/" class="text-info text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active text-white" aria-current="page">Blog</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Blog Main Section -->
+<section class="py-5" style="background-color: #f8fafc;">
+    <div class="container py-4">
+        <div class="row">
+            <!-- Articles Grid -->
+            <div class="col-lg-8">
+                <!-- Search & Filters Info (Mobile & Active) -->
+                @if (!string.IsNullOrEmpty(search) || selectedCat.HasValue)
+                {
+                    <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-3 shadow-sm mb-4 border">
+                        <div>
+                            <span class="text-muted">Filtering articles by:</span>
+                            @if (!string.IsNullOrEmpty(search))
+                            {
+                                <span class="badge text-bg-primary ms-1">Search: "@search"</span>
+                            }
+                            @if (selectedCat.HasValue)
+                            {
+                                var catName = categories?.FirstOrDefault(c => c.Id == selectedCat.Value)?.Title ?? "Category";
+                                <span class="badge text-bg-info ms-1">@catName</span>
+                            }
+                        </div>
+                        <a href="/Blog" class="btn btn-sm btn-outline-secondary">Clear Filter</a>
+                    </div>
+                }
+
+                @if (Model != null && Model.Any())
+                {
+                    <div class="row g-4">
+                        @foreach (var item in Model)
+                        {
+                            var postSlug = item.Title.ToSlug();
+                            var postUrl = $"/Blog/{item.Id}/{postSlug}";
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column transition-hover" style="transition: transform 0.25s ease, box-shadow 0.25s ease;">
+                                    <div class="position-relative" style="height: 220px; overflow: hidden;">
+                                        <a href="@postUrl">
+                                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/assets/images/blog-image1.jpg" : item.ImageUrl)"
+                                                 alt="@item.Title"
+                                                 class="w-100 h-100"
+                                                 style="object-fit: cover; transition: transform 0.4s ease;" />
+                                        </a>
+                                        @if (item.BlogCategory != null)
+                                        {
+                                            <a href="/Blog/Category/@item.BlogCategory.Id/@item.BlogCategory.Title.ToSlug()" class="badge bg-primary position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm text-decoration-none text-white" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                                @item.BlogCategory.Title
+                                            </a>
+                                        }
+                                    </div>
+                                    <div class="card-body p-4 d-flex flex-column">
+                                        <div class="d-flex align-items-center text-muted small mb-2">
+                                            <span><i class="bi bi-calendar3 me-1 text-primary"></i> @item.Date.ToString("MMM dd, yyyy")</span>
+                                            <span class="mx-2">•</span>
+                                            <span><i class="bi bi-clock me-1 text-primary"></i> 4 min read</span>
+                                        </div>
+                                        <h5 class="card-title fw-bold mb-3" style="line-height: 1.4;">
+                                            <a href="@postUrl" class="text-dark text-decoration-none hover-primary">
+                                                @item.Title
+                                            </a>
+                                        </h5>
+                                        <p class="card-text text-muted small flex-grow-1" style="line-height: 1.6;">
+                                            @item.Description
+                                        </p>
+                                        <div class="pt-3 border-top mt-2 d-flex justify-content-between align-items-center">
+                                            <a href="@postUrl" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">
+                                                Read Full Story <i class="bi bi-arrow-right ms-1"></i>
+                                            </a>
+                                            <span class="text-muted small"><i class="bi bi-shield-check text-success me-1"></i> Verified</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+                        <i class="bi bi-search fs-1 text-muted mb-3"></i>
+                        <h4 class="fw-bold">No articles matched your criteria</h4>
+                        <p class="text-muted mb-4">Try checking your spelling or clearing the category filter to see all posts.</p>
+                        <a href="/Blog" class="btn btn-primary rounded-pill px-4">View All Articles</a>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <!-- Search Box -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-search me-2 text-primary"></i> Search Articles</h5>
+                    <form method="get" action="/Blog">
+                        @if (selectedCat.HasValue)
+                        {
+                            <input type="hidden" name="categoryId" value="@selectedCat.Value" />
+                        }
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control rounded-start-pill ps-3" placeholder="Search topics, CBT, report cards..." value="@search" />
+                            <button class="btn btn-primary rounded-end-pill px-3" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Categories -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-folder2-open me-2 text-primary"></i> Categories</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="/Blog" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 py-2 border-0 @(!selectedCat.HasValue ? "fw-bold text-primary" : "text-dark")">
+                            <span><i class="bi bi-chevron-right me-2 text-muted small"></i> All Categories</span>
+                        </a>
+                        @if (categories != null)
+                        {
+                            @foreach (var cat in categories)
+                            {
+                                var catSlug = cat.Title.ToSlug();
+                                <a href="/Blog/Category/@cat.Id/@catSlug" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 py-2 border-0 @(selectedCat == cat.Id ? "fw-bold text-primary" : "text-dark")">
+                                    <span><i class="bi bi-chevron-right me-2 text-muted small"></i> @cat.Title</span>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- CTA Banner -->
+                <div class="card border-0 rounded-4 p-4 text-white shadow-lg text-center" style="background: linear-gradient(135deg, #0d3b66, #001f3f);">
+                    <div class="mb-3">
+                        <i class="bi bi-rocket-takeoff-fill display-4 text-warning"></i>
+                    </div>
+                    <h4 class="fw-bold mb-2">Transform Your School Today</h4>
+                    <p class="text-light small mb-4">
+                        Join hundreds of forward-thinking institutions using Exwhyzee SP to streamline report cards, CBT, and fee processing.
+                    </p>
+                    <a href="/Demo" class="btn btn-warning rounded-pill fw-bold px-4 py-2 text-dark shadow-sm">
+                        Request Live Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

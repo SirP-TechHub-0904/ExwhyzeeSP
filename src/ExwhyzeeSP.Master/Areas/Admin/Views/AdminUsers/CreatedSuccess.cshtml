@@ -1,0 +1,134 @@
+@model ExwhyzeeSP.Master.Controllers.UserCreatedHandoffViewModel
+@{
+    ViewData["Title"] = "Operator Account Created";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-6 max-w-4xl mx-auto">
+
+    <!-- Success Header Card -->
+    <div class="surface-card p-6 rounded-xl border border-emerald-200/80 dark:border-emerald-900/40 shadow-sm text-center animate-rise-in">
+        <div class="size-14 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 grid place-items-center mx-auto mb-3 border border-emerald-500/20 shadow-xs">
+            <i class="icon-check-circle text-[28px]"></i>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)]">Platform Operator Successfully Created</h1>
+        <p class="text-xs sm:text-[13px] text-[var(--text-secondary)] mt-1 max-w-xl mx-auto">
+            The account for <strong class="text-[var(--text-primary)]">@Model.User.FullName</strong> has been provisioned on the Master Control Plane. You can now dispatch access credentials.
+        </p>
+    </div>
+
+    <!-- Credentials Card -->
+    <div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between">
+            <h2 class="font-bold text-xs uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-2">
+                <i class="icon-key text-[15px] text-sky-600"></i>
+                <span>Generated Access Credentials</span>
+            </h2>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                Temporary Credentials
+            </span>
+        </div>
+
+        <div class="p-6 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div class="p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20">
+                    <span class="text-[var(--text-tertiary)] block mb-1">Full Name</span>
+                    <strong class="text-[var(--text-primary)] text-sm">@Model.User.FullName</strong>
+                </div>
+
+                <div class="p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20">
+                    <span class="text-[var(--text-tertiary)] block mb-1">Assigned Role</span>
+                    <span class="px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 font-bold">@Model.Role</span>
+                </div>
+
+                <div class="p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20">
+                    <span class="text-[var(--text-tertiary)] block mb-1">Username / Email</span>
+                    <strong class="text-[var(--text-primary)] font-mono text-sm">@Model.User.Email</strong>
+                </div>
+
+                <div class="p-3.5 rounded-lg border border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20">
+                    <span class="text-amber-700 dark:text-amber-300 block mb-1 font-semibold">Initial Password</span>
+                    <div class="flex items-center justify-between">
+                        <strong class="text-[var(--text-primary)] font-mono text-sm" id="rawPasswordText">@Model.InitialPassword</strong>
+                        <button type="button" onclick="copyPasswordOnly()" class="text-amber-600 hover:text-amber-700 text-xs font-semibold flex items-center gap-1" title="Copy password">
+                            <i class="icon-copy text-[12px]"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+                <div>
+                    <span class="text-[var(--text-tertiary)] block mb-0.5">Portal Sign-In URL</span>
+                    <a href="@Model.LoginUrl" target="_blank" class="text-sky-600 dark:text-sky-400 font-mono font-semibold hover:underline">@Model.LoginUrl</a>
+                </div>
+                <div class="text-[11px] text-[var(--text-tertiary)]">
+                    @(Model.RequirePasswordChange ? "✓ User must reset password on first login." : "")
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispatch Actions Toolbar -->
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <!-- Option 1: Email Login Details -->
+                <form asp-action="SendWelcomeEmail" method="post" class="inline-block w-full sm:w-auto">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="userId" value="@Model.User.Id" />
+                    <input type="hidden" name="tempPass" value="@Model.InitialPassword" />
+                    <button type="submit" class="btn btn-primary text-xs font-bold px-4 py-2.5 rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white shadow-sm transition-colors">
+                        <i class="icon-mail text-[15px]"></i>
+                        <span>Email Login Details to User</span>
+                    </button>
+                </form>
+
+                <!-- Option 2: Copy All Credentials to Clipboard -->
+                <button type="button" onclick="copyFullHandoffText()" class="btn btn-outline border-slate-300 dark:border-slate-700 text-xs font-semibold px-4 py-2.5 rounded-lg w-full sm:w-auto flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" id="copyFullBtn">
+                    <i class="icon-clipboard text-[15px]"></i>
+                    <span id="copyFullText">Copy Credentials for WhatsApp / SMS</span>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2 ms-auto">
+                <a asp-action="Details" asp-route-id="@Model.User.Id" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 rounded-lg text-decoration-none">
+                    <span>View User Details</span>
+                </a>
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 rounded-lg text-decoration-none">
+                    <span>User List</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function copyPasswordOnly() {
+            const pass = document.getElementById('rawPasswordText').innerText;
+            navigator.clipboard.writeText(pass).then(() => {
+                alert('Password copied to clipboard!');
+            });
+        }
+
+        function copyFullHandoffText() {
+            const text = `ExwhyzeeSP Master Platform Operator Access\n` +
+                         `Portal Login URL: @Model.LoginUrl\n` +
+                         `Username / Email: @Model.User.Email\n` +
+                         `Temporary Password: @Model.InitialPassword\n` +
+                         `Assigned Role: @Model.Role\n` +
+                         `* You will be prompted to choose a secure personal password upon your first login.`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btnText = document.getElementById('copyFullText');
+                if (btnText) {
+                    btnText.textContent = '✓ Copied to Clipboard!';
+                    setTimeout(() => {
+                        btnText.textContent = 'Copy Credentials for WhatsApp / SMS';
+                    }, 3000);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,220 @@
+@model ExwhyzeeSP.Core.Models.MarketingCampaign
+@{
+    ViewData["Title"] = $"Campaign Report - {Model.Title}";
+    Layout = "_AdminLayout";
+
+    var emailLogs = ViewBag.EmailLogs as List<ExwhyzeeSP.Core.Models.MasterEmailLog> ?? new();
+}
+
+<div class="space-y-6">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Marketing Hub">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] grid place-items-center border border-[var(--color-primary-500)]/20 shadow-xs">
+                    <i class="icon-send text-[28px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">@Model.Title</h1>
+                        @if (Model.Status == "Completed")
+                        {
+                            <span class="badge-soft badge-success">
+                                <i class="icon-circle-check text-[9px]"></i> Completed
+                            </span>
+                        }
+                        else if (Model.Status == "Executing")
+                        {
+                            <span class="badge-soft badge-warning">
+                                <i class="icon-clock text-[9px]"></i> Executing
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-soft badge-secondary">@Model.Status</span>
+                        }
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1">
+                        Broadcast execution summary, delivery stats, and logged outbox emails.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to Hub</span>
+                </a>
+                <a asp-action="CreateCampaign" asp-route-templateId="@Model.MarketingTemplateId" class="btn btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-refresh-cw text-[14px]"></i>
+                    <span>Clone / Retarget</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+            <i class="icon-check-circle text-[16px]"></i>
+            <div>@Html.Raw(TempData["SuccessMessage"])</div>
+        </div>
+    }
+
+    <!-- Top KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-2">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Execution Status</span>
+            <div class="pt-1">
+                @if (Model.Status == "Completed")
+                {
+                    <span class="badge-soft badge-success text-xs font-bold px-3 py-1.5">
+                        <i class="icon-circle-check text-[11px]"></i> Completed
+                    </span>
+                }
+                else if (Model.Status == "Executing")
+                {
+                    <span class="badge-soft badge-warning text-xs font-bold px-3 py-1.5">
+                        <i class="icon-clock text-[11px]"></i> Executing
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-soft badge-secondary text-xs font-bold px-3 py-1.5">@Model.Status</span>
+                }
+            </div>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-1">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Target Audience</span>
+            <h3 class="text-xl font-bold text-[var(--text-primary)]">@(Model.TargetTag == "All" ? "All Contacts" : Model.TargetTag)</h3>
+            <span class="text-[11px] text-[var(--text-tertiary)]">Total: @Model.TotalRecipients recipients</span>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-1">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Delivered Outbox</span>
+            <h3 class="text-xl font-bold text-emerald-600 dark:text-emerald-400">@Model.DeliveredCount</h3>
+            <span class="text-[11px] text-emerald-600 flex items-center gap-1">
+                <i class="icon-check-check text-[12px]"></i>
+                Logged into platform ledger
+            </span>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-1">
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Executed At</span>
+            <h4 class="text-base font-bold text-[var(--text-primary)]">@(Model.ExecutionCompletedUtc?.ToString("MMM d, yyyy HH:mm") ?? Model.CreatedAtUtc.ToString("MMM d, yyyy"))</h4>
+            <span class="text-[11px] text-[var(--text-tertiary)]">By @Model.CreatedBy</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Campaign Details & Content -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="surface-card p-5 lg:p-6 space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] pb-2 border-b border-[var(--border-subtle)]">
+                    Campaign Metadata
+                </h3>
+                <div class="space-y-3 text-xs">
+                    <div class="flex items-start justify-between">
+                        <span class="text-[var(--text-tertiary)] w-32">Subject Line:</span>
+                        <strong class="text-[var(--color-primary-600)] flex-1 text-right">@Model.Subject</strong>
+                    </div>
+                    <div class="flex items-start justify-between">
+                        <span class="text-[var(--text-tertiary)] w-32">Sender:</span>
+                        <span class="text-[var(--text-primary)] font-medium flex-1 text-right">@Model.SenderName &lt;@Model.SenderEmail&gt;</span>
+                    </div>
+                    <div class="flex items-start justify-between">
+                        <span class="text-[var(--text-tertiary)] w-32">Base Template:</span>
+                        <span class="text-[var(--text-primary)] flex-1 text-right">@(Model.Template?.TemplateName ?? "Custom HTML")</span>
+                    </div>
+                    <div class="flex items-start justify-between">
+                        <span class="text-[var(--text-tertiary)] w-32">Execution Notes:</span>
+                        <span class="text-[var(--text-secondary)] flex-1 text-right">@(Model.ExecutionSummary ?? "Dispatched via central broadcast engine")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email HTML Sandbox -->
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm overflow-hidden">
+                <div class="p-4 bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <i class="icon-mail text-[14px] text-[var(--color-primary-500)]"></i>
+                        Rendered Email Content
+                    </h3>
+                </div>
+                <div class="p-0 bg-slate-100 dark:bg-slate-900">
+                    <iframe srcdoc="@Model.BodyHtml" style="width: 100%; height: 420px; border: none;" sandbox="allow-same-origin"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Dispatches in Outbox -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="p-4 bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                        <i class="icon-inbox text-[14px] text-emerald-500"></i>
+                        Dispatched Recipient Outbox Logs
+                    </h3>
+                    <a asp-controller="EmailLogs" asp-action="Index" class="btn btn-outline border-secondary text-xs px-2.5 py-1 rounded-lg text-decoration-none">
+                        View All Logs
+                    </a>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    @if (emailLogs.Any())
+                    {
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-[var(--surface-sunken)]/50 border-b border-[var(--border-subtle)] text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+                                <tr>
+                                    <th class="py-3 px-4">Recipient</th>
+                                    <th class="py-3 px-4">Category</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[var(--border-subtle)]">
+                                @foreach (var log in emailLogs)
+                                {
+                                    <tr class="hover:bg-[var(--surface-sunken)]/50 transition-colors">
+                                        <td class="py-3 px-4">
+                                            <div class="font-bold text-[var(--text-primary)]">@log.RecipientEmail</div>
+                                            @if (!string.IsNullOrWhiteSpace(log.RecipientName))
+                                            {
+                                                <span class="text-[11px] text-[var(--text-tertiary)]">@log.RecipientName</span>
+                                            }
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="badge-soft badge-primary text-[10px]">@log.EmailCategory</span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="badge-soft badge-success text-[10px]">@log.Status</span>
+                                        </td>
+                                        <td class="py-3 px-4 text-right text-[var(--text-tertiary)]">
+                                            @log.CreatedAtUtc.ToString("yyyy-MM-dd HH:mm")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="py-12 text-center text-[var(--text-tertiary)]">
+                            <i class="icon-mail text-[28px] mx-auto mb-2 text-[var(--text-tertiary)]"></i>
+                            <p class="text-xs">Recipient outbox entries are recorded in the central platform repository.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

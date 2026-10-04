@@ -1,0 +1,15 @@
+@model ExwhyzeeSP.Core.Dtos.SettingLayoutDto
+@using ExwhyzeeSP.Web.Areas.Service
+
+@if (Model.Image == null)
+{
+    <link rel="icon" href="~/admin/schoolportal.png" type="image/jpg">
+
+}
+else
+{
+    <link rel="icon" href="data:image/jpg;base64,@(Convert.ToBase64String(Model.Image))" type="image/x-icon" />
+}
+
+
+

@@ -1,0 +1,128 @@
+@model ExwhyzeeSP.Core.Models.MasterCmsPage
+@{
+    var title = Model?.Title ?? "Policy & Terms";
+    var activeSlug = ViewData["ActiveSlug"]?.ToString() ?? "privacy-policy";
+    ViewData["Title"] = title;
+    ViewData["MetaDescription"] = Model?.Summary ?? "Exwhyzee SP institutional policies, terms of service, and privacy standards.";
+    Layout = "_PublicLayout";
+}
+
+<!-- Page Header Start -->
+<div class="sisf-page-header position-relative">
+   <div class="sisf-page-header-image">
+      <figure>
+         <img src="/assets/images/page-banner.png" alt="Exwhyzee SP Legal Policy">
+      </figure>
+   </div>
+   <div class="container">
+      <div class="row align-items-center">
+         <div class="col-lg-12">
+            <div class="sisf-page-header-content text-center">
+               <h1 class="text-white" data-aos="fade-up">@title</h1>
+               <ul class="list-unstyled d-flex align-items-center justify-content-center gap-2 m-0" data-aos="fade-up" data-aos-delay="200">
+                  <li><a href="/" class="text-white">Home</a></li>
+                  <li><span class="text-white">/</span></li>
+                  <li class="text-white">Legal &amp; Policies</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Page Header End -->
+
+<div class="py-5 bg-light">
+   <div class="container py-4">
+      <div class="row g-4">
+
+         <!-- Mini Sidebar Table of Contents (Sticky) -->
+         <div class="col-lg-4 col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 100px; z-index: 10;">
+               <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-scale-balanced text-primary"></i> Legal Center
+               </h5>
+               <p class="text-muted small mb-4">Official platform standards, compliance disclosures, and usage agreements.</p>
+
+               <div class="list-group list-group-flush mb-4">
+                  <a href="/Privacy" class="list-group-item list-group-item-action border-0 rounded-3 mb-1 d-flex align-items-center justify-content-between py-2 @(activeSlug == "privacy-policy" ? "bg-primary text-white fw-bold" : "text-dark")">
+                     <span><i class="fa-solid fa-shield-halved me-2"></i> Privacy Policy</span>
+                     <i class="fa-solid fa-chevron-right small opacity-50"></i>
+                  </a>
+                  <a href="/Terms" class="list-group-item list-group-item-action border-0 rounded-3 mb-1 d-flex align-items-center justify-content-between py-2 @(activeSlug == "terms-and-conditions" ? "bg-primary text-white fw-bold" : "text-dark")">
+                     <span><i class="fa-solid fa-file-contract me-2"></i> Terms of Service</span>
+                     <i class="fa-solid fa-chevron-right small opacity-50"></i>
+                  </a>
+                  <a href="/Cookies" class="list-group-item list-group-item-action border-0 rounded-3 mb-1 d-flex align-items-center justify-content-between py-2 @(activeSlug == "cookie-policy" ? "bg-primary text-white fw-bold" : "text-dark")">
+                     <span><i class="fa-solid fa-cookie-bite me-2"></i> Cookie Policy</span>
+                     <i class="fa-solid fa-chevron-right small opacity-50"></i>
+                  </a>
+                  <a href="/KnowledgeBase" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center justify-content-between py-2 text-dark">
+                     <span><i class="fa-solid fa-book-open me-2"></i> User Manual &amp; FAQs</span>
+                     <i class="fa-solid fa-chevron-right small opacity-50"></i>
+                  </a>
+               </div>
+
+               <hr class="my-3">
+
+               <div class="bg-light p-3 rounded-3 small">
+                  <strong class="d-block text-dark mb-1"><i class="fa-solid fa-clock-rotate-left text-muted me-1"></i> Last Revision:</strong>
+                  <span class="text-muted">@(Model?.LastUpdated.ToString("MMMM dd, yyyy") ?? DateTime.UtcNow.ToString("MMMM dd, yyyy"))</span>
+               </div>
+            </div>
+         </div>
+
+         <!-- Document Content Body -->
+         <div class="col-lg-8 col-md-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white legal-article">
+               @if (Model != null && !string.IsNullOrEmpty(Model.Content))
+               {
+                  <div class="mb-4 pb-3 border-bottom">
+                     <span class="badge bg-primary-subtle text-primary px-3 py-2 text-uppercase mb-2">Official Exwhyzee SP Legal Document</span>
+                     <h2 class="fw-bold text-dark mb-1">@Model.Title</h2>
+                     @if (!string.IsNullOrEmpty(Model.Summary))
+                     {
+                        <p class="lead text-muted mt-2">@Model.Summary</p>
+                     }
+                  </div>
+                  <div class="content-body text-secondary lh-lg">
+                     @Html.Raw(Model.Content)
+                  </div>
+               }
+               else
+               {
+                  <div class="text-center py-5">
+                     <i class="fa-solid fa-circle-info text-muted fs-1 mb-3"></i>
+                     <h4 class="fw-bold text-dark">Document Under Review</h4>
+                     <p class="text-muted">This policy document is currently being updated in the Master Database. Please check back shortly or contact our legal team.</p>
+                     <a href="/Contact" class="btn btn-outline-primary rounded-pill px-4">Contact Support</a>
+                  </div>
+               }
+            </div>
+         </div>
+
+      </div>
+   </div>
+</div>
+
+<style>
+.legal-article h3 {
+   font-size: 1.25rem;
+   font-weight: 700;
+   color: #0f172a;
+   margin-top: 2rem;
+   margin-bottom: 0.75rem;
+   padding-bottom: 0.5rem;
+   border-bottom: 1px solid #f1f5f9;
+}
+.legal-article p, .legal-article li {
+   font-size: 0.95rem;
+   color: #475569;
+}
+.legal-article ul {
+   padding-left: 1.25rem;
+   margin-bottom: 1.25rem;
+}
+.legal-article li {
+   margin-bottom: 0.4rem;
+}
+</style>

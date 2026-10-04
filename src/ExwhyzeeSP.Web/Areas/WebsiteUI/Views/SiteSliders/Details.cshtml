@@ -1,0 +1,20 @@
+@model ExwhyzeeSP.Core.Entities.UI.SiteSlider
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    @Html.Raw(ViewBag.head)
+    @Html.Raw(ViewBag.overridecss)
+</head>
+
+<body>
+    @Html.Raw(Model.Content)
+    @Html.Raw(ViewBag.footerJs)
+</body>
+</html>
+
+
+

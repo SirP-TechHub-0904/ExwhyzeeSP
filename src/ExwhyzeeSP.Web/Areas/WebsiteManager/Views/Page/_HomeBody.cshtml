@@ -1,0 +1,11 @@
+@model IEnumerable<ExwhyzeeSP.Core.Entities.CategoryPage>
+
+
+@foreach (var item in Model)
+{
+    @Html.Raw(item.Content)
+}
+
+
+
+

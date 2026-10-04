@@ -1,0 +1,570 @@
+@model List<(ExwhyzeeSP.Core.Models.MasterAdminUser User, IList<string> Roles)>
+@{
+    ViewData["Title"] = "Platform Users & RBAC Roles";
+    Layout = "_AdminLayout";
+    var rolesList = ViewBag.RolesList as string[] ?? Array.Empty<string>();
+    var isCurrentUserSuperAdmin = (bool)(ViewBag.IsCurrentUserSuperAdmin ?? false);
+    var isReadOnly = (bool)(ViewBag.IsReadOnlyUser ?? false);
+}
+
+<div class="space-y-6">
+
+    <!-- Page Header & Action Toolbar -->
+    <div class="surface-card p-5 lg:p-6 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
+            <div class="flex items-start gap-3.5">
+                <div class="relative shrink-0 size-12 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 grid place-items-center border border-sky-500/20">
+                    <i class="icon-user-cog text-[24px]"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2.5 mb-1 flex-wrap">
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)]">Platform Users &amp; Role Management</h1>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
+                            @Model.Count Active Accounts
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-[13px] text-[var(--text-secondary)]">
+                        Manage master operators, update administrative roles, suspend/reactivate access, and inspect role permission matrices.
+                    </p>
+                </div>
+            </div>
+
+            @if (!isReadOnly)
+            {
+                <div class="flex items-center gap-2.5 shrink-0 ms-auto">
+                    <a asp-action="Create" class="btn btn-primary text-xs font-semibold px-4 py-2.5 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none bg-sky-600 hover:bg-sky-700 text-white transition-colors">
+                        <i class="icon-user-plus text-[15px]"></i>
+                        <span>Add Platform User</span>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- Navigation Tabs: Users List vs Roles Matrix -->
+        <div class="flex items-center gap-2 border-t border-slate-200 dark:border-slate-800 pt-4 mt-5" role="tablist">
+            <button type="button" id="tabUsersBtn" onclick="switchViewTab('users')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-sky-600 text-white shadow-xs">
+                <i class="icon-users text-[14px]"></i>
+                <span>Platform Users (@Model.Count)</span>
+            </button>
+            <button type="button" id="tabRolesBtn" onclick="switchViewTab('roles')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2">
+                <i class="icon-shield-check text-[14px]"></i>
+                <span>Role Capabilities &amp; Matrix</span>
+                <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">5 Roles</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= TAB 1: USERS LIST ================= -->
+    <div id="usersViewSection" class="space-y-4">
+        <!-- Filter Bar & Search -->
+        <div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 p-4 shadow-sm">
+            <form method="get" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+                <div class="lg:col-span-6 relative">
+                    <span class="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none flex items-center">
+                        <i class="icon-search text-[14px]"></i>
+                    </span>
+                    <input type="text" name="search" style="padding-left: 2.25rem !important;" class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pr-3.5 py-2 text-xs text-[var(--text-primary)] placeholder:text-slate-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition" placeholder="Search by name, email, or username..." value="@ViewBag.Search" />
+                </div>
+                <div class="lg:col-span-3">
+                    <select name="role" class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition" onchange="this.form.submit()">
+                        <option value="">All Assigned Roles</option>
+                        @foreach (var r in rolesList)
+                        {
+                            <option value="@r" selected="@(ViewBag.Role == r)">@r</option>
+                        }
+                    </select>
+                </div>
+                <div class="lg:col-span-3 flex items-center gap-2">
+                    <button type="submit" class="btn btn-primary text-xs font-semibold px-4 py-2 rounded-lg flex-1 bg-sky-600 hover:bg-sky-700 text-white shadow-sm">Filter</button>
+                    @if (!string.IsNullOrEmpty(ViewBag.Search as string) || !string.IsNullOrEmpty(ViewBag.Role as string))
+                    {
+                        <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 rounded-lg text-decoration-none hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Reset</a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Card -->
+        <div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-[var(--text-primary)]">
+                    <thead class="bg-slate-100/75 dark:bg-slate-800/60 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                            <th scope="col" class="py-3.5 px-4 min-w-[220px]">Operator</th>
+                            <th scope="col" class="py-3.5 px-4 w-44">Assigned Role</th>
+                            <th scope="col" class="py-3.5 px-4 w-36">Phone Number</th>
+                            <th scope="col" class="py-3.5 px-4 w-28 text-center">Account Status</th>
+                            <th scope="col" class="py-3.5 px-4 w-32">Created</th>
+                            <th scope="col" class="py-3.5 px-4 w-40 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                var user = item.User;
+                                var primaryRole = item.Roles.FirstOrDefault() ?? user.RoleTitle;
+                                var isTargetSuperAdmin = primaryRole == ExwhyzeeSP.Core.Models.MasterRoles.SuperAdmin;
+
+                                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                                    <!-- Administrator Profile -->
+                                    <td class="py-3.5 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="relative w-9 h-9 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-bold grid place-items-center shrink-0 shadow-xs text-xs">
+                                                @((!string.IsNullOrEmpty(user.FullName) ? user.FullName[0].ToString() : "U").ToUpper())
+                                                @if (user.IsActive)
+                                                {
+                                                    <span class="absolute -bottom-0.5 -end-0.5 size-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" title="Active"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="absolute -bottom-0.5 -end-0.5 size-2.5 rounded-full bg-rose-500 border-2 border-white dark:border-slate-900" title="Suspended / Disabled"></span>
+                                                }
+                                            </div>
+                                            <div>
+                                                <a asp-action="Details" asp-route-id="@user.Id" class="font-bold text-[var(--text-primary)] text-[13px] hover:text-sky-600 transition-colors text-decoration-none block">@user.FullName</a>
+                                                <span class="text-[11px] text-[var(--text-secondary)] block font-mono">@user.Email</span>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Role Badge -->
+                                    <td class="py-3.5 px-4">
+                                        @if (isTargetSuperAdmin)
+                                        {
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60">
+                                                <i class="icon-shield-check text-[12px]"></i> SuperAdmin
+                                            </span>
+                                        }
+                                        else if (primaryRole == "Admin")
+                                        {
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200 dark:border-sky-800/60">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span> Admin
+                                            </span>
+                                        }
+                                        else if (primaryRole == "Accountant")
+                                        {
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Accountant
+                                            </span>
+                                        }
+                                        else if (primaryRole == "ContentManager")
+                                        {
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> ContentManager
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> @primaryRole
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- Phone Number -->
+                                    <td class="py-3.5 px-4 text-[var(--text-secondary)] font-mono text-xs">
+                                        @(string.IsNullOrWhiteSpace(user.PhoneNumber) ? "-" : user.PhoneNumber)
+                                    </td>
+
+                                    <!-- Status -->
+                                    <td class="py-3.5 px-4 text-center">
+                                        @if (user.IsActive)
+                                        {
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                                                <i class="icon-circle-check text-[11px]"></i> Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
+                                                <i class="icon-circle-x text-[11px]"></i> Suspended
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- Created Date -->
+                                    <td class="py-3.5 px-4 text-[var(--text-secondary)] whitespace-nowrap text-xs">
+                                        @user.CreatedDate.ToString("MMM dd, yyyy")
+                                    </td>
+
+                                    <!-- Actions -->
+                                    <td class="py-3.5 px-4 text-right">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <a asp-action="Details" asp-route-id="@user.Id" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-slate-800 transition-colors" title="View Full Details &amp; Credentials">
+                                                <i class="icon-eye text-[14px]"></i>
+                                            </a>
+
+                                            @if (!isReadOnly)
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@user.Id" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-slate-800 transition-colors" title="Edit Profile &amp; Role">
+                                                    <i class="icon-edit-3 text-[14px]"></i>
+                                                </a>
+
+                                                <a asp-action="ResetPassword" asp-route-id="@user.Id" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-amber-200 dark:border-amber-900/40 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors" title="Reset Password">
+                                                    <i class="icon-key text-[14px]"></i>
+                                                </a>
+                                            }
+
+                                            <a asp-action="ActivityLog" asp-controller="Account" asp-area="" asp-route-search="@user.Email" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="View Security Audit Logs">
+                                                <i class="bi bi-clock-history text-[13px]"></i>
+                                            </a>
+
+                                            @if (!isReadOnly && !isTargetSuperAdmin)
+                                            {
+                                                <form asp-action="ToggleStatus" asp-route-id="@user.Id" method="post" class="inline-block" onsubmit="return confirm('Are you sure you want to @(user.IsActive ? "SUSPEND" : "REACTIVATE") the account for @user.FullName?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 @(user.IsActive ? "text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40" : "text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40") transition-colors" title="@(user.IsActive ? "Suspend Account (Block Login)" : "Activate Account")">
+                                                        <i class="@(user.IsActive ? "icon-user-x" : "icon-user-check") text-[14px]"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="py-12 text-center text-[var(--text-secondary)]">
+                                    <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 grid place-items-center mx-auto mb-3 text-slate-400">
+                                        <i class="icon-users text-[24px]"></i>
+                                    </div>
+                                    <p class="text-sm font-semibold text-[var(--text-primary)]">No Platform Administrators Found</p>
+                                    <p class="text-xs text-[var(--text-secondary)] mt-1">No operators match the current filter criteria.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 2: ROLES & CAPABILITIES MATRIX ================= -->
+    <div id="rolesViewSection" class="space-y-6 hidden">
+        
+        <!-- Role Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+            <!-- 1. SuperAdmin -->
+            <div class="surface-card p-5 rounded-xl border border-rose-200/80 dark:border-rose-900/40 shadow-sm relative overflow-hidden">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="size-10 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 grid place-items-center border border-rose-500/20 font-bold">
+                            <i class="icon-shield-check text-[20px]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-[var(--text-primary)]">SuperAdmin</h3>
+                            <span class="text-[10.5px] text-rose-600 dark:text-rose-400 font-semibold uppercase tracking-wider">Root System Owner</span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">Root Account</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">
+                    Holds full, unconstrained root authority across the entire multi-tenant SaaS architecture. Strictly non-deactivable and permanently active.
+                </p>
+                <div class="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-3 text-xs">
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Full Tenant Provisioning &amp; Migrations</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Delegated SSO Impersonation into Schools</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Staff User &amp; Password Management</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Exclusive: Audit &amp; Email Log Purging</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Admin -->
+            <div class="surface-card p-5 rounded-xl border border-sky-200/80 dark:border-sky-900/40 shadow-sm relative overflow-hidden">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="size-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 grid place-items-center border border-sky-500/20 font-bold">
+                            <i class="icon-user-check text-[20px]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-[var(--text-primary)]">Admin</h3>
+                            <span class="text-[10.5px] text-sky-600 dark:text-sky-400 font-semibold uppercase tracking-wider">Platform Administrator</span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300">Assignable</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">
+                    Manages everyday platform operations, creates school databases, runs migrations, configures pricing, and manages staff user accounts.
+                </p>
+                <div class="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-3 text-xs">
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>School Setup, Migrations &amp; Domains</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Delegated SSO Direct Tenant Support</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Platform Users &amp; Roles Management</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Marketing, Billing &amp; CMS Management</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Accountant -->
+            <div class="surface-card p-5 rounded-xl border border-emerald-200/80 dark:border-emerald-900/40 shadow-sm relative overflow-hidden">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="size-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 grid place-items-center border border-emerald-500/20 font-bold">
+                            <i class="icon-wallet text-[20px]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-[var(--text-primary)]">Accountant</h3>
+                            <span class="text-[10.5px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Finance &amp; Ledger</span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">Assignable</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">
+                    Oversees financial operations, records school subscription payments, tracks delinquent accounts, generates receipts, and analyzes revenue growth.
+                </p>
+                <div class="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-3 text-xs">
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>School Billing, Invoices &amp; Receipts</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Subscription Pricing Plans Configuration</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Financial Reports &amp; Revenue Analytics</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-rose-500">
+                        <i class="icon-x text-[14px]"></i> <span>No Tenant Provisioning or User Admin</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ContentManager -->
+            <div class="surface-card p-5 rounded-xl border border-indigo-200/80 dark:border-indigo-900/40 shadow-sm relative overflow-hidden">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="size-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 grid place-items-center border border-indigo-500/20 font-bold">
+                            <i class="icon-file-text text-[20px]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-[var(--text-primary)]">ContentManager</h3>
+                            <span class="text-[10.5px] text-indigo-600 dark:text-indigo-400 font-semibold uppercase tracking-wider">Marketing &amp; CMS</span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300">Assignable</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">
+                    Manages public website content, writes educational blogs, updates privacy/terms legal policies, and coordinates email/WhatsApp marketing campaigns.
+                </p>
+                <div class="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-3 text-xs">
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Public CMS, Terms &amp; Privacy Policies</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>News &amp; Blog Publishing &amp; Categories</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Email &amp; WhatsApp Marketing Broadcasts</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>Knowledge Base Guides &amp; Testimonials</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. ReadOnly -->
+            <div class="surface-card p-5 rounded-xl border border-amber-200/80 dark:border-amber-900/40 shadow-sm relative overflow-hidden">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="size-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 grid place-items-center border border-amber-500/20 font-bold">
+                            <i class="icon-eye text-[20px]"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-[var(--text-primary)]">ReadOnly</h3>
+                            <span class="text-[10.5px] text-amber-600 dark:text-amber-400 font-semibold uppercase tracking-wider">Auditor / Viewer</span>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">Assignable</span>
+                </div>
+                <p class="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">
+                    Provides view-only inspection access for external auditors or executive stakeholders without the power to edit data or trigger provisioning.
+                </p>
+                <div class="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-3 text-xs">
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>View School Directory &amp; Details</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="icon-check text-[14px]"></i> <span>View Master System Dashboard</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-rose-500">
+                        <i class="icon-x text-[14px]"></i> <span>No Modifying, Creating, or Deleting</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-rose-500">
+                        <i class="icon-x text-[14px]"></i> <span>No Database Provisioning or Migrations</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Detailed Permissions Comparison Matrix Table -->
+        <div class="surface-card rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                <h3 class="font-bold text-sm text-[var(--text-primary)] flex items-center gap-2">
+                    <i class="icon-table text-[16px] text-sky-600"></i>
+                    <span>Detailed Feature Access Matrix</span>
+                </h3>
+                <p class="text-xs text-[var(--text-secondary)] mt-0.5">Comprehensive permission breakdown across master modules.</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-[var(--text-primary)]">
+                    <thead class="bg-slate-100/75 dark:bg-slate-800/60 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                            <th scope="col" class="py-3 px-4 min-w-[200px]">Master Module / Capability</th>
+                            <th scope="col" class="py-3 px-3 text-center">SuperAdmin</th>
+                            <th scope="col" class="py-3 px-3 text-center">Admin</th>
+                            <th scope="col" class="py-3 px-3 text-center">Accountant</th>
+                            <th scope="col" class="py-3 px-3 text-center">ContentManager</th>
+                            <th scope="col" class="py-3 px-3 text-center">ReadOnly</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Master Overview Dashboard</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">School Tenants Directory (View)</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-slate-300 dark:text-slate-600"><i class="icon-minus text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-slate-300 dark:text-slate-600"><i class="icon-minus text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Provision Tenant DB &amp; Run Migrations</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Delegated SSO (Impersonate Tenant School)</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">School Billing Ledger &amp; Invoices</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Subscription Pricing Packages</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Marketing &amp; WhatsApp Campaigns</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Public CMS &amp; Legal Policies</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">News &amp; Blog Publishing</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Staff &amp; Role Management</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-slate-300 dark:text-slate-600"><i class="icon-eye text-[15px]"></i> (View Only)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Security Audit Trails (View)</td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-emerald-600"><i class="icon-check-circle text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold">Audit Logs &amp; Email Delivery Purge</td>
+                            <td class="py-3 px-3 text-center text-emerald-600 font-bold"><i class="icon-check-circle text-[15px]"></i> (Exclusive)</td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                            <td class="py-3 px-3 text-center text-rose-400"><i class="icon-circle-x text-[15px]"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function switchViewTab(tab) {
+            const usersSection = document.getElementById('usersViewSection');
+            const rolesSection = document.getElementById('rolesViewSection');
+            const tabUsersBtn = document.getElementById('tabUsersBtn');
+            const tabRolesBtn = document.getElementById('tabRolesBtn');
+
+            if (tab === 'users') {
+                usersSection.classList.remove('hidden');
+                rolesSection.classList.add('hidden');
+                
+                tabUsersBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-sky-600 text-white shadow-xs';
+                tabRolesBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2';
+            } else {
+                usersSection.classList.add('hidden');
+                rolesSection.classList.remove('hidden');
+
+                tabRolesBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-sky-600 text-white shadow-xs';
+                tabUsersBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2';
+            }
+        }
+    </script>
+}

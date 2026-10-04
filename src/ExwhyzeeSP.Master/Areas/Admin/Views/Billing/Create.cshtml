@@ -1,0 +1,250 @@
+@model ExwhyzeeSP.Core.Models.MasterSchoolTransaction
+@using ExwhyzeeSP.Core.Models
+@{
+    ViewData["Title"] = "Generate School Invoice / Record Payment";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Invoices">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-emerald-500/10 text-emerald-600 grid place-items-center border border-emerald-500/20 shadow-xs">
+                    <i class="icon-receipt text-[28px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">Generate School Invoice</h1>
+                        <span class="badge-soft badge-success">
+                            <i class="icon-wallet text-[9px]"></i> Financial Ledger
+                        </span>
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1">
+                        Create subscription invoices, PIN batch billing, custom engineering fees, or record offline direct payments.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to Ledger</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Create Form ============ -->
+    <form asp-action="Create" method="post" id="invoiceCreateForm" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs" role="alert"></div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+
+            <!-- Left Main Column (8 cols) -->
+            <div class="xl:col-span-8 space-y-4">
+
+                <!-- 1. Invoice Particulars -->
+                <div class="surface-card p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-receipt text-[16px] text-[var(--color-primary-600)]"></i>
+                                <span>Invoice Details &amp; Target School</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Assigned school, category, and line item description.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label asp-for="InvoiceNumber" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Invoice Number <span class="text-rose-500">*</span></label>
+                                <input asp-for="InvoiceNumber" class="w-full h-10 px-3.5 py-2 text-xs font-mono font-bold rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-primary)] focus:outline-none" readonly />
+                                <span asp-validation-for="InvoiceNumber" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label asp-for="TenantSchoolId" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Target School Portal <span class="text-rose-500">*</span></label>
+                                <select asp-for="TenantSchoolId" asp-items="ViewBag.Schools" class="w-full h-10 px-3.5 py-2 text-xs font-semibold rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" id="schoolSelect" required>
+                                    <option value="">-- Select Target School --</option>
+                                </select>
+                                <span asp-validation-for="TenantSchoolId" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                            <div class="sm:col-span-8">
+                                <label asp-for="Title" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Invoice Title / Summary <span class="text-rose-500">*</span></label>
+                                <input asp-for="Title" id="invoiceTitle" class="w-full h-10 px-3.5 py-2 text-xs font-semibold rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. 2026/2027 1st Term Portal License & Result Processing" required />
+                                <span asp-validation-for="Title" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+
+                            <div class="sm:col-span-4">
+                                <label asp-for="BillingType" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Category <span class="text-rose-500">*</span></label>
+                                <select asp-for="BillingType" id="billingTypeSelect" asp-items="Html.GetEnumSelectList<SchoolBillingType>()" class="w-full h-10 px-3.5 py-2 text-xs rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none"></select>
+                                <span asp-validation-for="BillingType" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label asp-for="Amount" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Total Amount (&#8358;) <span class="text-rose-500">*</span></label>
+                                <div class="flex items-center">
+                                    <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-e-0 border-[var(--border-subtle)] rounded-s-lg text-xs font-bold text-[var(--text-secondary)]">&#8358;</span>
+                                    <input asp-for="Amount" id="totalAmountInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono font-bold rounded-e-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="0.00" type="number" step="0.01" required />
+                                </div>
+                                <span asp-validation-for="Amount" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label asp-for="AmountPaid" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Initial Payment (&#8358;) <span class="text-muted font-normal">(Optional)</span></label>
+                                <div class="flex items-center">
+                                    <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-e-0 border-[var(--border-subtle)] rounded-s-lg text-xs font-bold text-[var(--text-secondary)]">&#8358;</span>
+                                    <input asp-for="AmountPaid" id="amountPaidInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-e-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="0.00" type="number" step="0.01" value="0.00" />
+                                </div>
+                                <span asp-validation-for="AmountPaid" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label asp-for="Description" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Custom Line Items / Notes</label>
+                            <textarea asp-for="Description" id="invoiceDescription" class="w-full p-3 text-xs rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none leading-relaxed" rows="3" placeholder="Enter custom terms, itemized breakdown (e.g. 2,500 Scratch Cards at 300/card, Setup & Custom Domain configuration)..."></textarea>
+                            <span asp-validation-for="Description" class="text-xs text-rose-600 mt-1 block"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Email Dispatch Option -->
+                <div class="surface-card p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+                        <div>
+                            <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                <i class="icon-mail text-[16px] text-[var(--color-primary-600)]"></i>
+                                <span>Automated Invoice Dispatch</span>
+                            </h2>
+                            <p class="text-xs text-[var(--text-secondary)] mt-0.5">Send notification email to school bursary upon creation.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-3">
+                        <label class="inline-flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="sendEmailImmediately" id="sendEmailImmediately" value="true" onchange="document.getElementById('emailRecipientBox').style.display = this.checked ? 'block' : 'none';" class="rounded text-[var(--color-primary-600)]" />
+                            <span class="text-xs font-bold text-[var(--text-primary)]">Dispatch Invoice Email to School Immediately</span>
+                        </label>
+                        <div id="emailRecipientBox" style="display:none;" class="pt-2">
+                            <label class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Recipient Email Address</label>
+                            <input type="email" name="recipientEmail" id="recipientEmail" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. bursary@school.edu.ng, principal@school.com" />
+                            <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">A branded official invoice with payment instructions will be delivered and logged in the System Email Outbox.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar Column (4 cols) -->
+            <div class="xl:col-span-4 space-y-4">
+
+                <!-- Payment Status & Terms Card -->
+                <div class="surface-card p-5 space-y-4">
+                    <h2 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-3">
+                        <i class="icon-sliders text-[16px] text-[var(--color-primary-600)]"></i>
+                        <span>Settlement Terms</span>
+                    </h2>
+
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label asp-for="Status" class="block font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Payment Status</label>
+                            <select asp-for="Status" id="paymentStatusSelect" asp-items="Html.GetEnumSelectList<SchoolPaymentStatus>()" class="w-full h-9 px-3 py-1.5 text-xs rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none"></select>
+                            <span asp-validation-for="Status" class="text-rose-600 mt-0.5 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="PaymentChannel" class="block font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Payment Method</label>
+                            <select asp-for="PaymentChannel" asp-items="Html.GetEnumSelectList<SchoolPaymentChannel>()" class="w-full h-9 px-3 py-1.5 text-xs rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none"></select>
+                            <span asp-validation-for="PaymentChannel" class="text-rose-600 mt-0.5 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="DueDate" class="block font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Payment Due Date <span class="text-rose-500">*</span></label>
+                            <input asp-for="DueDate" type="date" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" />
+                            <span asp-validation-for="DueDate" class="text-rose-600 mt-0.5 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="BankReference" class="block font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Bank Reference</label>
+                            <input asp-for="BankReference" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. GTB/TRF/0928341..." />
+                            <span asp-validation-for="BankReference" class="text-rose-600 mt-0.5 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="ReceiptNumber" class="block font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Official Receipt #</label>
+                            <input asp-for="ReceiptNumber" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Auto-generated if empty" />
+                            <span asp-validation-for="ReceiptNumber" class="text-rose-600 mt-0.5 block"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Controls -->
+                <div class="surface-card p-5 space-y-3">
+                    <button type="submit" class="btn btn-primary w-full text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="icon-check text-[14px]"></i>
+                        <span>Generate &amp; Save Invoice</span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline border-secondary w-full text-xs font-semibold py-2 rounded-lg flex items-center justify-center text-decoration-none">
+                        <span>Cancel</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var statusSelect = document.getElementById('paymentStatusSelect');
+            var amountPaidInput = document.getElementById('amountPaidInput');
+            var totalAmountInput = document.getElementById('totalAmountInput');
+
+            if (statusSelect && amountPaidInput && totalAmountInput) {
+                statusSelect.addEventListener('change', function() {
+                    var selectedVal = this.value;
+                    // Paid = 2
+                    if (selectedVal === '2' || selectedVal === 'Paid') {
+                        if (!amountPaidInput.value || parseFloat(amountPaidInput.value) === 0) {
+                            amountPaidInput.value = totalAmountInput.value || '0.00';
+                        }
+                    } else if (selectedVal === '1' || selectedVal === 'Pending') {
+                        // Pending = 1
+                        amountPaidInput.value = '0.00';
+                    }
+                });
+
+                amountPaidInput.addEventListener('input', function() {
+                    var paid = parseFloat(this.value) || 0;
+                    var total = parseFloat(totalAmountInput.value) || 0;
+                    if (paid >= total && total > 0) {
+                        statusSelect.value = '2'; // Paid
+                    } else if (paid > 0 && paid < total) {
+                        statusSelect.value = '4'; // PartiallyPaid
+                    } else if (paid === 0) {
+                        statusSelect.value = '1'; // Pending
+                    }
+                });
+            }
+        });
+    </script>
+}

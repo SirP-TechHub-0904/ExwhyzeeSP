@@ -1,0 +1,327 @@
+@model TenantSchool
+@{
+    ViewData["Title"] = Model.SchoolName;
+}
+
+<div class="space-y-6">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Schools">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] grid place-items-center border border-[var(--color-primary-500)]/20 shadow-xs">
+                    <i class="icon-school text-[28px]"></i>
+                    @if (Model.IsActive)
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-4 rounded-full bg-emerald-500 border-2 border-[var(--surface-raised)]" title="Active"></span>
+                    }
+                    else
+                    {
+                        <span class="absolute -bottom-1 -end-1 size-4 rounded-full bg-rose-500 border-2 border-[var(--surface-raised)]" title="Disabled"></span>
+                    }
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">@Model.SchoolName</h1>
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge-soft badge-success">
+                                <i class="icon-circle-check text-[9px]"></i> Active School
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge-soft badge-danger">
+                                <i class="icon-circle-x text-[9px]"></i> Disabled
+                            </span>
+                        }
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1 flex items-center gap-2 flex-wrap">
+                        <span>Portal ID: <strong class="text-[var(--text-primary)]">#@Model.Id</strong></span>
+                        <span>&middot;</span>
+                        <span>URL: <code class="font-mono font-semibold text-[var(--color-primary-600)]">@(!string.IsNullOrWhiteSpace(Model.SubDomain) ? $"{Model.SubDomain}.exwhyzee.ng" : "Unassigned")</code></span>
+                        <span>&middot;</span>
+                        <span>Created: @Model.DateCreated.ToString("MMM dd, yyyy")</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center flex-wrap gap-2 shrink-0 ms-auto">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back</span>
+                </a>
+                <button type="button" class="btn btn-warning text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#impersonationModal">
+                    <i class="icon-log-in text-[14px]"></i>
+                    <span>Support Login</span>
+                </button>
+                <a asp-action="AccessControl" asp-route-id="@Model.Id" class="btn btn-outline border-rose-500/30 text-rose-600 hover:bg-rose-500/10 text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-shield text-[14px]"></i>
+                    <span>Gatekeeper</span>
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-edit text-[14px]"></i>
+                    <span>Edit School</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delegated Impersonation Modal -->
+    <div class="modal fade" id="impersonationModal" tabindex="-1" aria-labelledby="impersonationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content surface-card rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-2xl overflow-hidden">
+                <form asp-action="LaunchImpersonation" asp-route-id="@Model.Id" method="post" target="_blank">
+                    @Html.AntiForgeryToken()
+                    <div class="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
+                        <h5 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2" id="impersonationModalLabel">
+                            <i class="icon-shield text-amber-500 text-[18px]"></i>
+                            <span>Delegated Support Login</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
+                            <i class="icon-alert-triangle text-amber-600 dark:text-amber-400 text-base shrink-0 mt-0.5"></i>
+                            <div>
+                                A single-use cryptographically signed token (valid for 60 seconds) will be generated to establish an authenticated support session on <strong>@Model.SchoolName</strong>.
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Select Support Access Role</label>
+                            <select name="role" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3.5 py-2 text-sm text-[var(--text-primary)]">
+                                <option value="SuperAdmin">SuperAdmin (Full Root Privilege / SuperUser Area)</option>
+                                <option value="Admin">Admin (School Administration / Staff / Result Operations)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Support Audit Reason</label>
+                            <input type="text" name="reason" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3.5 py-2 text-sm text-[var(--text-primary)]" placeholder="e.g. Investigating terminal result computation or score issue" required />
+                            <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">This reason will be recorded in the system audit trail.</span>
+                        </div>
+                    </div>
+                    <div class="px-5 py-3.5 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-center justify-end gap-2.5">
+                        <button type="button" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 rounded-lg" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 shadow-sm">
+                            <i class="icon-external-link text-[14px]"></i>
+                            <span>Launch School Portal</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Main Details & Connection Info -->
+        <div class="lg:col-span-8 space-y-6">
+            
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-5 shadow-sm space-y-4">
+                <div class="border-b border-[var(--border-subtle)] pb-3">
+                    <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <i class="icon-info text-[18px] text-[var(--color-primary-600)]"></i>
+                        <span>School Connection &amp; System Setup</span>
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-xs font-medium text-[var(--text-tertiary)] block">School Name</span>
+                        <span class="font-bold text-[var(--text-primary)] text-base mt-0.5 block">@Model.SchoolName</span>
+                    </div>
+
+                    <div class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-xs font-medium text-[var(--text-tertiary)] block">Operational Status</span>
+                        <div class="mt-1">
+                            @if (Model.IsActive)
+                            {
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                    <span class="size-1.5 rounded-full bg-emerald-500"></span> Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                                    <span class="size-1.5 rounded-full bg-rose-500"></span> Disabled
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-xs font-medium text-[var(--text-tertiary)] block">Subdomain Route</span>
+                        <span class="font-mono text-xs font-bold text-[var(--color-primary-600)] mt-1 block">
+                            @(!string.IsNullOrWhiteSpace(Model.SubDomain) ? $"{Model.SubDomain}.exwhyzee.ng" : "(not set)")
+                        </span>
+                    </div>
+
+                    <div class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-xs font-medium text-[var(--text-tertiary)] block">Custom Domain / Host</span>
+                        <span class="font-mono text-xs font-semibold text-[var(--text-primary)] mt-1 block">
+                            @(!string.IsNullOrWhiteSpace(Model.HostDomain) ? Model.HostDomain : "-")
+                        </span>
+                    </div>
+
+                    <div class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-xs font-medium text-[var(--text-tertiary)] block">Date Registered</span>
+                        <span class="text-xs text-[var(--text-secondary)] font-medium mt-0.5 block">@Model.DateCreated.ToString("F")</span>
+                    </div>
+
+                    <div class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                        <span class="text-xs font-medium text-[var(--text-tertiary)] block">Last Modified</span>
+                        <span class="text-xs text-[var(--text-secondary)] font-medium mt-0.5 block">
+                            @(Model.LastModified.HasValue ? Model.LastModified.Value.ToString("F") : "Never")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-5 shadow-sm space-y-4">
+                <div class="border-b border-[var(--border-subtle)] pb-3 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                            <i class="icon-database text-[18px] text-[var(--color-primary-600)]"></i>
+                            <span>School Database Key / Connection String</span>
+                        </h3>
+                        <p class="text-xs text-[var(--text-secondary)] mt-0.5">Direct encrypted database route string for this tenant instance.</p>
+                    </div>
+                    <button type="button" id="btnTestConn" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-1.5 flex items-center gap-1.5 rounded-lg shadow-sm">
+                        <i class="icon-zap text-[14px]"></i>
+                        <span>Test Connection</span>
+                    </button>
+                </div>
+
+                <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                    <pre class="text-xs font-mono text-[var(--text-secondary)] break-all whitespace-pre-wrap m-0">@Model.ConnectionString</pre>
+                </div>
+                <div id="testConnResult" class="text-xs font-semibold hidden"></div>
+            </div>
+        </div>
+
+        <!-- Right: Status, Updates, Notes -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- Live Migration Status Card -->
+            @{
+                var migStatus = ViewBag.MigrationStatus as ExwhyzeeSP.Services.Provisioning.TenantMigrationStatus;
+            }
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-5 shadow-sm space-y-4">
+                <div class="border-b border-[var(--border-subtle)] pb-3">
+                    <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <i class="icon-refresh-cw text-[18px] text-[var(--color-primary-600)]"></i>
+                        <span>System Updates Status</span>
+                    </h3>
+                </div>
+
+                @if (migStatus != null)
+                {
+                    @if (!migStatus.CanConnect)
+                    {
+                        <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-400 text-xs space-y-1">
+                            <div class="font-bold flex items-center gap-1.5">
+                                <i class="icon-alert-circle text-rose-600 text-sm"></i> Connection Alert
+                            </div>
+                            <div class="text-[11px] leading-relaxed">@migStatus.ConnectionError</div>
+                        </div>
+                    }
+                    else if (migStatus.HasPendingMigrations)
+                    {
+                        <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs space-y-2">
+                            <div class="font-bold flex items-center gap-1.5">
+                                <i class="icon-alert-triangle text-amber-600 text-sm"></i> @migStatus.PendingMigrations.Count Update(s) Required
+                            </div>
+                            <div class="text-[11px]">Pending migrations:</div>
+                            <ul class="text-[11px] font-mono space-y-0.5 ps-3 list-disc">
+                                @foreach (var m in migStatus.PendingMigrations)
+                                {
+                                    <li>@m</li>
+                                }
+                            </ul>
+                        </div>
+                        <form asp-action="MigrateTenant" asp-route-id="@Model.Id" method="post" class="w-full">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="w-full btn btn-warning text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="icon-play text-[14px]"></i>
+                                <span>Apply System Updates Now</span>
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs space-y-1">
+                            <div class="font-bold flex items-center gap-1.5">
+                                <i class="icon-check-circle text-emerald-600 text-sm"></i> System is Up to Date
+                            </div>
+                            <div class="text-[11px]">All system tables and database migrations are installed.</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-xs text-[var(--text-tertiary)]">Status unknown / awaiting query.</div>
+                }
+            </div>
+
+            <!-- Web Addresses Guide -->
+            <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-5 space-y-2.5">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-1.5">
+                    <i class="icon-help-circle text-[15px] text-[var(--color-primary-600)]"></i>
+                    <span>How School Routing Works</span>
+                </h4>
+                <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
+                    When a student, parent, or staff visits <code class="font-mono text-[var(--color-primary-600)] px-1 rounded bg-[var(--surface-raised)] border border-[var(--border-subtle)]">@(!string.IsNullOrWhiteSpace(Model.SubDomain) ? $"{Model.SubDomain}.exwhyzee.ng" : "the mapped URL")</code>, the portal resolves this school record and directs all queries dynamically to this school's dedicated schema.
+                </p>
+                <p class="text-xs text-[var(--text-tertiary)] leading-relaxed">
+                    Single application deployment with complete privacy, security, and independent records for each school.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnTestConn').addEventListener('click', async function () {
+            const connStr = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ConnectionString));
+            const resultDiv = document.getElementById('testConnResult');
+            resultDiv.classList.remove('hidden', 'text-emerald-600', 'text-rose-600');
+            resultDiv.classList.add('text-[var(--text-secondary)]');
+            resultDiv.innerHTML = '<span class="inline-flex items-center gap-1.5"><i class="icon-loader animate-spin"></i> Testing connection to school server...</span>';
+
+            try {
+                const response = await fetch('@Url.Action("TestConnection", "Tenants")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ connectionString: connStr })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    resultDiv.classList.remove('text-[var(--text-secondary)]');
+                    resultDiv.classList.add('text-emerald-600', 'dark:text-emerald-400');
+                    resultDiv.innerHTML = `<span><i class="icon-check-circle"></i> ${data.message}</span>`;
+                } else {
+                    resultDiv.classList.remove('text-[var(--text-secondary)]');
+                    resultDiv.classList.add('text-rose-600', 'dark:text-rose-400');
+                    resultDiv.innerHTML = `<span><i class="icon-alert-circle"></i> ${data.message}</span>`;
+                }
+            } catch (err) {
+                resultDiv.classList.remove('text-[var(--text-secondary)]');
+                resultDiv.classList.add('text-rose-600', 'dark:text-rose-400');
+                resultDiv.innerHTML = `<span><i class="icon-alert-circle"></i> Error: ${err.message}</span>`;
+            }
+        });
+    </script>
+}

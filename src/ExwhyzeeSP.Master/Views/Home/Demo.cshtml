@@ -1,0 +1,129 @@
+@{
+    ViewData["Title"] = "Request a Free School Portal Demo";
+    ViewData["MetaDescription"] = "Schedule an interactive live demonstration of Exwhyzee SP for your school management, teachers, and ICT administrators.";
+    Layout = "_PublicLayout";
+}
+
+<!-- Page Header Start -->
+<div class="sisf-page-header position-relative">
+   <div class="sisf-page-header-image">
+      <figure>
+         <img src="/assets/images/page-banner.png" alt="Exwhyzee SP Demo">
+      </figure>
+   </div>
+   <div class="container">
+      <div class="row align-items-center">
+         <div class="col-lg-12">
+            <div class="sisf-page-header-content text-center">
+               <h1 class="text-white" data-aos="fade-up">Schedule a Live Demo</h1>
+               <ul class="list-unstyled d-flex align-items-center justify-content-center gap-2 m-0" data-aos="fade-up" data-aos-delay="200">
+                  <li><a href="/" class="text-white">Home</a></li>
+                  <li><span class="text-white">/</span></li>
+                  <li class="text-white">Request Demo</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Page Header End -->
+
+<div class="py-5">
+   <div class="container py-4">
+      <div class="row g-5 align-items-center">
+         <div class="col-lg-5" data-aos="fade-right">
+            <span class="badge bg-primary px-3 py-2 text-uppercase mb-2">Experience Exwhyzee SP</span>
+            <h2 class="display-6 fw-bold">See How Exwhyzee SP Transforms Your School</h2>
+            <p class="text-muted mt-3">
+               Join hundreds of forward-thinking educators, school owners, and principals. We'll walk you through a tailored 20-minute live demonstration of:
+            </p>
+            <ul class="list-unstyled text-secondary mt-4">
+               <li class="mb-3 d-flex align-items-start gap-3">
+                  <div class="rounded-circle bg-primary-subtle text-primary p-2"><i class="fa-solid fa-graduation-cap"></i></div>
+                  <div>
+                     <strong class="text-dark d-block">Automated Grading &amp; Result Generator</strong>
+                     <span class="small">Generate 1000+ error-free report cards with affective/psychomotor scoring in seconds.</span>
+                  </div>
+               </li>
+               <li class="mb-3 d-flex align-items-start gap-3">
+                  <div class="rounded-circle bg-primary-subtle text-primary p-2"><i class="fa-solid fa-laptop"></i></div>
+                  <div>
+                     <strong class="text-dark d-block">Online CBT &amp; Virtual Classrooms</strong>
+                     <span class="small">Conduct entrance exams and termly CBT with anti-cheat timers and instant score reports.</span>
+                  </div>
+               </li>
+               <li class="mb-3 d-flex align-items-start gap-3">
+                  <div class="rounded-circle bg-primary-subtle text-primary p-2"><i class="fa-solid fa-money-bill-wave"></i></div>
+                  <div>
+                     <strong class="text-dark d-block">Fee Invoicing &amp; Defaulters Control</strong>
+                     <span class="small">Track fee payments, automated SMS reminders, and stop unauthorized admission.</span>
+                  </div>
+               </li>
+            </ul>
+         </div>
+         <div class="col-lg-7" data-aos="fade-left">
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+               <h3 class="fw-bold mb-2">Book Your Free Session</h3>
+               <p class="text-muted small mb-4">Fill out this quick form and an educational tech consultant will reach out promptly.</p>
+               
+               <form action="/Contact" method="post">
+                  <div class="row g-3">
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">Your Full Name *</label>
+                        <input type="text" class="form-control" name="Name" placeholder="e.g. Dr. John Adeleke" required>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">Official Designation *</label>
+                        <input type="text" class="form-control" name="Designation" placeholder="e.g. School Proprietor / Principal" required>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">School / Institution Name *</label>
+                        <input type="text" class="form-control" name="SchoolName" placeholder="e.g. Premier International Academy" required>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">School Location / State *</label>
+                        <input type="text" class="form-control" name="Location" placeholder="e.g. Abuja, Lagos, Enugu" required>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">Phone / WhatsApp Number *</label>
+                        <input type="tel" class="form-control" name="Phone" placeholder="e.g. +234 801 234 5678" required>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">Email Address *</label>
+                        <input type="email" class="form-control" name="Email" placeholder="admin@yourschool.com" required>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">Estimated Student Population</label>
+                        <select class="form-select" name="StudentCount">
+                           <option value="1-200">1 - 200 Students</option>
+                           <option value="201-500">201 - 500 Students</option>
+                           <option value="501-1500" selected>501 - 1,500 Students</option>
+                           <option value="1500+">1,500+ Students (Multi-Campus)</option>
+                        </select>
+                     </div>
+                     <div class="col-md-6">
+                        <label class="form-label fw-semibold">Preferred Pricing Model</label>
+                        <select class="form-select" name="PricingInterest">
+                           <option value="PerStudentTerm">Pay Per Student / Term</option>
+                           <option value="PerClassTerm">Pay Per Class / Term</option>
+                           <option value="PerStudentYear">Pay Per Student / Year</option>
+                           <option value="ScratchCardPin">Scratch Card / Result PIN Billing</option>
+                           <option value="Enterprise">Custom Institution / Enterprise</option>
+                        </select>
+                     </div>
+                     <div class="col-12">
+                        <label class="form-label fw-semibold">Key Modules Needed</label>
+                        <textarea class="form-control" rows="3" name="Message" placeholder="Mention any specific requirements (e.g. CBT entrance test, online school fees, parent SMS alerts, hostel allocation...)"></textarea>
+                     </div>
+                     <div class="col-12 mt-4">
+                        <button type="submit" class="sis-btn-default w-100 shadow text-center justify-content-center py-3">
+                           Submit Demo Request <i class="fa-solid fa-paper-plane ms-2"></i>
+                        </button>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

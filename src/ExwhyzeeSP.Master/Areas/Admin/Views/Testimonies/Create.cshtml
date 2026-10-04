@@ -1,0 +1,140 @@
+@model ExwhyzeeSP.Core.Models.Testimony
+@{
+    ViewData["Title"] = "Add New Testimonial";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-4">
+
+    <!-- ============ Hero Header (Dreams Core Profile Style) ============ -->
+    <div class="surface-card p-5 lg:p-6 animate-rise-in">
+        <div class="flex flex-wrap items-start justify-between gap-5 w-full">
+            <div class="flex items-start gap-4">
+                <a asp-action="Index" class="header-icon-btn shrink-0 text-decoration-none" title="Back to Testimonials">
+                    <i class="icon-arrow-left text-[16px]"></i>
+                </a>
+
+                <div class="relative shrink-0 size-16 rounded-2xl bg-[var(--color-primary-500)]/10 text-[var(--color-primary-600)] grid place-items-center border border-[var(--color-primary-500)]/20 shadow-xs">
+                    <i class="icon-message-square text-[28px]"></i>
+                </div>
+
+                <div class="pt-0.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="font-display font-bold text-[20px] tracking-tight text-[var(--text-primary)]">Add New Testimonial</h1>
+                        <span class="badge-soft badge-primary">
+                            <i class="icon-plus text-[9px]"></i> Endorsement
+                        </span>
+                    </div>
+                    
+                    <p class="text-[12.5px] text-[var(--text-tertiary)] mt-1">
+                        Publish quotes and ratings from school administrators, teachers, and proprietors.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action buttons on far right -->
+            <div class="flex items-center gap-2 shrink-0 ms-auto">
+                <a asp-action="Index" class="btn btn-outline border-secondary text-xs font-semibold px-3 py-2 flex items-center gap-1.5 rounded-lg shadow-sm text-decoration-none">
+                    <i class="icon-arrow-left text-[14px]"></i>
+                    <span>Back to Reviews</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Form ============ -->
+    <form asp-action="Create" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs font-medium text-rose-600 dark:text-rose-400"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left Form Column -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <div class="surface-card p-5 lg:p-6 space-y-4">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--text-tertiary)] flex items-center gap-2 pb-2 border-b border-[var(--border-subtle)]">
+                        <i class="icon-user-check text-[15px] text-[var(--color-primary-500)]"></i>
+                        Author &amp; Testimonial Content
+                    </h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label asp-for="Title" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Author Name *</label>
+                            <input asp-for="Title" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. Dr. Anthony Uche" required />
+                            <span asp-validation-for="Title" class="text-rose-500 text-[11px] mt-1 block"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Position" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Designation / Role</label>
+                            <input asp-for="Position" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. Principal / Director of Studies" />
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label asp-for="SchoolName" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">School / Institution</label>
+                            <input asp-for="SchoolName" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="e.g. Premier International Academy" />
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label asp-for="Description" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Testimonial Quote / Review *</label>
+                            <textarea asp-for="Description" class="form-textarea w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" rows="4" placeholder="Enter what the educator said about Exwhyzee SP..." required></textarea>
+                            <span asp-validation-for="Description" class="text-rose-500 text-[11px] mt-1 block"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Settings & Submit -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <div class="surface-card p-5 lg:p-6 space-y-4">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--text-tertiary)] flex items-center gap-2 pb-2 border-b border-[var(--border-subtle)]">
+                        <i class="icon-sliders text-[15px] text-[var(--color-primary-500)]"></i>
+                        Settings
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label asp-for="Rating" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Star Rating</label>
+                            <select asp-for="Rating" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]">
+                                <option value="5" selected>5 Stars (5/5)</option>
+                                <option value="4">4 Stars (4/5)</option>
+                                <option value="3">3 Stars (3/5)</option>
+                                <option value="2">2 Stars (2/5)</option>
+                                <option value="1">1 Star (1/5)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label asp-for="SortOrder" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Display Sort Order</label>
+                            <input asp-for="SortOrder" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3.5 py-2 text-xs text-[var(--text-primary)]" placeholder="1, 2, 3..." />
+                        </div>
+
+                        <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-3">
+                            <label class="flex items-center gap-2.5 cursor-pointer">
+                                <input asp-for="Show" type="checkbox" class="form-checkbox rounded text-[var(--color-primary-500)] size-4" checked />
+                                <span class="text-xs font-semibold text-[var(--text-primary)]">Publish on Website</span>
+                            </label>
+                            <p class="text-[11px] text-[var(--text-tertiary)] pl-6.5">Showcase this endorsement on public landing pages.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Action Card -->
+                <div class="surface-card p-5 space-y-3">
+                    <button type="submit" class="btn btn-primary w-full py-2.5 text-xs font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2">
+                        <i class="icon-check text-[15px]"></i>
+                        <span>Save Testimonial</span>
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline border-secondary w-full py-2 text-xs font-semibold rounded-lg text-center flex items-center justify-center gap-1.5 text-decoration-none">
+                        <i class="icon-arrow-left text-[13px]"></i>
+                        <span>Cancel</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>

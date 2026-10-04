@@ -1,0 +1,326 @@
+@model IEnumerable<ExwhyzeeSP.Core.Models.Testimony>
+@{
+    ViewData["Title"] = "Exwhyzee SP - Smart Cloud School Management & Portal Platform";
+    ViewData["MetaDescription"] = "Exwhyzee SP is Nigeria's leading cloud school ERP portal for online admissions, CBT exams, automated result computation, fee billing, and student information management.";
+    Layout = "_PublicLayout";
+}
+
+<!-- Hero Banner Start -->
+<div class="sisf-hero-section position-relative py-5" style="background: linear-gradient(135deg, #071e3d 0%, #1f4287 100%); color: #fff;">
+   <div class="container py-5">
+      <div class="row align-items-center g-5">
+         <div class="col-lg-7" data-aos="fade-right">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-25 border border-primary text-white mb-3 small">
+               <i class="fa-solid fa-sparkles text-warning"></i> Complete All-in-One Multi-School ERP
+            </div>
+            <h1 class="display-4 fw-bold text-white mb-4">
+               Empower Your School with Intelligent Cloud Management
+            </h1>
+            <p class="lead text-light opacity-75 mb-4">
+               Automate student admissions, CBT examinations, error-free report cards, fee billing, hostel management, and parent SMS communications with <strong>Exwhyzee SP</strong>.
+            </p>
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+               <a href="/Demo" class="sis-btn-default shadow bg-white text-dark fw-bold px-4 py-3">
+                  Schedule Free Live Demo <i class="fa-solid fa-arrow-right-long ms-2"></i>
+               </a>
+               <a href="/Pricing" class="btn btn-outline-light px-4 py-3 fw-bold rounded-pill">
+                  View Pricing Plans
+               </a>
+            </div>
+            <!-- Trust badges -->
+            <div class="row g-3 mt-4 pt-3 border-top border-secondary">
+               <div class="col-sm-4">
+                  <div class="d-flex align-items-center gap-2">
+                     <i class="fa-solid fa-shield-halved text-success fs-4"></i>
+                     <div>
+                        <strong class="d-block text-white fs-6">100% Secure</strong>
+                        <span class="small text-light opacity-75">School Portal Isolation</span>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-4">
+                  <div class="d-flex align-items-center gap-2">
+                     <i class="fa-solid fa-bolt text-warning fs-4"></i>
+                     <div>
+                        <strong class="d-block text-white fs-6">Instant Results</strong>
+                        <span class="small text-light opacity-75">Automated GPA &amp; Cards</span>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-4">
+                  <div class="d-flex align-items-center gap-2">
+                     <i class="fa-solid fa-globe text-info fs-4"></i>
+                     <div>
+                        <strong class="d-block text-white fs-6">Custom Portal</strong>
+                        <span class="small text-light opacity-75">Branded Subdomains</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-lg-5 text-center" data-aos="zoom-in">
+            <figure class="m-0">
+               <img src="/assets/images/hero-students.jpg" alt="Students collaborating with Exwhyzee SP School Portal" class="img-fluid rounded-4 shadow-lg border border-white border-opacity-25 w-100" style="object-fit: cover;">
+            </figure>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Hero Banner End -->
+
+<!-- Key Pillars / Who Exwhyzee SP is for -->
+<div class="py-5 bg-light">
+   <div class="container py-4">
+      <div class="text-center mb-5" data-aos="fade-up">
+         <span class="badge bg-primary px-3 py-2 text-uppercase mb-2">Built for Every School Stakeholder</span>
+         <h2 class="display-6 fw-bold">Designed to Simplify Daily Operations</h2>
+         <p class="text-muted mx-auto" style="max-width: 680px;">Exwhyzee SP connects all parts of your school ecosystem into one harmonized digital platform.</p>
+      </div>
+      <div class="row g-4">
+         <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white">
+               <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 55px; height: 55px; font-size: 22px;">
+                  <i class="fa-solid fa-user-tie"></i>
+               </div>
+               <h5 class="fw-bold">School Proprietors</h5>
+               <p class="text-muted small">Real-time revenue monitoring, student population analytics, audit logs, and fraud-free accounting dashboards.</p>
+            </div>
+         </div>
+         <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white">
+               <div class="rounded-circle bg-success-subtle text-success d-inline-flex align-items-center justify-content-center mb-3" style="width: 55px; height: 55px; font-size: 22px;">
+                  <i class="fa-solid fa-chalkboard-user"></i>
+               </div>
+               <h5 class="fw-bold">Teachers &amp; Principals</h5>
+               <p class="text-muted small">One-click CA compilation, affective/psychomotor scoring, automated broadsheets, and lesson plan uploads.</p>
+            </div>
+         </div>
+         <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white">
+               <div class="rounded-circle bg-warning-subtle text-warning d-inline-flex align-items-center justify-content-center mb-3" style="width: 55px; height: 55px; font-size: 22px;">
+                  <i class="fa-solid fa-calculator"></i>
+               </div>
+               <h5 class="fw-bold">Bursars &amp; Accountants</h5>
+               <p class="text-muted small">Custom fee items, instant invoicing, defaulters locking, automated payment receipts, and reconciliation.</p>
+            </div>
+         </div>
+         <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white">
+               <div class="rounded-circle bg-info-subtle text-info d-inline-flex align-items-center justify-content-center mb-3" style="width: 55px; height: 55px; font-size: 22px;">
+                  <i class="fa-solid fa-graduation-cap"></i>
+               </div>
+               <h5 class="fw-bold">Parents &amp; Students</h5>
+               <p class="text-muted small">Online application, scratch-card result checking, CBT exams, Zoom classes, and instant SMS alerts.</p>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Highlight Modules Section -->
+<div class="py-5">
+   <div class="container py-4">
+      <div class="text-center mb-5" data-aos="fade-up">
+         <span class="badge bg-secondary px-3 py-2 text-uppercase mb-2">Powerful Modules</span>
+         <h2 class="display-6 fw-bold">Transform Every Corner of Your School</h2>
+      </div>
+      <div class="row g-4">
+         <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="p-4 border rounded-4 h-100 shadow-sm bg-white">
+               <i class="fa-solid fa-file-signature text-primary fs-2 mb-3"></i>
+               <h4 class="fw-bold">Online Admissions</h4>
+               <p class="text-muted small">Digital forms, entrance screening, acceptance fee checkout, and automated student ID creation.</p>
+               <a href="/Services" class="fw-semibold text-primary small text-decoration-none">Explore Feature <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+         </div>
+         <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="p-4 border rounded-4 h-100 shadow-sm bg-white">
+               <i class="fa-solid fa-award text-success fs-2 mb-3"></i>
+               <h4 class="fw-bold">Result Processing &amp; PINs</h4>
+               <p class="text-muted small">Instant terminal report cards, broadsheets, domain evaluations, and secure scratch card / PIN verification.</p>
+               <a href="/Services#results" class="fw-semibold text-success small text-decoration-none">Explore Result Engine <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+         </div>
+         <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="p-4 border rounded-4 h-100 shadow-sm bg-white">
+               <i class="fa-solid fa-laptop-code text-warning fs-2 mb-3"></i>
+               <h4 class="fw-bold">Online CBT Examination</h4>
+               <p class="text-muted small">Conduct entrance exams and termly CBT with anti-cheat timers, instant scoring, and detailed question banks.</p>
+               <a href="/Services#cbt" class="fw-semibold text-warning small text-decoration-none">Explore CBT System <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+         </div>
+         <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="p-4 border rounded-4 h-100 shadow-sm bg-white">
+               <i class="fa-solid fa-receipt text-danger fs-2 mb-3"></i>
+               <h4 class="fw-bold">School Fee Billing</h4>
+               <p class="text-muted small">Set custom fees, automated invoices, payment gateway integration, and debtor locking.</p>
+               <a href="/Services#finance" class="fw-semibold text-danger small text-decoration-none">Explore Finance Engine <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+         </div>
+         <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+            <div class="p-4 border rounded-4 h-100 shadow-sm bg-white">
+               <i class="fa-solid fa-comment-sms text-info fs-2 mb-3"></i>
+               <h4 class="fw-bold">Bulk SMS &amp; Alerts</h4>
+               <p class="text-muted small">Send instant notifications, exam schedules, fee reminders, and newsletters with custom school sender ID.</p>
+               <a href="/Services#sms" class="fw-semibold text-info small text-decoration-none">Explore Messaging <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+         </div>
+         <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
+            <div class="p-4 border rounded-4 h-100 shadow-sm bg-white">
+               <i class="fa-solid fa-hotel text-secondary fs-2 mb-3"></i>
+               <h4 class="fw-bold">Hostels &amp; Boarding</h4>
+               <p class="text-muted small">Track hostel blocks, rooms, bed spaces allotment, student check-in/out, and hostel fee billing.</p>
+               <a href="/Services" class="fw-semibold text-secondary small text-decoration-none">Explore All Features <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- AI-Powered Learning & Holiday Skills Hub Spotlight Start -->
+<div class="py-5" style="background: #f0f7ff; border-top: 1px solid #d0e3ff; border-bottom: 1px solid #d0e3ff;">
+   <div class="container py-4">
+      <div class="row align-items-center g-5">
+         <div class="col-lg-6" data-aos="fade-right">
+            <span class="badge bg-primary px-3 py-2 text-uppercase mb-2"><i class="fa-solid fa-robot me-1"></i> Future-Ready Education</span>
+            <h2 class="display-6 fw-bold">AI Learning &amp; Holiday Skills Hub for Children</h2>
+            <p class="lead text-muted mt-3">
+               Empower your students to become creators—not just consumers—of artificial intelligence during school terms and long holidays.
+            </p>
+            <p class="text-secondary">
+               Exwhyzee SP introduces a secure, age-appropriate AI learning environment where children learn foundational AI literacy, interactive coding, creative storytelling, and STEM problem-solving under guided parental and teacher oversight.
+            </p>
+            <div class="row g-3 mt-3">
+               <div class="col-sm-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border">
+                     <i class="fa-solid fa-graduation-cap text-primary fs-3 mb-2"></i>
+                     <h6 class="fw-bold mb-1">Holiday AI Study Companion</h6>
+                     <p class="small text-muted mb-0">24/7 interactive homework assistant and self-paced revision for holidays and mid-term breaks.</p>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border">
+                     <i class="fa-solid fa-code text-success fs-3 mb-2"></i>
+                     <h6 class="fw-bold mb-1">Coding &amp; Prompt Crafting</h6>
+                     <p class="small text-muted mb-0">Teaches children how to formulate smart prompts, code simple projects, and build digital confidence.</p>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border">
+                     <i class="fa-solid fa-shield-halved text-warning fs-3 mb-2"></i>
+                     <h6 class="fw-bold mb-1">Safe &amp; Supervised AI</h6>
+                     <p class="small text-muted mb-0">Strict kid-safe guardrails preventing inappropriate content with full teacher and parent audit logs.</p>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border">
+                     <i class="fa-solid fa-certificate text-info fs-3 mb-2"></i>
+                     <h6 class="fw-bold mb-1">Holiday Bootcamps</h6>
+                     <p class="small text-muted mb-0">Turnkey holiday tech workshops, coding challenges, and digital certificates issued by schools.</p>
+                  </div>
+               </div>
+            </div>
+            <div class="d-flex flex-wrap gap-3 align-items-center mt-4">
+               <a href="/Services#ai-learning" class="btn btn-primary px-4 py-3 fw-bold rounded-pill shadow-sm d-inline-flex align-items-center gap-2">
+                  Explore AI Hub Features <i class="fa-solid fa-arrow-right"></i>
+               </a>
+               <a href="/Demo" class="btn btn-outline-primary px-4 py-3 fw-bold rounded-pill d-inline-flex align-items-center">
+                  Request AI Demo for School
+               </a>
+            </div>
+         </div>
+         <div class="col-lg-6 text-center" data-aos="zoom-in">
+            <div class="p-3 bg-white rounded-4 border shadow-lg">
+               <img src="/assets/images/ai-learning-holiday.jpg" alt="Children learning AI and coding during holiday workshop" class="img-fluid rounded-3 shadow mb-3" style="max-height: 420px; width: 100%; object-fit: cover;">
+               <div class="d-flex justify-content-between align-items-center px-3 text-muted small">
+                  <span><i class="fa-solid fa-check-circle text-success me-1"></i> Age-Appropriate AI Models</span>
+                  <span><i class="fa-solid fa-check-circle text-success me-1"></i> Holiday Coding Camps</span>
+                  <span><i class="fa-solid fa-check-circle text-success me-1"></i> Parent Monitored</span>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- AI-Powered Learning & Holiday Skills Hub Spotlight End -->
+
+<!-- Flexible Pricing Banner Callout -->
+<div class="py-5 text-white" style="background: linear-gradient(135deg, #0d3b66 0%, #001e3d 100%);">
+   <div class="container py-4 text-center">
+      <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3">Flexible School-Friendly Pricing</span>
+      <h2 class="display-6 fw-bold mb-3">Pay Per Student, Per Class, or Custom Institutional Demand</h2>
+      <p class="lead mb-4 mx-auto" style="max-width: 720px;">
+         We adapt our billing to match your institution's exact requirements—termly, annually, or through our scratch card revenue-sharing model.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+         <a href="/Pricing" class="sis-btn-default shadow-none bg-white text-dark fw-bold">Compare Pricing Plans <i class="fa-solid fa-arrow-right-long"></i></a>
+         <a href="/Demo" class="btn btn-outline-light px-4 py-3 rounded-pill fw-bold">Request a Custom Proposal</a>
+      </div>
+   </div>
+</div>
+
+<!-- Testimonial / Trust Section -->
+<div class="py-5 bg-light">
+   <div class="container py-4 text-center">
+      <span class="badge bg-primary px-3 py-2 text-uppercase mb-2">Proven Track Record</span>
+      <h2 class="display-6 fw-bold mb-5">Trusted by Leading Educational Institutions</h2>
+      <div class="row g-4 text-start">
+         @if (Model != null && Model.Any())
+         {
+            @foreach (var item in Model)
+            {
+               <div class="col-md-4" data-aos="fade-up">
+                  <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white d-flex flex-column justify-content-between">
+                     <div>
+                        <div class="text-warning mb-3">
+                           @for (int i = 0; i < (item.Rating > 0 ? item.Rating : 5); i++)
+                           {
+                              <i class="fa-solid fa-star"></i>
+                           }
+                        </div>
+                        <p class="text-muted">"@item.Description"</p>
+                     </div>
+                     <div>
+                        <hr>
+                        <h6 class="fw-bold mb-0">@item.Title</h6>
+                        <span class="small text-muted">@item.Position</span>
+                        @if (!string.IsNullOrEmpty(item.SchoolName))
+                        {
+                           <span class="small text-primary d-block fw-semibold">@item.SchoolName</span>
+                        }
+                     </div>
+                  </div>
+               </div>
+            }
+         }
+         else
+         {
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+               <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white">
+                  <div class="text-warning mb-3">
+                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </div>
+                  <p class="text-muted italic">"Result compilation used to take our teachers 2 full weeks at the end of each term. With Exwhyzee SP, report cards are generated with one click without any computational errors."</p>
+                  <hr>
+                  <h6 class="fw-bold mb-0">Dr. Anthony Uche</h6>
+                  <span class="small text-muted">Principal &amp; Director of Studies</span>
+               </div>
+            </div>
+         }
+      </div>
+   </div>
+</div>
+
+<!-- CTA Form Section -->
+<div class="py-5">
+   <div class="container py-4 text-center">
+      <div class="bg-primary text-white p-5 rounded-4 shadow-lg mx-auto" style="max-width: 850px;">
+         <h2 class="display-6 fw-bold mb-3">Take Your School to the Cloud Today</h2>
+         <p class="lead text-light mb-4">Our deployment team will onboard your student records, train your staff, and configure your portal in less than 48 hours.</p>
+         <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/Demo" class="btn btn-light text-primary px-4 py-3 fw-bold rounded-pill shadow">Book Live Demo</a>
+            <a href="/Contact" class="btn btn-outline-light px-4 py-3 fw-bold rounded-pill">Talk to an Educational Consultant</a>
+         </div>
+      </div>
+   </div>
+</div>

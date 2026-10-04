@@ -41,9 +41,9 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT || 22 }}
-          source: "./publish/master/*"
+          source: "publish/master/**"
           target: "/var/www/exwhyzee-master"
-          strip_components: 3
+          strip_components: 2
 
       - name: 7. Apply Server Permissions & Restart Service
         uses: appleboy/ssh-action@master

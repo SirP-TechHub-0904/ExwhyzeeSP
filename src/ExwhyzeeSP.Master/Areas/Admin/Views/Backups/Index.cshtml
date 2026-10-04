@@ -1,0 +1,397 @@
+@model IEnumerable<ExwhyzeeSP.Core.Models.TenantBackupHistory>
+@{
+    ViewData["Title"] = "Database Backup Vault & History";
+    Layout = "_AdminLayout";
+
+    var searchString = ViewBag.SearchString as string ?? "";
+    var typeFilter = ViewBag.TypeFilter as string ?? "";
+    var statusFilter = ViewBag.StatusFilter as string ?? "";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int pageSize = ViewBag.PageSize ?? 20;
+    int totalCount = ViewBag.TotalCount ?? 0;
+
+    int totalBackups = ViewBag.TotalBackups ?? 0;
+    int cloudVaultBackups = ViewBag.CloudVaultBackups ?? 0;
+    int directDownloads = ViewBag.DirectDownloads ?? 0;
+    int failedBackups = ViewBag.FailedBackups ?? 0;
+
+    var schools = ViewBag.Schools as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+}
+
+<div class="space-y-6">
+    <!-- Breadcrumb & Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <nav class="flex items-center gap-2 text-xs text-[var(--text-secondary)] mb-1">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="hover:text-[var(--text-primary)] text-decoration-none">Home</a>
+                <i class="icon-chevron-right text-[10px]"></i>
+                <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" class="hover:text-[var(--text-primary)] text-decoration-none">Schools</a>
+                <i class="icon-chevron-right text-[10px]"></i>
+                <span class="text-[var(--text-primary)] font-medium">Backup Vault &amp; History</span>
+            </nav>
+            <h1 class="text-xl font-bold text-[var(--text-primary)] tracking-tight flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                    <i class="icon-database text-lg"></i>
+                </span>
+                Database Backup Vault &amp; History
+            </h1>
+            <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+                Centralized audit trail of all automated, manual, and Cloudinary cloud storage database snapshots.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+            <button type="button" class="btn btn-primary text-xs font-semibold px-3.5 py-2 flex items-center gap-1.5 rounded-lg shadow-sm" onclick="openBackupModal()">
+                <i class="icon-upload-cloud text-sm"></i>
+                Trigger Backup Vault
+            </button>
+            <a asp-area="Admin" asp-controller="Tenants" asp-action="Index" class="btn btn-outline text-xs font-semibold px-3.5 py-2 flex items-center gap-1.5 rounded-lg text-decoration-none">
+                <i class="icon-school text-sm"></i>
+                Schools Directory
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Notifications -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-3">
+            <i class="icon-check-circle text-lg shrink-0 text-emerald-500"></i>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs flex items-center gap-3">
+            <i class="icon-alert-triangle text-lg shrink-0 text-rose-500"></i>
+            <span>@TempData["ErrorMessage"]</span>
+        </div>
+    }
+
+    <!-- Stat Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+                <i class="icon-database text-xl"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">Total Backups</p>
+                <h3 class="text-xl font-bold text-[var(--text-primary)]">@totalBackups</h3>
+            </div>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                <i class="icon-cloud-check text-xl"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">Cloudinary Vaulted</p>
+                <h3 class="text-xl font-bold text-emerald-600">@cloudVaultBackups</h3>
+            </div>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
+                <i class="icon-download text-xl"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">Direct Streams</p>
+                <h3 class="text-xl font-bold text-purple-600">@directDownloads</h3>
+            </div>
+        </div>
+
+        <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex items-center gap-3.5 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                <i class="icon-alert-octagon text-xl"></i>
+            </div>
+            <div>
+                <p class="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">Failed Operations</p>
+                <h3 class="text-xl font-bold text-rose-600">@failedBackups</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Search Bar -->
+    <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]">
+        <form asp-area="Admin" asp-controller="Backups" asp-action="Index" method="get" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+            <div class="md:col-span-4 relative">
+                <i class="icon-search absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] text-sm"></i>
+                <input type="text" name="searchString" value="@searchString" placeholder="Search school, subdomain, filename..." class="form-input text-xs pl-9 h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]" />
+            </div>
+
+            <div class="md:col-span-3">
+                <select name="typeFilter" class="form-select text-xs h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                    <option value="">All Storage Types</option>
+                    <option value="Cloudinary Vault" selected="@(typeFilter == "Cloudinary Vault")">Cloudinary Vault</option>
+                    <option value="Local Download" selected="@(typeFilter == "Local Download")">Local Download</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-3">
+                <select name="statusFilter" class="form-select text-xs h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                    <option value="">All Statuses</option>
+                    <option value="Success" selected="@(statusFilter == "Success")">Success Only</option>
+                    <option value="Failed" selected="@(statusFilter == "Failed")">Failed Only</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2 flex items-center gap-2">
+                <button type="submit" class="btn btn-primary text-xs font-semibold h-10 px-4 rounded-lg flex-1 flex items-center justify-center gap-1.5 shadow-sm">
+                    <i class="icon-filter text-xs"></i>
+                    Filter
+                </button>
+                @if (!string.IsNullOrEmpty(searchString) || !string.IsNullOrEmpty(typeFilter) || !string.IsNullOrEmpty(statusFilter))
+                {
+                    <a asp-area="Admin" asp-controller="Backups" asp-action="Index" class="btn btn-outline text-xs font-semibold h-10 px-3 rounded-lg flex items-center justify-center text-decoration-none" title="Reset Filters">
+                        <i class="icon-x text-xs"></i>
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <!-- Backup History Table -->
+    <div class="surface-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                    <tr class="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-semibold uppercase tracking-wider text-[11px]">
+                        <th class="py-3 px-4">School Institution</th>
+                        <th class="py-3 px-4">Backup Date &amp; Time (UTC)</th>
+                        <th class="py-3 px-4">Storage Destination</th>
+                        <th class="py-3 px-4">Archive Size</th>
+                        <th class="py-3 px-4">Initiated By</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4 text-right">Actions &amp; Download</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[var(--border-subtle)]">
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-[var(--text-secondary)]">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center mb-3">
+                                    <i class="icon-archive text-xl"></i>
+                                </div>
+                                <p class="font-medium text-[var(--text-primary)]">No backup history records found.</p>
+                                <p class="text-[11px] mt-1">Trigger a new backup or sync a school database to Cloudinary to start tracking.</p>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr class="hover:bg-[var(--surface-sunken)]/50 transition-colors">
+                                <td class="py-3 px-4">
+                                    <div class="font-semibold text-[var(--text-primary)]">
+                                        <a asp-area="Admin" asp-controller="Tenants" asp-action="Details" asp-route-id="@item.TenantSchoolId" class="text-decoration-none hover:text-sky-600">
+                                            @item.SchoolName
+                                        </a>
+                                    </div>
+                                    <div class="text-[11px] text-[var(--text-secondary)] font-mono">
+                                        @(item.Subdomain ?? "n/a").exwhyzee.ng
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-[var(--text-secondary)] whitespace-nowrap">
+                                    <div class="font-medium text-[var(--text-primary)]">@item.BackupDate.ToString("MMM dd, yyyy")</div>
+                                    <div class="text-[11px] text-[var(--text-secondary)]">@item.BackupDate.ToString("HH:mm:ss") UTC</div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if (item.BackupType == "Cloudinary Vault")
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                            <i class="icon-cloud-check text-xs"></i>
+                                            Cloudinary Vault
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-500/10 text-sky-600 border border-sky-500/20">
+                                            <i class="icon-download text-xs"></i>
+                                            Direct Download
+                                        </span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4 font-mono text-[var(--text-primary)] font-medium whitespace-nowrap">
+                                    @(item.FileSize ?? "—")
+                                </td>
+                                <td class="py-3 px-4 text-[var(--text-secondary)] whitespace-nowrap">
+                                    <div class="flex items-center gap-1.5">
+                                        <i class="icon-user text-[11px] text-slate-400"></i>
+                                        <span>@(item.InitiatedBy ?? "System")</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    @if (item.Status == "Success")
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/10 text-emerald-600">
+                                            <i class="icon-check text-[10px]"></i>
+                                            Success
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-500/10 text-rose-600" title="@item.Notes">
+                                            <i class="icon-alert-triangle text-[10px]"></i>
+                                            Failed
+                                        </span>
+                                    }
+                                </td>
+                                <td class="py-3 px-4 text-right whitespace-nowrap">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        @if (!string.IsNullOrEmpty(item.FileUrl))
+                                        {
+                                            <a href="@item.FileUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10 text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1 text-decoration-none" title="Open / Download Cloudinary Snapshot">
+                                                <i class="icon-external-link text-xs"></i>
+                                                Cloud Vault
+                                            </a>
+                                            <button type="button" class="btn btn-outline text-[11px] px-2 py-1 rounded-lg" onclick="navigator.clipboard.writeText('@item.FileUrl'); alert('Cloudinary URL copied to clipboard!');" title="Copy URL">
+                                                <i class="icon-copy text-xs"></i>
+                                            </button>
+                                        }
+                                        else if (item.TenantSchoolId > 0)
+                                        {
+                                            <a asp-area="Admin" asp-controller="Backups" asp-action="TriggerDownload" asp-route-schoolId="@item.TenantSchoolId" class="btn btn-outline border-sky-500/30 text-sky-600 hover:bg-sky-500/10 text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1 text-decoration-none" title="Download Fresh Snapshot">
+                                                <i class="icon-download text-xs"></i>
+                                                Download .bak
+                                            </a>
+                                        }
+
+                                        @if (User.IsInRole(MasterRoles.SuperAdmin))
+                                        {
+                                            <form asp-area="Admin" asp-controller="Backups" asp-action="DeleteHistory" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Remove this audit log entry?');">
+                                                <button type="submit" class="grid place-items-center size-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors" title="Delete Log Entry">
+                                                    <i class="icon-trash-2 text-xs"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        @if (totalPages > 1)
+        {
+            <div class="p-4 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-secondary)]">
+                <div>
+                    Showing <span class="font-semibold text-[var(--text-primary)]">@(((currentPage - 1) * pageSize) + 1)</span> to <span class="font-semibold text-[var(--text-primary)]">@(Math.Min(currentPage * pageSize, totalCount))</span> of <span class="font-semibold text-[var(--text-primary)]">@totalCount</span> entries
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <a asp-area="Admin" asp-controller="Backups" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-searchString="@searchString" asp-route-typeFilter="@typeFilter" asp-route-statusFilter="@statusFilter" class="grid place-items-center size-8 rounded-lg text-xs bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] @(currentPage == 1 ? "pointer-events-none opacity-40" : "")" title="Previous Page">
+                        <i class="icon-chevron-left text-xs"></i>
+                    </a>
+                    <span class="px-2 font-medium">Page @currentPage of @totalPages</span>
+                    <a asp-area="Admin" asp-controller="Backups" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-searchString="@searchString" asp-route-typeFilter="@typeFilter" asp-route-statusFilter="@statusFilter" class="grid place-items-center size-8 rounded-lg text-xs bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-[var(--text-secondary)] @(currentPage == totalPages ? "pointer-events-none opacity-40" : "")" title="Next Page">
+                        <i class="icon-chevron-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal: Trigger On-Demand Backup Vault -->
+<div id="triggerBackupModal" class="hidden fixed inset-0 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4" style="z-index: 999999; pointer-events: auto;" onclick="if (event.target === this) closeBackupModal();">
+    <div class="surface-card w-full max-w-lg rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-6 shadow-2xl relative" style="pointer-events: auto; z-index: 1000000;" onclick="event.stopPropagation();">
+        <button type="button" class="absolute top-4 right-4 text-[var(--text-secondary)] hover:text-[var(--text-primary)] size-8 rounded-lg flex items-center justify-center hover:bg-[var(--surface-sunken)]" onclick="closeBackupModal()" aria-label="Close modal">
+            <i class="icon-x text-lg"></i>
+        </button>
+
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                <i class="icon-cloud-upload text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-[var(--text-primary)]">Trigger School Database Backup</h3>
+                <p class="text-xs text-[var(--text-secondary)]">Create an instant MSSQL snapshot and sync to Cloudinary Vault.</p>
+            </div>
+        </div>
+
+        <form asp-area="Admin" asp-controller="Backups" asp-action="TriggerVault" method="post" id="triggerVaultForm" class="space-y-4" onsubmit="handleBackupSubmit(event)">
+            @Html.AntiForgeryToken()
+            <div>
+                <label class="block text-xs font-semibold text-[var(--text-primary)] mb-1.5">Select Institution School <span class="text-rose-500">*</span></label>
+                <select name="schoolId" id="backupSchoolSelect" required class="form-select text-xs w-full h-10 rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                    <option value="">-- Choose School --</option>
+                    @foreach (var s in schools)
+                    {
+                        <option value="@s.Id">@s.SchoolName (@(s.SubDomain ?? "n/a"))</option>
+                    }
+                </select>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-800 dark:text-sky-300">
+                <div class="font-semibold flex items-center gap-1.5 mb-1">
+                    <i class="icon-info text-sm"></i>
+                    What happens during this process?
+                </div>
+                <p class="text-[11px] leading-relaxed">
+                    1. A native compressed SQL Server <code>.bak</code> database snapshot is generated.<br />
+                    2. The file is uploaded to your secure Cloudinary backup storage folder.<br />
+                    3. The generated download link, file size, and timestamp are saved to the audit ledger.
+                </p>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" class="btn btn-outline text-xs px-4 py-2 rounded-lg cursor-pointer" onclick="closeBackupModal()">Cancel</button>
+                <button type="submit" id="backupSubmitBtn" class="btn btn-primary text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-1.5 shadow-sm cursor-pointer">
+                    <i class="icon-upload-cloud text-sm" id="backupSubmitIcon"></i>
+                    <span id="backupSubmitText">Execute Backup &amp; Sync</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openBackupModal() {
+            var m = document.getElementById('triggerBackupModal');
+            if (m) {
+                m.classList.remove('hidden');
+                m.style.setProperty('display', 'flex', 'important');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeBackupModal() {
+            var m = document.getElementById('triggerBackupModal');
+            if (m) {
+                m.classList.add('hidden');
+                m.style.setProperty('display', 'none', 'important');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleBackupSubmit(e) {
+            var select = document.getElementById('backupSchoolSelect');
+            if (!select || !select.value) {
+                e.preventDefault();
+                alert('Please select a school before proceeding with the backup.');
+                return false;
+            }
+            var btn = document.getElementById('backupSubmitBtn');
+            var icon = document.getElementById('backupSubmitIcon');
+            var text = document.getElementById('backupSubmitText');
+            if (btn) {
+                btn.disabled = true;
+                if (icon) icon.className = 'icon-loader animate-spin text-sm';
+                if (text) text.textContent = 'Generating & Vaulting Backup...';
+            }
+            return true;
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                closeBackupModal();
+            }
+        });
+    </script>
+}

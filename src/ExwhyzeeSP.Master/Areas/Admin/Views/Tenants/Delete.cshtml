@@ -164,7 +164,12 @@
                 <label asp-for="AdminPassword" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
                     3. Your Master Administrator Password <span class="text-rose-500">*</span>
                 </label>
-                <input asp-for="AdminPassword" type="password" required class="form-control text-sm py-2.5 px-3.5 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] focus:border-rose-500 focus:ring-1 focus:ring-rose-500" placeholder="Enter your master administrator login password..." />
+                <div class="relative">
+                    <input asp-for="AdminPassword" id="adminPasswordInput" type="password" required class="form-control text-sm py-2.5 pl-3.5 pr-11 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] focus:border-rose-500 focus:ring-1 focus:ring-rose-500" placeholder="Enter your master administrator login password..." />
+                    <button type="button" id="togglePasswordBtn" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 px-3.5 flex items-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer bg-transparent border-0" title="Toggle password visibility" aria-label="Toggle password visibility">
+                        <i class="bi bi-eye text-base" id="togglePasswordIcon"></i>
+                    </button>
+                </div>
                 <span asp-validation-for="AdminPassword" class="text-xs text-rose-500 font-semibold mt-1 block"></span>
             </div>
 
@@ -196,4 +201,22 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePasswordVisibility() {
+            var input = document.getElementById('adminPasswordInput');
+            var icon = document.getElementById('togglePasswordIcon');
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (icon) {
+                    icon.className = 'bi bi-eye-slash text-base';
+                }
+            } else {
+                input.type = 'password';
+                if (icon) {
+                    icon.className = 'bi bi-eye text-base';
+                }
+            }
+        }
+    </script>
 }

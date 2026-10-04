@@ -349,6 +349,14 @@
     // Initialize Driver.js instance
     let activeDriverInstance = null;
 
+    function markTourAsSeen() {
+        try {
+            const pageKey = getPageKey();
+            localStorage.setItem('portal_tour_global_seen', '1');
+            localStorage.setItem('portal_tour_v1_' + pageKey, 'completed');
+        } catch (e) {}
+    }
+
     function getDriverInstance() {
         if (!window.driver || !window.driver.js || !window.driver.js.driver) {
             console.warn('Driver.js is not loaded.');
@@ -363,8 +371,11 @@
             prevBtnText: '&larr; Back',
             doneBtnText: 'Got It!',
             onDestroyStarted: () => {
-                const pageKey = getPageKey();
-                localStorage.setItem('portal_tour_v1_' + pageKey, 'completed');
+                markTourAsSeen();
+                activeDriverInstance?.destroy();
+            },
+            onCloseClick: () => {
+                markTourAsSeen();
                 activeDriverInstance?.destroy();
             }
         });
@@ -373,10 +384,20 @@
     // Public method to trigger the tour
     window.startPortalTour = function (force = false) {
         const pageKey = getPageKey();
-        const hasSeen = localStorage.getItem('portal_tour_v1_' + pageKey);
 
-        if (hasSeen === 'completed' && !force) {
-            return;
+        // 1. If not manually requested via Help button, check if user has already seen the tour globally
+        if (!force) {
+            // Never auto-popup on destructive / CRUD action subpages
+            if (pageKey.includes('/delete') || pageKey.includes('/create') || pageKey.includes('/edit') || pageKey.includes('/confirm')) {
+                return;
+            }
+
+            const globalSeen = localStorage.getItem('portal_tour_global_seen');
+            const pageSeen = localStorage.getItem('portal_tour_v1_' + pageKey);
+
+            if (globalSeen === '1' || pageSeen === 'completed') {
+                return;
+            }
         }
 
         const steps = resolvePageSteps();
@@ -387,6 +408,9 @@
         const driver = getDriverInstance();
         if (!driver) return;
 
+        // Mark as seen immediately so navigating away won't cause infinite auto-popups
+        markTourAsSeen();
+
         activeDriverInstance = driver;
         driver.setSteps(steps);
         driver.drive();
@@ -394,22 +418,24 @@
 
     // Public helper to reset all tours for testing/troubleshooting
     window.resetAllPortalTours = function () {
-        const keys = Object.keys(localStorage);
-        keys.forEach(k => {
-            if (k.startsWith('portal_tour_v1_')) {
-                localStorage.removeItem(k);
-            }
-        });
-        console.log('All portal tours have been reset. Reloading or starting current tour...');
+        try {
+            localStorage.removeItem('portal_tour_global_seen');
+            const keys = Object.keys(localStorage);
+            keys.forEach(k => {
+                if (k.startsWith('portal_tour_')) {
+                    localStorage.removeItem(k);
+                }
+            });
+        } catch (e) {}
+        console.log('Portal tours reset.');
         window.startPortalTour(true);
     };
 
-    // Auto-launch on first visit
+    // Auto-launch only once on initial platform onboarding
     document.addEventListener('DOMContentLoaded', function () {
-        // Allow DOM rendering and initial charts/animations to stabilize
         setTimeout(function () {
             window.startPortalTour(false);
-        }, 600);
+        }, 800);
     });
 
 })();

@@ -351,10 +351,25 @@
 
     function markTourAsSeen() {
         try {
-            const pageKey = getPageKey();
+            localStorage.setItem('portal_tour_seen', '1');
             localStorage.setItem('portal_tour_global_seen', '1');
-            localStorage.setItem('portal_tour_v1_' + pageKey, 'completed');
+            localStorage.setItem('portal_tour_completed', '1');
+            sessionStorage.setItem('portal_tour_session_seen', '1');
+            document.cookie = 'portal_tour_seen=1; path=/; max-age=31536000; SameSite=Lax';
         } catch (e) {}
+    }
+
+    function isTourAlreadySeen() {
+        try {
+            if (localStorage.getItem('portal_tour_seen') === '1' ||
+                localStorage.getItem('portal_tour_global_seen') === '1' ||
+                localStorage.getItem('portal_tour_completed') === '1' ||
+                sessionStorage.getItem('portal_tour_session_seen') === '1' ||
+                document.cookie.indexOf('portal_tour_seen=1') !== -1) {
+                return true;
+            }
+        } catch (e) {}
+        return false;
     }
 
     function getDriverInstance() {
@@ -385,17 +400,16 @@
     window.startPortalTour = function (force = false) {
         const pageKey = getPageKey();
 
-        // 1. If not manually requested via Help button, check if user has already seen the tour globally
+        // If not manually triggered by clicking Help/Tour button:
         if (!force) {
-            // Never auto-popup on destructive / CRUD action subpages
-            if (pageKey.includes('/delete') || pageKey.includes('/create') || pageKey.includes('/edit') || pageKey.includes('/confirm')) {
+            // 1. Only EVER auto-launch on the main Dashboard (/admin or /admin/dashboard), never on subpages
+            const isMainDashboard = (pageKey === '/admin' || pageKey === '/admin/dashboard' || pageKey === '/');
+            if (!isMainDashboard) {
                 return;
             }
 
-            const globalSeen = localStorage.getItem('portal_tour_global_seen');
-            const pageSeen = localStorage.getItem('portal_tour_v1_' + pageKey);
-
-            if (globalSeen === '1' || pageSeen === 'completed') {
+            // 2. Check if already seen once globally across the entire browser
+            if (isTourAlreadySeen()) {
                 return;
             }
         }
@@ -408,7 +422,7 @@
         const driver = getDriverInstance();
         if (!driver) return;
 
-        // Mark as seen immediately so navigating away won't cause infinite auto-popups
+        // Mark as seen immediately so it will never repeat again in this browser
         markTourAsSeen();
 
         activeDriverInstance = driver;
@@ -419,7 +433,11 @@
     // Public helper to reset all tours for testing/troubleshooting
     window.resetAllPortalTours = function () {
         try {
+            localStorage.removeItem('portal_tour_seen');
             localStorage.removeItem('portal_tour_global_seen');
+            localStorage.removeItem('portal_tour_completed');
+            sessionStorage.removeItem('portal_tour_session_seen');
+            document.cookie = 'portal_tour_seen=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
             const keys = Object.keys(localStorage);
             keys.forEach(k => {
                 if (k.startsWith('portal_tour_')) {
@@ -433,6 +451,7 @@
 
     // Auto-launch only once on initial platform onboarding
     document.addEventListener('DOMContentLoaded', function () {
+        // Run check after layout stabilizes
         setTimeout(function () {
             window.startPortalTour(false);
         }, 800);

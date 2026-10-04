@@ -16,8 +16,16 @@ namespace ExwhyzeeSP.Data.Seed
     /// </summary>
     public static class MasterSeedData
     {
+        // Master toggle - Seeding is permanently disabled since the database is already seeded/customized
+        public static readonly bool IsSeedingEnabled = false;
+
         public static async Task InitializeAsync(MasterDbContext context, IServiceProvider? serviceProvider = null)
         {
+            if (!IsSeedingEnabled)
+            {
+                return;
+            }
+
             // 1. Ensure Master database tables and schema columns exist
             await context.Database.EnsureCreatedAsync();
 

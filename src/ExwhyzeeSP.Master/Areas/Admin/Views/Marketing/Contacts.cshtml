@@ -70,15 +70,15 @@
             
             <!-- Search Input -->
             <div class="relative flex-1">
-                <span class="absolute start-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none">
+                <span class="absolute start-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none flex items-center justify-center z-10">
                     <i class="icon-search text-[14px]"></i>
                 </span>
-                <input type="text" name="search" value="@search" class="w-full h-10 ps-10 pe-3 rounded-xl text-xs sm:text-[13px] bg-[var(--surface-sunken)] border border-[var(--border-subtle)] focus:outline-none focus:border-[var(--color-primary-500)] text-[var(--text-primary)] transition-all" placeholder="Search by name, email, school, role, or state..." />
+                <input type="text" name="search" value="@search" style="padding-left: 42px !important;" class="w-full h-10 pe-3 rounded-xl text-xs sm:text-[13px] bg-[var(--surface-sunken)] border border-[var(--border-subtle)] focus:outline-none focus:border-[var(--color-primary-500)] text-[var(--text-primary)] transition-all" placeholder="Search by name, email, school, role, or state..." />
             </div>
 
             <!-- Tag Segment Filter -->
             <div class="w-full md:w-64">
-                <select name="tag" class="w-full h-10 px-3 rounded-xl text-xs sm:text-[13px] bg-[var(--surface-sunken)] border border-[var(--border-subtle)] focus:outline-none focus:border-[var(--color-primary-500)] text-[var(--text-primary)] transition-all" onchange="this.form.submit()">
+                <select name="tag" data-no-choices class="w-full h-10 px-3 rounded-xl text-xs sm:text-[13px] bg-[var(--surface-sunken)] border border-[var(--border-subtle)] focus:outline-none focus:border-[var(--color-primary-500)] text-[var(--text-primary)] transition-all" onchange="this.form.submit()">
                     <option value="All" selected="@(selectedTag == "All")">All Audience Segments</option>
                     @foreach (var t in distinctTags)
                     {

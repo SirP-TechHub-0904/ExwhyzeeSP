@@ -295,6 +295,25 @@
             box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15) !important;
         }
 
+        /* Universal Search Input & Icon Alignment */
+        .relative:has(.icon-search) input,
+        .relative:has(i[class*="search"]) input,
+        .relative:has(span > .icon-search) input {
+            padding-left: 42px !important;
+            padding-inline-start: 42px !important;
+        }
+        .relative:has(.icon-search) .icon-search,
+        .relative:has(i[class*="search"]) i[class*="search"],
+        .relative:has(span > .icon-search) span {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            pointer-events: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
         /* Modal & Backdrop Styling */
         .modal {
             position: fixed !important;

@@ -116,12 +116,12 @@
     <div class="surface-card p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]">
         <form asp-area="Admin" asp-controller="Backups" asp-action="Index" method="get" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
             <div class="md:col-span-4 relative">
-                <i class="icon-search absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] text-sm"></i>
-                <input type="text" name="searchString" value="@searchString" placeholder="Search school, subdomain, filename..." class="form-input text-xs pl-9 h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]" />
+                <i class="icon-search absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] text-sm pointer-events-none flex items-center justify-center z-10"></i>
+                <input type="text" name="searchString" value="@searchString" style="padding-left: 42px !important;" placeholder="Search school, subdomain, filename..." class="form-input text-xs h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]" />
             </div>
 
             <div class="md:col-span-3">
-                <select name="typeFilter" class="form-select text-xs h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                <select name="typeFilter" data-no-choices class="form-select text-xs h-10 w-full rounded-lg border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
                     <option value="">All Storage Types</option>
                     <option value="Cloudinary Vault" selected="@(typeFilter == "Cloudinary Vault")">Cloudinary Vault</option>
                     <option value="Local Download" selected="@(typeFilter == "Local Download")">Local Download</option>

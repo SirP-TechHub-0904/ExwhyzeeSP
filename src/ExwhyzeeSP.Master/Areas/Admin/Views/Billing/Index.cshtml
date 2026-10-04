@@ -78,17 +78,17 @@
         <form method="get" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
             <div class="col-span-1 sm:col-span-2 lg:col-span-4">
                 <div class="relative flex items-center">
-                    <i class="icon-search absolute left-3 text-[14px] text-[var(--text-tertiary)] pointer-events-none"></i>
-                    <input type="text" name="search" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] pl-9 pr-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary-500)] outline-none" placeholder="Search invoice, ref, school..." value="@ViewBag.Search" />
+                    <i class="icon-search absolute left-3.5 text-[14px] text-[var(--text-tertiary)] pointer-events-none flex items-center justify-center z-10"></i>
+                    <input type="text" name="search" style="padding-left: 42px !important;" class="form-input w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] pr-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary-500)] outline-none" placeholder="Search invoice, ref, school..." value="@ViewBag.Search" />
                 </div>
             </div>
             <div class="col-span-1 lg:col-span-3">
-                <select name="schoolId" asp-items="ViewBag.Schools" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary-500)] outline-none">
+                <select name="schoolId" data-no-choices asp-items="ViewBag.Schools" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary-500)] outline-none">
                     <option value="">All Schools</option>
                 </select>
             </div>
             <div class="col-span-1 lg:col-span-2">
-                <select name="status" class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary-500)] outline-none">
+                <select name="status" data-no-choices class="form-select w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] px-3.5 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary-500)] outline-none">
                     <option value="">All Statuses</option>
                     @foreach (SchoolPaymentStatus s in Enum.GetValues(typeof(SchoolPaymentStatus)))
                     {

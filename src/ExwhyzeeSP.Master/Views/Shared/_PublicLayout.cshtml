@@ -91,6 +91,29 @@
       <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@@0,200..800;1,200..800&display=swap" rel="stylesheet">
       <!-- Main Custom Css -->
       <link href="/assets/css/custom.css" rel="stylesheet" media="screen">
+      <style>
+         .sis-btn-demo-header {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 22px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a !important;
+            background-color: #f1f5f9;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 50px;
+            text-decoration: none !important;
+            transition: all 0.25s ease-in-out;
+            line-height: 24px;
+         }
+         .sis-btn-demo-header:hover {
+            color: #ffffff !important;
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+         }
+      </style>
       @await RenderSectionAsync("Styles", required: false)
    </head>
    <body>
@@ -184,7 +207,7 @@
                   </nav>
                   <div class="sisf-widget-holder sisf--two d-flex align-items-center gap-2">
                      <div class="header-btn">
-                        <a href="/Demo" class="btn btn-outline-light btn-sm px-3 py-2 fw-semibold rounded-pill d-none d-xl-inline-block">Request Demo</a>
+                        <a href="/Demo" class="sis-btn-demo-header d-none d-xl-inline-flex">Request Demo</a>
                      </div>
                      <div class="header-btn">
                         <a href="/Account/Login" class="sis-btn-default shadow-none">Login<i class="fa-solid fa-arrow-right-long"></i></a>

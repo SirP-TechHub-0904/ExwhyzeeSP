@@ -38,6 +38,7 @@ namespace ExwhyzeeSP.Master.Controllers
             string? search,
             DateTime? startDate,
             DateTime? endDate,
+            bool includeArchived = false,
             int page = 1,
             int pageSize = 15)
         {
@@ -45,10 +46,23 @@ namespace ExwhyzeeSP.Master.Controllers
             if (pageSize < 5) pageSize = 15;
             if (pageSize > 100) pageSize = 100;
 
-            var query = _context.SchoolTransactions
-                .Include(t => t.TenantSchool)
-                .AsNoTracking()
-                .AsQueryable();
+            IQueryable<MasterSchoolTransaction> query;
+            if (includeArchived)
+            {
+                query = _context.SchoolTransactions
+                    .IgnoreQueryFilters()
+                    .Include(t => t.TenantSchool)
+                    .AsNoTracking()
+                    .AsQueryable();
+            }
+            else
+            {
+                query = _context.SchoolTransactions
+                    .Include(t => t.TenantSchool)
+                    .Where(t => t.TenantSchool != null && !t.TenantSchool.IsDeleted)
+                    .AsNoTracking()
+                    .AsQueryable();
+            }
 
             if (schoolId.HasValue && schoolId.Value > 0)
             {
@@ -93,31 +107,86 @@ namespace ExwhyzeeSP.Master.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Financial KPIs via direct fast async aggregates
-            ViewBag.TotalCollected = await _context.SchoolTransactions.SumAsync(t => (decimal?)t.AmountPaid) ?? 0m;
-            ViewBag.TotalPending = await _context.SchoolTransactions
+            // Financial KPIs scoped to active/filtered scope
+            var baseKpiQuery = includeArchived
+                ? _context.SchoolTransactions.IgnoreQueryFilters().AsQueryable()
+                : _context.SchoolTransactions.Include(t => t.TenantSchool).Where(t => t.TenantSchool != null && !t.TenantSchool.IsDeleted).AsQueryable();
+
+            ViewBag.TotalCollected = await baseKpiQuery.SumAsync(t => (decimal?)t.AmountPaid) ?? 0m;
+            ViewBag.TotalPending = await baseKpiQuery
                 .Where(t => t.Status == SchoolPaymentStatus.Pending || t.Status == SchoolPaymentStatus.PartiallyPaid)
                 .SumAsync(t => (decimal?)(t.Amount - t.AmountPaid)) ?? 0m;
-            ViewBag.TotalOverdue = await _context.SchoolTransactions
+            ViewBag.TotalOverdue = await baseKpiQuery
                 .Where(t => t.Status == SchoolPaymentStatus.Overdue)
                 .SumAsync(t => (decimal?)(t.Amount - t.AmountPaid)) ?? 0m;
-            ViewBag.TotalInvoicesCount = await _context.SchoolTransactions.CountAsync();
-            ViewBag.PaidInvoicesCount = await _context.SchoolTransactions.CountAsync(t => t.Status == SchoolPaymentStatus.Paid);
+            ViewBag.TotalInvoicesCount = await baseKpiQuery.CountAsync();
+            ViewBag.PaidInvoicesCount = await baseKpiQuery.CountAsync(t => t.Status == SchoolPaymentStatus.Paid);
 
             // Filter Dropdowns
-            ViewBag.Schools = new SelectList(await _context.TenantSchools.AsNoTracking().OrderBy(s => s.SchoolName).ToListAsync(), "Id", "SchoolName", schoolId);
+            var schoolsList = includeArchived
+                ? await _context.TenantSchools.IgnoreQueryFilters().AsNoTracking().OrderBy(s => s.SchoolName).ToListAsync()
+                : await _context.TenantSchools.AsNoTracking().OrderBy(s => s.SchoolName).ToListAsync();
+
+            ViewBag.Schools = new SelectList(schoolsList, "Id", "SchoolName", schoolId);
             ViewBag.SelectedSchoolId = schoolId;
             ViewBag.SelectedStatus = status;
             ViewBag.SelectedBillingType = billingType;
             ViewBag.Search = search;
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
+            ViewBag.IncludeArchived = includeArchived;
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = totalItems;
             ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
             return View(transactions);
+        }
+
+        // POST: /Billing/DeleteInvoice/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{MasterRoles.SuperAdmin},{MasterRoles.Admin}")]
+        public async Task<IActionResult> DeleteInvoice(long id)
+        {
+            var tx = await _context.SchoolTransactions.IgnoreQueryFilters().FirstOrDefaultAsync(t => t.Id == id);
+            if (tx != null)
+            {
+                _context.SchoolTransactions.Remove(tx);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Invoice #{tx.InvoiceNumber} has been permanently deleted.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Invoice record not found.";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: /Billing/PurgeDecommissionedInvoices
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{MasterRoles.SuperAdmin},{MasterRoles.Admin}")]
+        public async Task<IActionResult> PurgeDecommissionedInvoices()
+        {
+            var orphanedTx = await _context.SchoolTransactions
+                .IgnoreQueryFilters()
+                .Where(t => t.TenantSchool == null || t.TenantSchool.IsDeleted)
+                .ToListAsync();
+
+            if (orphanedTx.Any())
+            {
+                var count = orphanedTx.Count;
+                _context.SchoolTransactions.RemoveRange(orphanedTx);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Successfully purged {count} transaction(s) belonging to decommissioned schools.";
+            }
+            else
+            {
+                TempData["InfoMessage"] = "No decommissioned school transactions found to purge.";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: /Billing/Create

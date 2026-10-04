@@ -305,7 +305,10 @@ namespace ExwhyzeeSP.Master.Controllers
         // ================= TAB 2: FINANCE STATS =================
         private async Task LoadFinanceTabAsync(DashboardTabViewModel vm, DateTime fromDate, DateTime toDate)
         {
-            var txQuery = _context.SchoolTransactions.AsNoTracking();
+            var txQuery = _context.SchoolTransactions
+                .Include(t => t.TenantSchool)
+                .Where(t => t.TenantSchool != null && !t.TenantSchool.IsDeleted)
+                .AsNoTracking();
 
             var periodPaidTx = txQuery.Where(t => t.Status == SchoolPaymentStatus.Paid && (t.PaidDate ?? t.CreatedAt) >= fromDate && (t.PaidDate ?? t.CreatedAt) <= toDate);
             var periodPendingTx = txQuery.Where(t => (t.Status == SchoolPaymentStatus.Pending || t.Status == SchoolPaymentStatus.Overdue) && t.CreatedAt >= fromDate && t.CreatedAt <= toDate);

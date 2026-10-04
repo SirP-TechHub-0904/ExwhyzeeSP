@@ -50,6 +50,8 @@ namespace ExwhyzeeSP.Data.Contexts
                             errorNumbersToAdd: null);
                     });
                 }
+            }
+
             optionsBuilder.ConfigureWarnings(warnings =>
                 warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 

@@ -162,30 +162,58 @@
             transition: transform 0.2s ease-in-out !important;
         }
 
-        /* Sidebar collapsed mode */
-        .app-shell.is-collapsed .app-sidebar {
-            width: 80px !important;
-        }
-        .app-shell.is-collapsed .sidebar-label,
-        .app-shell.is-collapsed .sidebar-group-title,
-        .app-shell.is-collapsed .sidebar-chevron,
-        .app-shell.is-collapsed .sidebar-meta,
-        .app-shell.is-collapsed .workspace-text,
-        .app-shell.is-collapsed .sidebar-search,
-        .app-shell.is-collapsed .sidebar-favorites,
-        .app-shell.is-collapsed .sidebar-submenu {
-            display: none !important;
-        }
-        .app-shell.is-collapsed .sidebar-logo-full {
-            display: none !important;
-        }
-        .app-shell.is-collapsed .sidebar-logo-small {
-            display: block !important;
-        }
-        .app-shell.is-collapsed .sidebar-link {
-            justify-content: center !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+        /* ================= DESKTOP SIDEBAR COLLAPSED / MINI-SIDEBAR MODE ================= */
+        @@media (min-width: 1024px) {
+            .app-shell {
+                display: flex !important;
+                flex-direction: row !important;
+                min-height: 100vh !important;
+                width: 100% !important;
+            }
+            .app-sidebar {
+                width: 260px !important;
+                min-width: 260px !important;
+                max-width: 260px !important;
+                position: sticky !important;
+                top: 0 !important;
+                height: 100vh !important;
+                transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+            .app-shell.is-collapsed .app-sidebar {
+                width: 76px !important;
+                min-width: 76px !important;
+                max-width: 76px !important;
+            }
+            .app-shell.is-collapsed .sidebar-logo-full {
+                display: none !important;
+            }
+            .app-shell.is-collapsed .sidebar-logo-small {
+                display: block !important;
+            }
+            .app-shell.is-collapsed #sidebarCollapseBtn {
+                margin: 0 auto !important;
+            }
+            .app-shell.is-collapsed .sidebar-label,
+            .app-shell.is-collapsed .sidebar-group-title,
+            .app-shell.is-collapsed .sidebar-chevron,
+            .app-shell.is-collapsed .sidebar-meta,
+            .app-shell.is-collapsed .workspace-text,
+            .app-shell.is-collapsed .sidebar-search,
+            .app-shell.is-collapsed .sidebar-favorites,
+            .app-shell.is-collapsed .sidebar-submenu {
+                display: none !important;
+            }
+            .app-shell.is-collapsed .sidebar-link {
+                justify-content: center !important;
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+                text-align: center !important;
+                position: relative !important;
+            }
+            .app-shell.is-collapsed .sidebar-link i {
+                font-size: 1.25rem !important;
+                margin: 0 !important;
+            }
         }
 
         /* Header and Page Search Bar Styling */
@@ -606,8 +634,26 @@
             }
         }
     </style>
-    <!-- Standalone Instant Mobile Sidebar Engine -->
+    <!-- Standalone Instant Mobile & Desktop Sidebar Engine -->
     <script>
+        // Desktop mini-sidebar collapse engine
+        window.toggleDesktopSidebar = function(e) {
+            if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(err){} }
+            var shell = document.getElementById('appShell');
+            if (!shell) return;
+            shell.classList.toggle('is-collapsed');
+            var isCollapsed = shell.classList.contains('is-collapsed');
+            try {
+                localStorage.setItem('dreamscore-sidebar-collapsed', isCollapsed ? '1' : '0');
+            } catch(err) {}
+            
+            var collapseIcon = document.querySelector('#sidebarCollapseBtn i');
+            if (collapseIcon) {
+                collapseIcon.className = isCollapsed ? 'icon-panel-left-open text-[17px]' : 'icon-panel-left-close text-[17px]';
+            }
+        };
+
+        // Mobile drawer open/close/toggle functions
         window.openMobileSidebar = function(e) {
             if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(err){} }
             var sb = document.getElementById('appSidebar');
@@ -659,12 +705,14 @@
             }
         };
 
+        // Keyboard ESC handler
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
                 window.closeMobileSidebar();
             }
         });
 
+        // Window resize handler: clean up inline transforms if resized to desktop
         window.addEventListener('resize', function() {
             var sb = document.getElementById('appSidebar');
             if (window.innerWidth >= 1024) {
@@ -674,6 +722,18 @@
                 }
             }
         });
+
+        // Restore desktop collapsed preference on DOM load
+        try {
+            if (localStorage.getItem('dreamscore-sidebar-collapsed') === '1' && window.innerWidth >= 1024) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    var shell = document.getElementById('appShell');
+                    if (shell) shell.classList.add('is-collapsed');
+                    var collapseIcon = document.querySelector('#sidebarCollapseBtn i');
+                    if (collapseIcon) collapseIcon.className = 'icon-panel-left-open text-[17px]';
+                });
+            }
+        } catch(err) {}
     </script>
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -691,7 +751,7 @@
                     <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP" class="sidebar-logo-full sidebar-brand-img rounded" />
                     <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Exwhyzee SP" class="sidebar-logo-small size-8 object-cover rounded-full border border-info hidden" />
                 </a>
-                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0" aria-label="Collapse sidebar">
+                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0" onclick="window.toggleDesktopSidebar(event)" aria-label="Collapse sidebar">
                     <i class="icon-panel-left-close text-[17px]"></i>
                 </button>
                 <button type="button" id="sidebarMobileCloseBtn" class="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 shrink-0" onclick="window.closeMobileSidebar(event)" aria-label="Close sidebar">
@@ -955,7 +1015,7 @@
                     </button>
 
                     <!-- Desktop sidebar collapse toggle -->
-                    <button type="button" id="topbarSidebarToggle" class="header-icon-btn hidden lg:inline-flex" title="Toggle Sidebar" aria-label="Toggle sidebar collapse">
+                    <button type="button" id="topbarSidebarToggle" class="header-icon-btn hidden lg:inline-flex" onclick="window.toggleDesktopSidebar(event)" title="Toggle Sidebar" aria-label="Toggle sidebar collapse">
                         <i class="icon-menu text-[18px]"></i>
                     </button>
 

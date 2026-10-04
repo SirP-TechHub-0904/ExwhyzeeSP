@@ -1,0 +1,261 @@
+/**
+ * ExwhyzeeSP Dreams Core - Modern Floating Toast Notification Engine
+ * High-performance, Glassmorphism, Responsive CSS Toast System
+ */
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    width: calc(100vw - 32px);
+    pointer-events: none;
+}
+
+@media (max-width: 640px) {
+    .toast-container {
+        top: auto;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+        max-width: 100%;
+    }
+}
+
+.dreamscore-toast {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px 16px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.18), 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    pointer-events: auto;
+    overflow: hidden;
+    transform-origin: top right;
+    animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .dreamscore-toast {
+    background: rgba(30, 41, 59, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.35);
+}
+
+.dreamscore-toast.toast-hiding {
+    animation: toastSlideOut 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 640px) {
+    @keyframes toastSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.94);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        max-height: 180px;
+        margin-bottom: 0;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.92);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-bottom: -12px;
+    }
+}
+
+/* Toast Color Schemes & Glow Accents */
+
+/* 1. SUCCESS (Emerald Green) */
+.dreamscore-toast.toast-success {
+    border-left: 5px solid #10b981;
+}
+.dreamscore-toast.toast-success .toast-icon-wrap {
+    background: rgba(16, 185, 129, 0.14);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.dark .dreamscore-toast.toast-success .toast-icon-wrap {
+    background: rgba(16, 185, 129, 0.22);
+    color: #34d399;
+}
+.dreamscore-toast.toast-success .toast-progress-bar {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+/* 2. WARNING (Amber Yellow) */
+.dreamscore-toast.toast-warning {
+    border-left: 5px solid #f59e0b;
+}
+.dreamscore-toast.toast-warning .toast-icon-wrap {
+    background: rgba(245, 158, 11, 0.14);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.dark .dreamscore-toast.toast-warning .toast-icon-wrap {
+    background: rgba(245, 158, 11, 0.22);
+    color: #fbbf24;
+}
+.dreamscore-toast.toast-warning .toast-progress-bar {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+/* 3. DANGER / ERROR (Crimson Red) */
+.dreamscore-toast.toast-danger,
+.dreamscore-toast.toast-error {
+    border-left: 5px solid #ef4444;
+}
+.dreamscore-toast.toast-danger .toast-icon-wrap,
+.dreamscore-toast.toast-error .toast-icon-wrap {
+    background: rgba(239, 68, 68, 0.14);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.dark .dreamscore-toast.toast-danger .toast-icon-wrap,
+.dark .dreamscore-toast.toast-error .toast-icon-wrap {
+    background: rgba(239, 68, 68, 0.22);
+    color: #f87171;
+}
+.dreamscore-toast.toast-danger .toast-progress-bar,
+.dreamscore-toast.toast-error .toast-progress-bar {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+/* 4. INFO (Sky Blue) */
+.dreamscore-toast.toast-info {
+    border-left: 5px solid #0284c7;
+}
+.dreamscore-toast.toast-info .toast-icon-wrap {
+    background: rgba(2, 132, 199, 0.14);
+    color: #0284c7;
+    border: 1px solid rgba(2, 132, 199, 0.25);
+}
+.dark .dreamscore-toast.toast-info .toast-icon-wrap {
+    background: rgba(2, 132, 199, 0.22);
+    color: #38bdf8;
+}
+.dreamscore-toast.toast-info .toast-progress-bar {
+    background: linear-gradient(90deg, #0284c7, #2563eb);
+}
+
+/* Elements inside Toast */
+.toast-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+.toast-content {
+    flex: 1;
+    min-width: 0;
+    padding-top: 1px;
+}
+
+.toast-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #0f172a;
+    margin-bottom: 3px;
+    word-break: break-word;
+}
+
+.dark .toast-title {
+    color: #f8fafc;
+}
+
+.toast-message {
+    font-size: 12.5px;
+    color: #475569;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.dark .toast-message {
+    color: #cbd5e1;
+}
+
+.toast-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 14px;
+    transition: all 0.2s;
+    margin-top: -2px;
+    margin-right: -4px;
+}
+
+.toast-close-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #0f172a;
+}
+
+.dark .toast-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+
+.toast-progress-track {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.dark .toast-progress-track {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.toast-progress-bar {
+    height: 100%;
+    width: 100%;
+    transform-origin: left;
+}

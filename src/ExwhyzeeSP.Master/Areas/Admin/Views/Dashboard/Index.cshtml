@@ -191,6 +191,23 @@
                     newUrl.searchParams.set('range', currentRange);
                     window.history.pushState({}, '', newUrl);
 
+                    const tabLabels = {
+                        'schools': 'Schools Statistics',
+                        'finance': 'Finance & Invoicing',
+                        'academics': 'Academic & Students',
+                        'marketing': 'Marketing & Growth',
+                        'content': 'Content & Public CMS'
+                    };
+                    const tabName = tabLabels[newTab] || this.querySelector('span')?.textContent?.trim() || newTab;
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'info',
+                            title: 'Dashboard View Switched',
+                            message: `Switched to ${tabName} metrics.`,
+                            duration: 3500
+                        });
+                    }
+
                     fetchTabContent();
                 });
             });
@@ -222,6 +239,22 @@
                     newUrl.searchParams.delete('endDate');
                     window.history.pushState({}, '', newUrl);
 
+                    const rangeLabels = {
+                        'year': 'This Year',
+                        'month': 'This Month',
+                        'term': 'This Term',
+                        'week': 'This Week',
+                        'today': 'Today'
+                    };
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'info',
+                            title: 'Date Filter Applied',
+                            message: `Metrics filtered for ${rangeLabels[newRange] || newRange}.`,
+                            duration: 3000
+                        });
+                    }
+
                     fetchTabContent();
                 });
             });
@@ -238,6 +271,15 @@
                 if (eDate) newUrl.searchParams.set('endDate', eDate);
                 window.history.pushState({}, '', newUrl);
 
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'info',
+                        title: 'Custom Range Applied',
+                        message: `Filtering data between ${sDate || 'start'} and ${eDate || 'end'}.`,
+                        duration: 3500
+                    });
+                }
+
                 fetchTabContent();
             });
 
@@ -245,7 +287,12 @@
             refreshBtn?.addEventListener('click', function () {
                 refreshIcon?.classList.add('animate-spin');
                 fetchTabContent(() => {
-                    setTimeout(() => refreshIcon?.classList.remove('animate-spin'), 400);
+                    setTimeout(() => {
+                        refreshIcon?.classList.remove('animate-spin');
+                        if (window.toastSuccess) {
+                            window.toastSuccess('Data Refreshed', 'Dashboard metrics updated successfully.', 3000);
+                        }
+                    }, 400);
                 });
             });
 

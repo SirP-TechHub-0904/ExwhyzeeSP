@@ -66,6 +66,9 @@
     <!-- Interactive Page Tour Styles (Driver.js) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css" />
     <link rel="stylesheet" href="~/css/portal-tour.css" asp-append-version="true" />
+    
+    <!-- Modern Toast Notification Styles -->
+    <link rel="stylesheet" href="~/css/portal-toasts.css" asp-append-version="true" />
 
     <style>
         /* Explicit Font-Face Fallback Definitions */
@@ -1154,19 +1157,41 @@
 
             <!-- ================= BODY CONTENT ================= -->
             <main class="main-content flex-1 p-4 lg:p-6 overflow-y-auto">
-                <!-- Alerts Container -->
-                @if (TempData["SuccessMessage"] != null)
+                <!-- Alerts Container & Server Toast Feed -->
+                @if (TempData["SuccessMessage"] != null || TempData["Success"] != null)
                 {
+                    var msg = TempData["SuccessMessage"] ?? TempData["Success"];
+                    <div class="server-toast-item hidden" data-type="success" data-title="Success" data-message="@msg"></div>
                     <div class="mb-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-3">
                         <i class="icon-check-circle text-[18px]"></i>
-                        <span class="text-sm font-semibold">@TempData["SuccessMessage"]</span>
+                        <span class="text-sm font-semibold">@msg</span>
                     </div>
                 }
-                @if (TempData["ErrorMessage"] != null)
+                @if (TempData["ErrorMessage"] != null || TempData["Error"] != null || TempData["Danger"] != null)
                 {
+                    var msg = TempData["ErrorMessage"] ?? TempData["Error"] ?? TempData["Danger"];
+                    <div class="server-toast-item hidden" data-type="danger" data-title="Error Occurred" data-message="@msg"></div>
                     <div class="mb-4 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3">
                         <i class="icon-alert-triangle text-[18px]"></i>
-                        <span class="text-sm font-semibold">@TempData["ErrorMessage"]</span>
+                        <span class="text-sm font-semibold">@msg</span>
+                    </div>
+                }
+                @if (TempData["WarningMessage"] != null || TempData["Warning"] != null)
+                {
+                    var msg = TempData["WarningMessage"] ?? TempData["Warning"];
+                    <div class="server-toast-item hidden" data-type="warning" data-title="Warning" data-message="@msg"></div>
+                    <div class="mb-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center gap-3">
+                        <i class="icon-alert-triangle text-[18px]"></i>
+                        <span class="text-sm font-semibold">@msg</span>
+                    </div>
+                }
+                @if (TempData["InfoMessage"] != null || TempData["Info"] != null)
+                {
+                    var msg = TempData["InfoMessage"] ?? TempData["Info"];
+                    <div class="server-toast-item hidden" data-type="info" data-title="Information" data-message="@msg"></div>
+                    <div class="mb-4 p-4 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center gap-3">
+                        <i class="icon-info text-[18px]"></i>
+                        <span class="text-sm font-semibold">@msg</span>
                     </div>
                 }
 
@@ -1367,6 +1392,9 @@
     <!-- Interactive Tour Guide Engine -->
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
     <script src="~/js/portal-tour.js" asp-append-version="true"></script>
+    
+    <!-- Modern Toast Notification Engine -->
+    <script src="~/js/portal-toasts.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

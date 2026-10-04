@@ -126,12 +126,14 @@
 
         @if (!ViewData.ModelState.IsValid)
         {
-            <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs space-y-1">
-                <div class="font-bold flex items-center gap-1.5 text-rose-600 mb-1">
-                    <i class="icon-alert-triangle text-base"></i>
-                    <span>Please review and correct the following errors:</span>
+            <div class="p-4 mb-4 rounded-2xl border flex items-start gap-3.5 shadow-sm" style="background-color: #fff1f2; border: 1.5px solid #fda4af; color: #9f1239;">
+                <div class="size-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5" style="background-color: #ffe4e6; color: #e11d48;">
+                    <i class="bi bi-exclamation-triangle-fill text-lg"></i>
                 </div>
-                <div asp-validation-summary="All" class="space-y-0.5 pl-5 list-disc text-rose-600"></div>
+                <div class="flex-1 text-xs">
+                    <h4 class="font-bold text-sm mb-1.5" style="color: #9f1239;">Action Required — Please complete all verification steps:</h4>
+                    <div asp-validation-summary="All" class="space-y-1 font-medium" style="color: #be123c;"></div>
+                </div>
             </div>
         }
 

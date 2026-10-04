@@ -376,6 +376,7 @@ namespace ExwhyzeeSP.Master.Controllers
 
             var migrationStatus = await _migrationService.CheckStatusAsync(tenant);
             ViewBag.MigrationStatus = migrationStatus;
+            ViewBag.BackupHistories = await _backupService.GetBackupHistoryAsync(tenant.Id);
 
             return View(tenant);
         }
@@ -795,7 +796,7 @@ namespace ExwhyzeeSP.Master.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var backupResult = await _backupService.GenerateDatabaseBackupAsync(school);
+            var backupResult = await _backupService.GenerateDatabaseBackupAsync(school, User.Identity?.Name, recordHistory: true);
             if (!backupResult.Success || backupResult.FileBytes == null)
             {
                 TempData["ErrorMessage"] = backupResult.Message;
@@ -828,14 +829,14 @@ namespace ExwhyzeeSP.Master.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var backupResult = await _backupService.GenerateDatabaseBackupAsync(school);
+            var backupResult = await _backupService.GenerateDatabaseBackupAsync(school, User.Identity?.Name, recordHistory: false);
             if (!backupResult.Success || backupResult.FileBytes == null || string.IsNullOrWhiteSpace(backupResult.FileName))
             {
                 TempData["ErrorMessage"] = backupResult.Message;
                 return RedirectToAction(nameof(Details), new { id });
             }
 
-            var uploadResult = await _backupService.UploadToCloudinaryAsync(school, backupResult.FileBytes, backupResult.FileName);
+            var uploadResult = await _backupService.UploadToCloudinaryAsync(school, backupResult.FileBytes, backupResult.FileName, User.Identity?.Name);
             if (uploadResult.Success)
             {
                 await _auditService.LogAsync(

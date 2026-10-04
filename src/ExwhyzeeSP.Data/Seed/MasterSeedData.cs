@@ -52,6 +52,24 @@ namespace ExwhyzeeSP.Data.Seed
                     BEGIN
                         ALTER TABLE dbo.TenantSchools ADD [LastBackupSize] nvarchar(50) NULL;
                     END
+
+                    IF OBJECT_ID('dbo.TenantBackupHistories', 'U') IS NULL
+                    BEGIN
+                        CREATE TABLE dbo.TenantBackupHistories (
+                            [Id] bigint IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                            [TenantSchoolId] int NOT NULL,
+                            [SchoolName] nvarchar(200) NOT NULL,
+                            [Subdomain] nvarchar(100) NULL,
+                            [BackupDate] datetime2 NOT NULL CONSTRAINT DF_TenantBackupHistories_BackupDate DEFAULT(SYSUTCDATETIME()),
+                            [FileUrl] nvarchar(1000) NULL,
+                            [FileName] nvarchar(255) NULL,
+                            [FileSize] nvarchar(50) NULL,
+                            [BackupType] nvarchar(100) NOT NULL,
+                            [InitiatedBy] nvarchar(200) NULL,
+                            [Status] nvarchar(50) NOT NULL CONSTRAINT DF_TenantBackupHistories_Status DEFAULT('Success'),
+                            [Notes] nvarchar(500) NULL
+                        );
+                    END
                 ");
             }
             catch

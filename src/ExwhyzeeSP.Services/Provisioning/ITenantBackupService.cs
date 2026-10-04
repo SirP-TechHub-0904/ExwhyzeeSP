@@ -17,7 +17,9 @@ namespace ExwhyzeeSP.Services.Provisioning
 
     public interface ITenantBackupService
     {
-        Task<BackupResult> GenerateDatabaseBackupAsync(TenantSchool tenant);
-        Task<BackupResult> UploadToCloudinaryAsync(TenantSchool tenant, byte[] fileBytes, string fileName);
+        Task<BackupResult> GenerateDatabaseBackupAsync(TenantSchool tenant, string? initiatedBy = null, bool recordHistory = true);
+        Task<BackupResult> UploadToCloudinaryAsync(TenantSchool tenant, byte[] fileBytes, string fileName, string? initiatedBy = null);
+        Task<List<TenantBackupHistory>> GetBackupHistoryAsync(int? tenantSchoolId = null);
+        Task<TenantBackupHistory> RecordHistoryAsync(TenantBackupHistory history);
     }
 }

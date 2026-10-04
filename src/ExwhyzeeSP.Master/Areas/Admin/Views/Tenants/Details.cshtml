@@ -280,7 +280,73 @@
                             <span>Backup &amp; Vault to Cloudinary</span>
                         </button>
                     </form>
+
+                    <a asp-area="Admin" asp-controller="Backups" asp-action="Index" asp-route-schoolId="@Model.Id" class="btn btn-outline text-xs font-semibold px-3 py-2.5 rounded-lg flex items-center gap-1.5 text-decoration-none ms-auto">
+                        <i class="icon-history text-xs"></i>
+                        <span>Full Backup Vault Logs</span>
+                    </a>
                 </div>
+
+                <!-- Recent Backup Snapshots for this School -->
+                @{
+                    var schoolHistories = ViewBag.BackupHistories as IEnumerable<ExwhyzeeSP.Core.Models.TenantBackupHistory> ?? Enumerable.Empty<ExwhyzeeSP.Core.Models.TenantBackupHistory>();
+                }
+                @if (schoolHistories.Any())
+                {
+                    <div class="pt-3 border-t border-[var(--border-subtle)] space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Historical Snapshots</h4>
+                            <span class="text-[11px] text-[var(--text-tertiary)]">@schoolHistories.Count() recorded archive(s)</span>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="border-b border-[var(--border-subtle)] text-[var(--text-secondary)] font-semibold text-[11px]">
+                                        <th class="py-2 px-3">Date (UTC)</th>
+                                        <th class="py-2 px-3">Type</th>
+                                        <th class="py-2 px-3">Size</th>
+                                        <th class="py-2 px-3">Initiated By</th>
+                                        <th class="py-2 px-3 text-right">Download / URL</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[var(--border-subtle)]">
+                                    @foreach (var h in schoolHistories.Take(5))
+                                    {
+                                        <tr>
+                                            <td class="py-2 px-3 whitespace-nowrap text-[var(--text-primary)]">
+                                                @h.BackupDate.ToString("MMM dd, yyyy HH:mm")
+                                            </td>
+                                            <td class="py-2 px-3">
+                                                @if (h.BackupType == "Cloudinary Vault")
+                                                {
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-600">Cloud Vault</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-sky-500/10 text-sky-600">Local Stream</span>
+                                                }
+                                            </td>
+                                            <td class="py-2 px-3 font-mono text-[11px]">@(h.FileSize ?? "—")</td>
+                                            <td class="py-2 px-3 text-[var(--text-secondary)] text-[11px]">@(h.InitiatedBy ?? "Admin")</td>
+                                            <td class="py-2 px-3 text-right">
+                                                @if (!string.IsNullOrEmpty(h.FileUrl))
+                                                {
+                                                    <a href="@h.FileUrl" target="_blank" class="text-emerald-600 hover:underline font-semibold text-[11px] inline-flex items-center gap-1">
+                                                        <i class="icon-download text-xs"></i> Cloud Link
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-[var(--text-tertiary)] text-[11px]">Direct Stream</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 

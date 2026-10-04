@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ExwhyzeeSP.Core.Models;
@@ -34,7 +35,7 @@ namespace ExwhyzeeSP.Services.Provisioning
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<BackupResult> GenerateDatabaseBackupAsync(TenantSchool tenant)
+        public async Task<BackupResult> GenerateDatabaseBackupAsync(TenantSchool tenant, string? initiatedBy = null, bool recordHistory = true)
         {
             if (tenant == null || string.IsNullOrWhiteSpace(tenant.ConnectionString))
             {
@@ -83,6 +84,23 @@ namespace ExwhyzeeSP.Services.Provisioning
                     // Clean up local temp file
                     try { File.Delete(tempPath); } catch { /* best effort */ }
 
+                    if (recordHistory)
+                    {
+                        await RecordHistoryAsync(new TenantBackupHistory
+                        {
+                            TenantSchoolId = tenant.Id,
+                            SchoolName = tenant.SchoolName,
+                            Subdomain = tenant.SubDomain,
+                            BackupDate = DateTime.UtcNow,
+                            FileName = fileName,
+                            FileSize = formattedSize,
+                            BackupType = "Local Download",
+                            InitiatedBy = initiatedBy ?? "Master Admin",
+                            Status = "Success",
+                            Notes = "Generated local database snapshot stream"
+                        });
+                    }
+
                     return new BackupResult
                     {
                         Success = true,
@@ -91,6 +109,22 @@ namespace ExwhyzeeSP.Services.Provisioning
                         FileName = fileName,
                         FileSizeFormatted = formattedSize
                     };
+                }
+
+                if (recordHistory)
+                {
+                    await RecordHistoryAsync(new TenantBackupHistory
+                    {
+                        TenantSchoolId = tenant.Id,
+                        SchoolName = tenant.SchoolName,
+                        Subdomain = tenant.SubDomain,
+                        BackupDate = DateTime.UtcNow,
+                        FileName = fileName,
+                        BackupType = "Local Download",
+                        InitiatedBy = initiatedBy ?? "Master Admin",
+                        Status = "Failed",
+                        Notes = "SQL backup completed but output file was not found on disk."
+                    });
                 }
 
                 return new BackupResult
@@ -102,6 +136,26 @@ namespace ExwhyzeeSP.Services.Provisioning
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to generate SQL backup for tenant {SchoolName}", tenant.SchoolName);
+
+                if (recordHistory)
+                {
+                    try
+                    {
+                        await RecordHistoryAsync(new TenantBackupHistory
+                        {
+                            TenantSchoolId = tenant.Id,
+                            SchoolName = tenant.SchoolName,
+                            Subdomain = tenant.SubDomain,
+                            BackupDate = DateTime.UtcNow,
+                            BackupType = "Local Download",
+                            InitiatedBy = initiatedBy ?? "Master Admin",
+                            Status = "Failed",
+                            Notes = $"Error: {ex.Message}"
+                        });
+                    }
+                    catch { /* best effort */ }
+                }
+
                 return new BackupResult
                 {
                     Success = false,
@@ -110,7 +164,7 @@ namespace ExwhyzeeSP.Services.Provisioning
             }
         }
 
-        public async Task<BackupResult> UploadToCloudinaryAsync(TenantSchool tenant, byte[] fileBytes, string fileName)
+        public async Task<BackupResult> UploadToCloudinaryAsync(TenantSchool tenant, byte[] fileBytes, string fileName, string? initiatedBy = null)
         {
             if (fileBytes == null || fileBytes.Length == 0)
             {
@@ -122,6 +176,19 @@ namespace ExwhyzeeSP.Services.Provisioning
 
             if (string.IsNullOrWhiteSpace(cloudName) || string.IsNullOrWhiteSpace(apiKey) || string.IsNullOrWhiteSpace(apiSecret))
             {
+                await RecordHistoryAsync(new TenantBackupHistory
+                {
+                    TenantSchoolId = tenant.Id,
+                    SchoolName = tenant.SchoolName,
+                    Subdomain = tenant.SubDomain,
+                    BackupDate = DateTime.UtcNow,
+                    FileName = fileName,
+                    BackupType = "Cloudinary Vault",
+                    InitiatedBy = initiatedBy ?? "Master Admin",
+                    Status = "Failed",
+                    Notes = "Cloudinary credentials missing in .env or configuration"
+                });
+
                 return new BackupResult
                 {
                     Success = false,
@@ -137,7 +204,6 @@ namespace ExwhyzeeSP.Services.Provisioning
                 var publicId = $"{folder}/{cleanSub}_{DateTime.UtcNow:yyyyMMdd_HHmmss}";
 
                 // 2. Compute SHA-1 Signature for Cloudinary REST API
-                // String to sign: folder={folder}&public_id={publicId}&timestamp={timestamp}{apiSecret}
                 var signParams = new SortedDictionary<string, string>
                 {
                     { "folder", folder },
@@ -166,6 +232,20 @@ namespace ExwhyzeeSP.Services.Provisioning
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("Cloudinary upload failed with status {StatusCode}: {Response}", response.StatusCode, responseContent);
+
+                    await RecordHistoryAsync(new TenantBackupHistory
+                    {
+                        TenantSchoolId = tenant.Id,
+                        SchoolName = tenant.SchoolName,
+                        Subdomain = tenant.SubDomain,
+                        BackupDate = DateTime.UtcNow,
+                        FileName = fileName,
+                        BackupType = "Cloudinary Vault",
+                        InitiatedBy = initiatedBy ?? "Master Admin",
+                        Status = "Failed",
+                        Notes = $"Cloudinary API status {response.StatusCode}"
+                    });
+
                     return new BackupResult
                     {
                         Success = false,
@@ -195,6 +275,22 @@ namespace ExwhyzeeSP.Services.Provisioning
                 tenant.LastBackupSize = formattedSize;
                 await _context.SaveChangesAsync();
 
+                // 4. Record to backup history log
+                await RecordHistoryAsync(new TenantBackupHistory
+                {
+                    TenantSchoolId = tenant.Id,
+                    SchoolName = tenant.SchoolName,
+                    Subdomain = tenant.SubDomain,
+                    BackupDate = DateTime.UtcNow,
+                    FileUrl = secureUrl,
+                    FileName = fileName,
+                    FileSize = formattedSize,
+                    BackupType = "Cloudinary Vault",
+                    InitiatedBy = initiatedBy ?? "Master Admin",
+                    Status = "Success",
+                    Notes = "Securely synced to Cloudinary vault"
+                });
+
                 return new BackupResult
                 {
                     Success = true,
@@ -207,12 +303,56 @@ namespace ExwhyzeeSP.Services.Provisioning
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Exception occurred while uploading tenant backup to Cloudinary.");
+
+                try
+                {
+                    await RecordHistoryAsync(new TenantBackupHistory
+                    {
+                        TenantSchoolId = tenant.Id,
+                        SchoolName = tenant.SchoolName,
+                        Subdomain = tenant.SubDomain,
+                        BackupDate = DateTime.UtcNow,
+                        FileName = fileName,
+                        BackupType = "Cloudinary Vault",
+                        InitiatedBy = initiatedBy ?? "Master Admin",
+                        Status = "Failed",
+                        Notes = $"Exception: {ex.Message}"
+                    });
+                }
+                catch { /* best effort */ }
+
                 return new BackupResult
                 {
                     Success = false,
                     Message = $"Cloudinary upload failed: {ex.Message}"
                 };
             }
+        }
+
+        public async Task<List<TenantBackupHistory>> GetBackupHistoryAsync(int? tenantSchoolId = null)
+        {
+            var query = _context.TenantBackupHistories.AsQueryable();
+
+            if (tenantSchoolId.HasValue && tenantSchoolId.Value > 0)
+            {
+                query = query.Where(h => h.TenantSchoolId == tenantSchoolId.Value);
+            }
+
+            return await query.OrderByDescending(h => h.BackupDate).ToListAsync();
+        }
+
+        public async Task<TenantBackupHistory> RecordHistoryAsync(TenantBackupHistory history)
+        {
+            try
+            {
+                _context.TenantBackupHistories.Add(history);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to persist tenant backup history entry.");
+            }
+            return history;
         }
 
         private (string? CloudName, string? ApiKey, string? ApiSecret) GetCloudinaryCredentials()

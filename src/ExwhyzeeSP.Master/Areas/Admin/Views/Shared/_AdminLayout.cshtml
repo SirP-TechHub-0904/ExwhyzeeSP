@@ -603,6 +603,14 @@
                                 <span class="sidebar-label">Add New School</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a asp-area="Admin" asp-controller="Backups" asp-action="Index" class="sidebar-link @(routeController == "Backups" ? "nav-item-active is-active" : "")">
+                                <i class="icon-database text-[16px]"></i>
+                                <span class="sidebar-label">Database Backups</span>
+                                <span class="sidebar-badge badge-solid-success sidebar-meta">Vault</span>
+                            </a>
+                        </li>
                     }
 
                     <!-- USERS & ACCESS CONTROL -->

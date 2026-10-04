@@ -30,6 +30,7 @@ namespace ExwhyzeeSP.Data.Contexts
         public DbSet<MarketingContact> MarketingContacts { get; set; } = null!;
         public DbSet<MarketingTemplate> MarketingTemplates { get; set; } = null!;
         public DbSet<MarketingCampaign> MarketingCampaigns { get; set; } = null!;
+        public DbSet<TenantBackupHistory> TenantBackupHistories { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -1,0 +1,69 @@
+name: Build and Deploy ExwhyzeeSP Web to Hostinger VPS
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: 2. Setup .NET 9.0 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: 3. Restore NuGet Dependencies
+        run: dotnet restore ExwhyzeeSP.slnx
+
+      - name: 4. Build Solution in Release Mode
+        run: dotnet build ExwhyzeeSP.slnx --configuration Release --no-restore
+
+      - name: 5. Publish ExwhyzeeSP.Web Project
+        run: |
+          dotnet publish src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj \
+            --configuration Release \
+            --no-build \
+            --output ./publish/web
+
+      - name: 6. Deploy Published Bundle to VPS via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          source: "publish/web/**"
+          target: "/var/www/exwhyzee-web"
+          strip_components: 2
+
+      - name: 7. Apply Server Permissions & Restart Service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            # Ensure target folder exists and set permissions
+            mkdir -p /var/www/exwhyzee-web
+            chown -R www-data:www-data /var/www/exwhyzee-web
+            chmod -R 755 /var/www/exwhyzee-web
+
+            # Restart ExwhyzeeSP Web Service if configured
+            if systemctl is-active --quiet exwhyzee-web; then
+              echo "Restarting exwhyzee-web service..."
+              systemctl restart exwhyzee-web
+            else
+              echo "Starting exwhyzee-web service..."
+              systemctl start exwhyzee-web || true
+            fi
+
+            systemctl status exwhyzee-web --no-pager || true

@@ -116,6 +116,15 @@ namespace ExwhyzeeSP.Core.Models
         [Display(Name = "Allow E-Learning & Digital Lesson Notes")]
         public bool AllowElearning { get; set; } = true;
 
+        [Display(Name = "Last Backup Date")]
+        public DateTime? LastBackupDate { get; set; }
+
+        [Display(Name = "Last Backup URL")]
+        public string? LastBackupUrl { get; set; }
+
+        [Display(Name = "Last Backup Size")]
+        public string? LastBackupSize { get; set; }
+
         [Display(Name = "Date Registered")]
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
 

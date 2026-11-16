@@ -21,10 +21,10 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: 3. Restore NuGet Dependencies
-        run: dotnet restore ExwhyzeeSP.slnx
+        run: dotnet restore src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj
 
-      - name: 4. Build Solution in Release Mode
-        run: dotnet build ExwhyzeeSP.slnx --configuration Release --no-restore
+      - name: 4. Build ExwhyzeeSP.Web in Release Mode
+        run: dotnet build src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj --configuration Release --no-restore
 
       - name: 5. Publish ExwhyzeeSP.Web Project
         run: |

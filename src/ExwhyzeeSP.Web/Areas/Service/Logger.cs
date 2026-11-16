@@ -1,9 +1,6 @@
-using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-// // using Microsoft.AspNetCore.Http;
+using System.Runtime.InteropServices;
 
 namespace ExwhyzeeSP.Web.Areas.Service
 {
@@ -12,21 +9,44 @@ namespace ExwhyzeeSP.Web.Areas.Service
         private const string IDENTITY = @"HKEY_LOCAL_MACHINE\Ident";
         private const string NAME = "Name";
 
-
         public static void log(string name, string path)
         {
-            string DeviceName = (string)Registry.GetValue(IDENTITY, NAME, "NAME");
-            string pcName = System.Environment.MachineName;
-            var fileContents = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot") + ("~/App_Data/Logger.txt");
-            if (File.Exists(fileContents))
+            try
             {
-                using (TextWriter sw = new StreamWriter(fileContents, true))
+                string DeviceName = "Server";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    sw.Write(Environment.NewLine + "**username**"+ name + " *****path** " + path + " *****date** " + DateTime.UtcNow + " ****device name** " + DeviceName + " ****pc name*** " + pcName + "<br/>");
-                    sw.Close();
+                    try
+                    {
+                        var regVal = Microsoft.Win32.Registry.GetValue(IDENTITY, NAME, "NAME");
+                        if (regVal != null)
+                        {
+                            DeviceName = regVal.ToString();
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore registry errors on Windows
+                    }
                 }
+
+                string pcName = Environment.MachineName;
+                var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "App_Data");
+                var fileContents = Path.Combine(logDirectory, "Logger.txt");
+
+                if (File.Exists(fileContents))
+                {
+                    using (TextWriter sw = new StreamWriter(fileContents, true))
+                    {
+                        sw.WriteLine(Environment.NewLine + "**username**" + name + " *****path** " + path + " *****date** " + DateTime.UtcNow + " ****device name** " + DeviceName + " ****pc name*** " + pcName + "<br/>");
+                        sw.Close();
+                    }
+                }
+            }
+            catch
+            {
+                // Never allow logging to crash view rendering or web requests
             }
         }
     }
 }
-

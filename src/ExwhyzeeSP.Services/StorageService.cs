@@ -86,8 +86,7 @@ namespace ExwhyzeeSP.Services
             if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
             {
                 response.Key = key;
-                response.Url = $"/uploads/{key}";
-                response.Message = "Local fallback (AWS credentials not set)";
+                response.Message = "Storage credentials not configured";
                 return response;
             }
 
@@ -119,59 +118,36 @@ namespace ExwhyzeeSP.Services
             var response = new FileReturnResponseDto();
             if (file == null || file.Length == 0)
             {
+                response.Message = "No file provided";
                 return response;
             }
 
             var (accessKey, secretKey) = ResolveCredentials();
-            if (!string.IsNullOrWhiteSpace(accessKey) && !string.IsNullOrWhiteSpace(secretKey))
+            if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
             {
-                await using var ms = new MemoryStream();
-                await file.CopyToAsync(ms);
-                ms.Position = 0;
-
-                var ext = Path.GetExtension(file.FileName);
-                var obj = new ExwhyzeeSP.Core.Dtos.S3Object
-                {
-                    BucketName = await BucketName(),
-                    InputStream = ms,
-                    Name = $"{Guid.NewGuid()}{ext}"
-                };
-
-                var creds = new AwsCredentials
-                {
-                    AccessKey = accessKey,
-                    SecretKey = secretKey
-                };
-
-                return await UploadFileReturnUrlAsync(obj, creds, old_key);
+                response.Message = "Storage credentials missing. Upload aborted without fallback.";
+                return response;
             }
 
-            try
+            await using var ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+            ms.Position = 0;
+
+            var ext = Path.GetExtension(file.FileName);
+            var obj = new ExwhyzeeSP.Core.Dtos.S3Object
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                BucketName = await BucketName(),
+                InputStream = ms,
+                Name = $"{Guid.NewGuid()}{ext}"
+            };
 
-                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                response.Url = $"/uploads/{uniqueFileName}";
-                response.Key = uniqueFileName;
-                response.Message = "Success";
-            }
-            catch (Exception ex)
+            var creds = new AwsCredentials
             {
-                response.Message = ex.Message;
-            }
+                AccessKey = accessKey,
+                SecretKey = secretKey
+            };
 
-            return response;
+            return await UploadFileReturnUrlAsync(obj, creds, old_key);
         }
 
         public async Task<FileReturnResponseDto> UploadFileReturnUrlAsync(ExwhyzeeSP.Core.Dtos.S3Object obj, AwsCredentials awsCredentialsValues, string old_key)
@@ -179,93 +155,66 @@ namespace ExwhyzeeSP.Services
             var response = new FileReturnResponseDto();
             if (obj?.InputStream == null)
             {
+                response.Message = "Empty file stream";
                 return response;
             }
 
             var (accessKey, secretKey) = ResolveCredentials(awsCredentialsValues);
-            if (!string.IsNullOrWhiteSpace(accessKey) && !string.IsNullOrWhiteSpace(secretKey))
+            if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
             {
-                try
-                {
-                    var bucket = !string.IsNullOrWhiteSpace(obj.BucketName) ? obj.BucketName : await BucketName();
-                    using var client = CreateS3Client(accessKey, secretKey);
-
-                    if (!string.IsNullOrWhiteSpace(old_key))
-                    {
-                        try
-                        {
-                            await client.DeleteObjectAsync(new DeleteObjectRequest { BucketName = bucket, Key = old_key });
-                        }
-                        catch
-                        {
-                        }
-                    }
-
-                    if (obj.InputStream.CanSeek)
-                    {
-                        obj.InputStream.Position = 0;
-                    }
-
-                    var uploadRequest = new TransferUtilityUploadRequest
-                    {
-                        InputStream = obj.InputStream,
-                        Key = obj.Name,
-                        BucketName = bucket,
-                        CannedACL = S3CannedACL.NoACL
-                    };
-
-                    var transferUtility = new TransferUtility(client);
-                    await transferUtility.UploadAsync(uploadRequest);
-
-                    var urlReq = new GetPreSignedUrlRequest
-                    {
-                        BucketName = bucket,
-                        Key = obj.Name,
-                        Expires = DateTime.UtcNow.AddYears(3)
-                    };
-
-                    response.Url = client.GetPreSignedURL(urlReq);
-                    response.Key = obj.Name;
-                    response.Message = "Success";
-                    return response;
-                }
-                catch (Exception ex)
-                {
-                    response.Message = ex.Message;
-                    return response;
-                }
+                response.Message = "Storage credentials missing. Upload aborted without fallback.";
+                return response;
             }
 
             try
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                var bucket = !string.IsNullOrWhiteSpace(obj.BucketName) ? obj.BucketName : await BucketName();
+                using var client = CreateS3Client(accessKey, secretKey);
 
-                var uniqueFileName = $"{Guid.NewGuid()}_{obj.Name ?? "file"}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                if (!string.IsNullOrWhiteSpace(old_key))
                 {
-                    if (obj.InputStream.CanSeek)
+                    try
                     {
-                        obj.InputStream.Position = 0;
+                        await client.DeleteObjectAsync(new DeleteObjectRequest { BucketName = bucket, Key = old_key });
                     }
-                    await obj.InputStream.CopyToAsync(fileStream);
+                    catch
+                    {
+                    }
                 }
 
-                response.Url = $"/uploads/{uniqueFileName}";
-                response.Key = uniqueFileName;
+                if (obj.InputStream.CanSeek)
+                {
+                    obj.InputStream.Position = 0;
+                }
+
+                var uploadRequest = new TransferUtilityUploadRequest
+                {
+                    InputStream = obj.InputStream,
+                    Key = obj.Name,
+                    BucketName = bucket,
+                    CannedACL = S3CannedACL.NoACL
+                };
+
+                var transferUtility = new TransferUtility(client);
+                await transferUtility.UploadAsync(uploadRequest);
+
+                var urlReq = new GetPreSignedUrlRequest
+                {
+                    BucketName = bucket,
+                    Key = obj.Name,
+                    Expires = DateTime.UtcNow.AddYears(3)
+                };
+
+                response.Url = client.GetPreSignedURL(urlReq);
+                response.Key = obj.Name;
                 response.Message = "Success";
+                return response;
             }
             catch (Exception ex)
             {
-                response.Message = ex.Message;
+                response.Message = $"Cloud upload failed: {ex.Message}";
+                return response;
             }
-
-            return response;
         }
 
         public async Task<FileReturnResponseDto> DeleteObjectAsync(AwsCredentials awsCredentialsValues, string bucket, string key)

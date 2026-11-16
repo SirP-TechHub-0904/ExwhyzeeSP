@@ -15,3 +15,5 @@ obj/
 
 # User Uploads
 wwwroot/uploads/
+
+publish/

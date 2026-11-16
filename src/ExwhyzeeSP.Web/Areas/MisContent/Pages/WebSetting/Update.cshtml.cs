@@ -1,4 +1,4 @@
-﻿using ExwhyzeeSP.Core.Models;
+using ExwhyzeeSP.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 {
      [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,Manager,Admin,Editor")]
-
+    [RequestSizeLimit(104857600)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 104857600)]
     public class UpdateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -91,20 +92,19 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, superupdate.CompanyLogoKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         superupdate.CompanyLogoUrl = xresult.Url;
-                        superupdate.CompanyIconKey = xresult.Key;
+                        superupdate.CompanyLogoKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload image: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload image: " + c.Message;
                 }
             }
 
@@ -135,20 +135,19 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, superupdate.CompanyWhiteLogoKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         superupdate.CompanyWhiteLogoUrl = xresult.Url;
                         superupdate.CompanyWhiteLogoKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload white logo: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload white logo: " + c.Message;
                 }
             }
 
@@ -179,20 +178,19 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, superupdate.CompanyIconKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         superupdate.CompanyIconUrl = xresult.Url;
                         superupdate.CompanyIconKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload favicon/icon: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload favicon/icon: " + c.Message;
                 }
             }
             if (imagetitlebg != null)
@@ -222,20 +220,19 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, updatesetting.DefaultTitleBackgroundKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         updatesetting.DefaultTitleBackgroundUrl = xresult.Url;
                         updatesetting.DefaultTitleBackgroundKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload background image: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload background image: " + c.Message;
                 }
             }
             ////
@@ -267,20 +264,19 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, superupdate.ReloaderIconKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         superupdate.ReloaderIconUrl = xresult.Url;
                         superupdate.ReloaderIconKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload reloader icon: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload reloader icon: " + c.Message;
                 }
             }
             if (appStoreImage != null)
@@ -308,22 +304,21 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
                         SecretKey = _config["AwsConfiguration:AWSSecretKey"]
                     };
 
-                    var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, SuperSetting.AppStoreImageKey);
+                    var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, superupdate.AppStoreImageKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
-                        SuperSetting.AppStoreImageUrl = xresult.Url;
-                        SuperSetting.AppStoreImageKey = xresult.Key;
+                        superupdate.AppStoreImageUrl = xresult.Url;
+                        superupdate.AppStoreImageKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload App Store badge: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload App Store badge: " + c.Message;
                 }
             }
 
@@ -352,22 +347,21 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
                         SecretKey = _config["AwsConfiguration:AWSSecretKey"]
                     };
 
-                    var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, SuperSetting.PlayStoreImageKey);
+                    var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, superupdate.PlayStoreImageKey);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
-                        SuperSetting.PlayStoreImageUrl = xresult.Url;
-                        SuperSetting.PlayStoreImageKey = xresult.Key;
+                        superupdate.PlayStoreImageUrl = xresult.Url;
+                        superupdate.PlayStoreImageKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
-                        //return Page();
+                        TempData["error"] = "unable to upload Play Store badge: " + xresult.Message;
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload Play Store badge: " + c.Message;
                 }
             }
 
@@ -450,18 +444,13 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
             updatesetting.BreakingNewsRibonTitle = Setting.BreakingNewsRibonTitle;
             try
             {
-                _context.Attach(updatesetting).State = EntityState.Modified; 
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Website settings updated successfully!";
             }
-            catch(Exception g) { }
-            try
+            catch (Exception ex)
             {
-                _context.Attach(superupdate).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                TempData["error"] = "Error saving settings: " + ex.Message;
             }
-            catch (Exception g) { }
-               
-                TempData["success"] = "Successful";
            
 
             return RedirectToPage("./Index");

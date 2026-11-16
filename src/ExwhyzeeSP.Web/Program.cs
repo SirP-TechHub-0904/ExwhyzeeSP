@@ -129,6 +129,12 @@ using (var scope = app.Services.CreateScope())
 // HttpContextAccessor bridge
 HttpHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 
+// Support reverse proxy headers (Nginx / Cloudflare SSL termination)
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+});
+
 // ==============================================================================
 // 5. CONFIGURE HTTP PIPELINE
 // ==============================================================================

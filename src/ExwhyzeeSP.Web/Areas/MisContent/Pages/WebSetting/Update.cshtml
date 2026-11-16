@@ -1,687 +1,708 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting.UpdateModel
 @{
+    ViewData["Title"] = "Update Website Settings";
+    var ss = Model.SuperSetting;
+    var st = Model.Setting;
 }
-<div class="box box-primary card-default">
-    
-    <!-- /.card-header -->
-    <form method="post" enctype="multipart/form-data">
 
-        <div class="box-body p-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h5 class=" ">ABOUT COMPANY</h5>
-                        </div>
-                        <div class="box-body p-4">
-                            <ul class="todo-list" data-widget="todo-list">
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.CompanyName" class="control-label"></label>
-                                        <input asp-for="SuperSetting.CompanyName" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.CompanyName" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
+<div class="row" style="margin-top: 10px; margin-bottom: 30px;">
+    <div class="col-md-12">
 
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="SuperSetting.CompanyDescription"></label><br />
-
-                                        <textarea asp-for="SuperSetting.CompanyDescription" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.CompanyWebsiteLink" class="control-label"></label>
-                                        <input asp-for="SuperSetting.CompanyWebsiteLink" class="form-control" placeholder="abcd.com or xinfo.com.ng etc"/>
-                                        <span asp-validation-for="SuperSetting.CompanyWebsiteLink" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.WebsiteTitle" class="control-label"></label>
-                                        <input asp-for="SuperSetting.WebsiteTitle" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.WebsiteTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.CompanyLogoUrl))
-                                    {
-                                        <div class="form-group mb-4">
-                                            <label class="control-label">Previouse Company Logo </label><br />
-                                            <img src="@Model.SuperSetting.CompanyLogoUrl" class="img-fluid" style="max-height:150px;" />
-                                        </div>
-                                    }
-
-                                    <div class="form-group mb-4">
-                                        <label class="control-label">Company Logo </label><br />
-                                        <input type="file" class="control-label" asp-for="imagefilecompany" accept="image/*" />
-                                    </div>
-                                </li>
-                                <li>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.CompanyWhiteLogoUrl))
-                                    {
-                                        <div class="form-group mb-4">
-                                            <label class="control-label">Previouse Company White Logo </label><br />
-                                            <img src="@Model.SuperSetting.CompanyWhiteLogoUrl" class="img-fluid" style="max-height:150px;" />
-                                        </div>
-                                    }
-
-                                    <div class="form-group mb-4">
-                                        <label class="control-label">Company White Logo </label><br />
-                                        <input type="file" class="control-label" asp-for="imagefilewhitecompany" accept="image/*" />
-                                    </div>
-                                </li>
-                                <li>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.CompanyIconUrl))
-                                    {
-                                        <div class="form-group mb-4">
-                                            <label class="control-label">Previouse Company Icon </label><br />
-                                            <img src="@Model.SuperSetting.CompanyIconUrl" class="img-fluid" style="max-height:150px;" />
-                                        </div>
-                                    }
-
-                                    <div class="form-group mb-4">
-                                        <label class="control-label">Company Icon </label><br />
-                                        <input type="file" class="control-label" asp-for="imagefilecompanyicon" accept="image/*" />
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.ProductTitle" class="control-label"></label>
-                                        <input asp-for="SuperSetting.ProductTitle" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.ProductTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.ProductTitleHome" class="control-label"></label>
-                                        <input asp-for="SuperSetting.ProductTitleHome" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.ProductTitleHome" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.Qoute" class="control-label"></label>
-                                        <textarea asp-for="Setting.Qoute" class="form-control"></textarea>
-                                        <span asp-validation-for="Setting.Qoute" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.TopNote" class="control-label"></label>
-                                        <input asp-for="Setting.TopNote" class="form-control" />
-                                        <span asp-validation-for="Setting.TopNote" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.FacebookPage" class="control-label"></label>
-                                        <input asp-for="Setting.FacebookPage" class="form-control" />
-                                        <span asp-validation-for="Setting.FacebookPage" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.InstagramPage" class="control-label"></label>
-                                        <input asp-for="Setting.InstagramPage" class="form-control" />
-                                        <span asp-validation-for="Setting.InstagramPage" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.TwitterPage" class="control-label"></label>
-                                        <input asp-for="Setting.TwitterPage" class="form-control" />
-                                        <span asp-validation-for="Setting.TwitterPage" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.TiktokPage" class="control-label"></label>
-                                        <input asp-for="Setting.TiktokPage" class="form-control" />
-                                        <span asp-validation-for="Setting.TiktokPage" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.YoutubeChannel" class="control-label"></label>
-                                        <input asp-for="Setting.YoutubeChannel" class="form-control" />
-                                        <span asp-validation-for="Setting.YoutubeChannel" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.WorkingHour" class="control-label"></label>
-                                        <input asp-for="Setting.WorkingHour" class="form-control" />
-                                        <span asp-validation-for="Setting.WorkingHour" class="text-danger"></span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h5 class=" ">CONTACT INFORMATIONY</h5>
-                        </div>
-                        <div class="box-body p-4">
-                            <ul class="todo-list" data-widget="todo-list">
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.AddressOne" class="control-label"></label>
-                                        <textarea asp-for="Setting.AddressOne" class="form-control"></textarea>
-                                        <span asp-validation-for="Setting.AddressOne" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowAddressOneInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowAddressOneInTop)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.AddressTwo" class="control-label"></label>
-                                        <textarea asp-for="Setting.AddressTwo" class="form-control"></textarea>
-                                        <span asp-validation-for="Setting.AddressTwo" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.EmailOne" class="control-label"></label>
-                                        <input asp-for="Setting.EmailOne" class="form-control" />
-                                        <span asp-validation-for="Setting.EmailOne" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowEmailOneInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowEmailOneInTop)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowEmailOneInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowEmailOneInFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.EmailTwo" class="control-label"></label>
-                                        <input asp-for="Setting.EmailTwo" class="form-control" />
-                                        <span asp-validation-for="Setting.EmailTwo" class="text-danger"></span>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowEmailTwoInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowEmailTwoInTop)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowEmailTwoInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowEmailTwoInFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.EmailThree" class="control-label"></label>
-                                        <input asp-for="Setting.EmailThree" class="form-control" />
-                                        <span asp-validation-for="Setting.EmailThree" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowEmailThreeInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowEmailThreeInTop)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowEmailThreeInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowEmailThreeInFooter)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.PhoneOne" class="control-label"></label>
-                                        <input asp-for="Setting.PhoneOne" class="form-control" />
-                                        <span asp-validation-for="Setting.PhoneOne" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowPhoneOneInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowPhoneOneInTop)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowPhoneOneInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowPhoneOneInFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.PhoneTwo" class="control-label"></label>
-                                        <input asp-for="Setting.PhoneTwo" class="form-control" />
-                                        <span asp-validation-for="Setting.PhoneTwo" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowPhoneTwoInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowPhoneTwoInTop)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowPhoneTwoInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowPhoneTwoInFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.PhoneThree" class="control-label"></label>
-                                        <input asp-for="Setting.PhoneThree" class="form-control" />
-                                        <span asp-validation-for="Setting.PhoneThree" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowPhoneThreeInTop" /> @Html.DisplayNameFor(model => model.Setting.ShowPhoneThreeInTop)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowPhoneThreeInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowPhoneThreeInFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.GoogleMap" class="control-label"></label>
-                                        <textarea asp-for="Setting.GoogleMap" class="form-control"></textarea>
-                                        <span asp-validation-for="Setting.GoogleMap" class="text-danger"></span>
-                                    </div>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h5 class=" ">OTHER FEATURES</h5>
-                        </div>
-                        <div class="box-body p-4">
-                            <ul class="todo-list" data-widget="todo-list">
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddFaqToHome" /> @Html.DisplayNameFor(model => model.Setting.AddFaqToHome)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddFaqToFooter" /> @Html.DisplayNameFor(model => model.Setting.AddFaqToFooter)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowContactUsMenu" /> @Html.DisplayNameFor(model => model.Setting.ShowContactUsMenu)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowContactUsFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowContactUsFooter)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddTestimonyToHome" /> @Html.DisplayNameFor(model => model.Setting.AddTestimonyToHome)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddTestimonyToFooter" /> @Html.DisplayNameFor(model => model.Setting.AddTestimonyToFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.DisableMainTopMenu" /> @Html.DisplayNameFor(model => model.Setting.DisableMainTopMenu)
-                                        </label>
-
-
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowProductsInMenu" /> @Html.DisplayNameFor(model => model.Setting.ShowProductsInMenu)
-                                        </label>
-                                    </div>
-
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowProductsInFooter" /> @Html.DisplayNameFor(model => model.Setting.ShowProductsInFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ActivateProductsInHome" /> @Html.DisplayNameFor(model => model.Setting.ActivateProductsInHome)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowTwoProducts" /> @Html.DisplayNameFor(model => model.Setting.ShowTwoProducts)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowThreeProducts" /> @Html.DisplayNameFor(model => model.Setting.ShowThreeProducts)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.ShowSixProducts" /> @Html.DisplayNameFor(model => model.Setting.ShowSixProducts)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    @if (!String.IsNullOrEmpty(Model.Setting.DefaultTitleBackgroundUrl))
-                                    {
-                                        <div class="form-group mb-4">
-                                            <label class="control-label">Previouse Background</label><br />
-                                            <img src="@Model.Setting.DefaultTitleBackgroundUrl" class="img-fluid" style="max-height:150px;" />
-                                        </div>
-                                    }
-
-                                    <div class="form-group mb-4">
-                                        <label class="control-label">Default Title Background</label><br />
-                                        <input type="file" class="control-label" asp-for="imagetitlebg" accept="image/*" />
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.GoogleMap" class="control-label"></label>
-                                        <textarea asp-for="Setting.GoogleMap" class="form-control"></textarea>
-                                        <span asp-validation-for="Setting.GoogleMap" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.BlogDisplayTitle" class="control-label"></label>
-                                        <input asp-for="Setting.BlogDisplayTitle" class="form-control" />
-                                        <span asp-validation-for="Setting.BlogDisplayTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddBlogToFooter" /> @Html.DisplayNameFor(model => model.Setting.AddBlogToFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddBlogToHome" /> @Html.DisplayNameFor(model => model.Setting.AddBlogToHome)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddBlogToMenu" /> @Html.DisplayNameFor(model => model.Setting.AddBlogToMenu)
-                                        </label>
-                                    </div>
-                                </li>
-
-
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.CareerDisplayTitle" class="control-label"></label>
-                                        <input asp-for="Setting.CareerDisplayTitle" class="form-control" />
-                                        <span asp-validation-for="Setting.CareerDisplayTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddCareerToFooter" /> @Html.DisplayNameFor(model => model.Setting.AddCareerToFooter)
-                                        </label>
-                                    </div>
-                                </li>
-
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.AddCareerToMenu" /> @Html.DisplayNameFor(model => model.Setting.AddCareerToMenu)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.SpecialMenuButtonActivate" /> @Html.DisplayNameFor(model => model.SuperSetting.SpecialMenuButtonActivate)
-                                        </label>
-                                    </div>
-
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.SpecialMenuButtonLink" class="control-label"></label>
-                                        <select asp-for="SuperSetting.SpecialMenuButtonLink" class="form-control" asp-items="ViewBag.WebPageId">
-                                            <option value="0">#</option>
-                                            <option value="Direct">Direct Link (https://www.juray.ng/)</option>
-                                            <option value="000">Contact Us Page</option>
-
-                                        </select>
-
-                                        <span asp-validation-for="SuperSetting.SpecialMenuButtonLink" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.SpecialMenuButtonText" class="control-label"></label>
-                                        <input asp-for="SuperSetting.SpecialMenuButtonText" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.SpecialMenuButtonText" class="text-danger"></span>
-                                    </div>
-                                </li>
-
-
-
-
-
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.ActivateWorkWithUsFooter" /> @Html.DisplayNameFor(model => model.SuperSetting.ActivateWorkWithUsFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.ActivateDownloadOurAppFooter" /> @Html.DisplayNameFor(model => model.SuperSetting.ActivateDownloadOurAppFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.TitleDownloadOurAppFooter" class="control-label"></label>
-                                        <input asp-for="SuperSetting.TitleDownloadOurAppFooter" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.TitleDownloadOurAppFooter" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.DescriptionDownloadOurAppFooter" class="control-label"></label>
-                                        <input asp-for="SuperSetting.DescriptionDownloadOurAppFooter" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.DescriptionDownloadOurAppFooter" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.AppStoreLink" class="control-label"></label>
-                                        <input asp-for="SuperSetting.AppStoreLink" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.AppStoreLink" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.PlayStoreLink" class="control-label"></label>
-                                        <input asp-for="SuperSetting.PlayStoreLink" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.PlayStoreLink" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-
-
-
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.ActivateSubscribeFormOnFooter" /> @Html.DisplayNameFor(model => model.SuperSetting.ActivateSubscribeFormOnFooter)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-
-
-
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.AppStoreImageUrl))
-                                    {
-                                        <div class="form-group mb-4">
-                                            <label asp-for="SuperSetting.AppStoreImageUrl" class="control-label"></label><br />
-                                            <img src="@Model.SuperSetting.AppStoreImageUrl" class="img-fluid" style="max-height:150px;" />
-                                        </div>
-                                    }
-
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="SuperSetting.AppStoreImageUrl"></label><br />
-                                        <input type="file" class="control-label" asp-for="appStoreImage" accept="image/*" />
-                                    </div>
-                                </li>
-                                <li>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.PlayStoreImageUrl))
-                                    {
-                                        <div class="form-group mb-4">
-                                            <label asp-for="SuperSetting.PlayStoreImageUrl" class="control-label"></label><br />
-                                            <img src="@Model.SuperSetting.PlayStoreImageUrl" class="img-fluid" style="max-height:150px;" />
-                                        </div>
-                                    }
-
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="SuperSetting.PlayStoreImageUrl"></label><br />
-                                        <input type="file" class="control-label" asp-for="playStoreImage" accept="image/*" />
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="Setting.EnableBreakingNewsRibon" /> @Html.DisplayNameFor(model => model.Setting.EnableBreakingNewsRibon)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.BreakingNewsRibonTitle" class="control-label"></label>
-                                        <input asp-for="Setting.BreakingNewsRibonTitle" class="form-control" />
-                                        <span asp-validation-for="Setting.BreakingNewsRibonTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="Setting.RibonPosition" class="control-label"></label>
-                                        @Html.DropDownListFor(model => model.Setting.RibonPosition, new SelectList(Enum.GetValues(typeof(ExwhyzeeSP.Core.Entities.RibonPosition))), new { @class = "form-control" })
-
-                                        <span asp-validation-for="Setting.RibonPosition" class="text-danger"></span>
-                                    </div>
-                                </li>
-
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="box box-primary">
-                    <div class="box-footer">
-                        <input type="submit" value="Update" class="btn btn-primary" />
-
-                    </div>
-                </div>
-
+        <!-- Top Alert / Header Bar -->
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 18px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #1e293b;">
+                    <i class="fa fa-cogs text-primary" style="margin-right: 8px;"></i> Edit Website &amp; Portal Settings
+                </h3>
+                <span style="font-size: 13px; color: #64748b;">
+                    Configure company identity, branding, contact details, ribbon notices, and website features. All media assets and files are securely stored.
+                </span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <a asp-page="./Index" class="btn btn-default" style="font-weight: 600; border-radius: 6px; padding: 8px 16px;">
+                    <i class="fa fa-arrow-left"></i> View Overview
+                </a>
+                <button type="button" onclick="document.getElementById('saveSettingsBtn').click();" class="btn btn-primary" style="font-weight: 600; border-radius: 6px; padding: 8px 20px; box-shadow: 0 2px 6px rgba(60,141,188,0.3);">
+                    <i class="fa fa-save"></i> Save Settings
+                </button>
             </div>
         </div>
 
-</form>
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" style="border-radius: 6px;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <i class="fa fa-ban"></i> @TempData["error"]
+            </div>
+        }
+
+        <form method="post" enctype="multipart/form-data" id="settingsForm">
+
+            <!-- Tabbed Card -->
+            <div class="nav-tabs-custom" style="box-shadow: 0 3px 12px rgba(0,0,0,0.06); border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;">
+                <ul class="nav nav-tabs" style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 4px 8px 0 8px;">
+                    <li class="active">
+                        <a href="#tab-branding" data-toggle="tab" style="font-weight: 600; padding: 12px 18px; border-radius: 6px 6px 0 0;">
+                            <i class="fa fa-building-o text-primary"></i> Company &amp; Branding
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab-contact" data-toggle="tab" style="font-weight: 600; padding: 12px 18px; border-radius: 6px 6px 0 0;">
+                            <i class="fa fa-phone text-success"></i> Contact &amp; Social
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab-features" data-toggle="tab" style="font-weight: 600; padding: 12px 18px; border-radius: 6px 6px 0 0;">
+                            <i class="fa fa-toggle-on text-warning"></i> Menu &amp; Features
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab-news" data-toggle="tab" style="font-weight: 600; padding: 12px 18px; border-radius: 6px 6px 0 0;">
+                            <i class="fa fa-bullhorn text-danger"></i> Breaking News &amp; Ribbon
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab-app" data-toggle="tab" style="font-weight: 600; padding: 12px 18px; border-radius: 6px 6px 0 0;">
+                            <i class="fa fa-mobile text-info"></i> Mobile App &amp; Footer
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" style="padding: 24px 28px; background: #ffffff;">
+
+                    <!-- ========================================== -->
+                    <!-- TAB 1: COMPANY & BRANDING                  -->
+                    <!-- ========================================== -->
+                    <div class="tab-pane fade in active" id="tab-branding">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-id-card-o text-primary"></i> Basic Information
+                                </h4>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.CompanyName" class="control-label" style="font-weight: 600; color: #334155;">Company / School Name</label>
+                                    <input asp-for="SuperSetting.CompanyName" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="e.g. Divine Threshers' Schools" />
+                                    <span asp-validation-for="SuperSetting.CompanyName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.WebsiteTitle" class="control-label" style="font-weight: 600; color: #334155;">Website Title</label>
+                                    <input asp-for="SuperSetting.WebsiteTitle" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="e.g. Divine Threshers' Schools, Umuahia" />
+                                    <span asp-validation-for="SuperSetting.WebsiteTitle" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.CompanyWebsiteLink" class="control-label" style="font-weight: 600; color: #334155;">Website Domain / URL</label>
+                                    <input asp-for="SuperSetting.CompanyWebsiteLink" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="e.g. divinethreshersschools.com.ng" />
+                                    <span asp-validation-for="SuperSetting.CompanyWebsiteLink" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.TopNote" class="control-label" style="font-weight: 600; color: #334155;">Header Top Note</label>
+                                    <input asp-for="Setting.TopNote" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="Optional announcement or motto" />
+                                    <span asp-validation-for="Setting.TopNote" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.CompanyDescription" class="control-label" style="font-weight: 600; color: #334155;">Company / School Description</label>
+                                    <textarea asp-for="SuperSetting.CompanyDescription" class="form-control" rows="3" style="border-radius: 6px;" placeholder="Brief description of the school or organization..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 25px;">
+                                    <label asp-for="Setting.Qoute" class="control-label" style="font-weight: 600; color: #334155;">Inspirational Quote / Motto</label>
+                                    <textarea asp-for="Setting.Qoute" class="form-control" rows="2" style="border-radius: 6px;" placeholder="School motto, quote, or vision statement..."></textarea>
+                                    <span asp-validation-for="Setting.Qoute" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.ProductTitle" class="control-label" style="font-weight: 600; color: #334155;">Product / Service Title</label>
+                                    <input asp-for="SuperSetting.ProductTitle" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="e.g. Our Academic Programs" />
+                                    <span asp-validation-for="SuperSetting.ProductTitle" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.ProductTitleHome" class="control-label" style="font-weight: 600; color: #334155;">Homepage Product Section Title</label>
+                                    <input asp-for="SuperSetting.ProductTitleHome" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="e.g. Featured Classes &amp; Programs" />
+                                    <span asp-validation-for="SuperSetting.ProductTitleHome" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Image Upload Cards -->
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 15px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-cloud-upload text-primary"></i> Logos &amp; Media Assets
+                                </h4>
+                            </div>
+
+                            <!-- Company Logo -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <label style="font-weight: 600; color: #1e293b; display: block; margin-bottom: 8px;">
+                                        Primary Company Logo
+                                    </label>
+                                    @if (!string.IsNullOrEmpty(Model.SuperSetting.CompanyLogoUrl))
+                                    {
+                                        <div style="margin-bottom: 12px; background: #fff; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.SuperSetting.CompanyLogoUrl" alt="Current Logo" style="max-height: 80px; max-width: 100%;" />
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 6px;">Current Logo</div>
+                                        </div>
+                                    }
+                                    <input type="file" asp-for="imagefilecompany" class="form-control" accept="image/*" style="border-radius: 6px;" />
+                                    <small class="text-muted">Recommended: Transparent PNG or SVG, max height 100px</small>
+                                </div>
+                            </div>
+
+                            <!-- White Logo -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <label style="font-weight: 600; color: #1e293b; display: block; margin-bottom: 8px;">
+                                        White Logo (For Dark Headers)
+                                    </label>
+                                    @if (!string.IsNullOrEmpty(Model.SuperSetting.CompanyWhiteLogoUrl))
+                                    {
+                                        <div style="margin-bottom: 12px; background: #1e293b; padding: 10px; border: 1px solid #334155; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.SuperSetting.CompanyWhiteLogoUrl" alt="Current White Logo" style="max-height: 80px; max-width: 100%;" />
+                                            <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">Current White Logo</div>
+                                        </div>
+                                    }
+                                    <input type="file" asp-for="imagefilewhitecompany" class="form-control" accept="image/*" style="border-radius: 6px;" />
+                                    <small class="text-muted">Used for dark header navigation themes</small>
+                                </div>
+                            </div>
+
+                            <!-- Favicon / Icon -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <label style="font-weight: 600; color: #1e293b; display: block; margin-bottom: 8px;">
+                                        Favicon / Icon
+                                    </label>
+                                    @if (!string.IsNullOrEmpty(Model.SuperSetting.CompanyIconUrl))
+                                    {
+                                        <div style="margin-bottom: 12px; background: #fff; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.SuperSetting.CompanyIconUrl" alt="Current Favicon" style="max-height: 48px;" />
+                                        </div>
+                                    }
+                                    <input type="file" asp-for="imagefilecompanyicon" class="form-control" accept="image/*" style="border-radius: 6px;" />
+                                    <small class="text-muted">Square image (e.g. 64x64 PNG or ICO)</small>
+                                </div>
+                            </div>
+
+                            <!-- Reloader Icon -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <label style="font-weight: 600; color: #1e293b; display: block; margin-bottom: 8px;">
+                                        Page Preloader Icon
+                                    </label>
+                                    @if (!string.IsNullOrEmpty(Model.SuperSetting.ReloaderIconUrl))
+                                    {
+                                        <div style="margin-bottom: 12px; background: #fff; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.SuperSetting.ReloaderIconUrl" alt="Reloader Icon" style="max-height: 48px;" />
+                                        </div>
+                                    }
+                                    <input type="file" asp-for="reloaderimage" class="form-control" accept="image/*" style="border-radius: 6px;" />
+                                    <small class="text-muted">Animation or spinning emblem</small>
+                                </div>
+                            </div>
+
+                            <!-- Default Title Background -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <label style="font-weight: 600; color: #1e293b; display: block; margin-bottom: 8px;">
+                                        Page Header Background Banner
+                                    </label>
+                                    @if (!string.IsNullOrEmpty(Model.Setting.DefaultTitleBackgroundUrl))
+                                    {
+                                        <div style="margin-bottom: 12px; background: #fff; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.Setting.DefaultTitleBackgroundUrl" alt="Header Background" style="max-height: 48px; max-width: 100%;" />
+                                        </div>
+                                    }
+                                    <input type="file" asp-for="imagetitlebg" class="form-control" accept="image/*" style="border-radius: 6px;" />
+                                    <small class="text-muted">Sub-page header banner image</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 2: CONTACT & SOCIAL                    -->
+                    <!-- ========================================== -->
+                    <div class="tab-pane fade" id="tab-contact">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-envelope-o text-success"></i> Email Addresses &amp; Visibility
+                                </h4>
+                            </div>
+
+                            <!-- Email 1 -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.EmailOne" class="control-label" style="font-weight: 600; color: #334155;">Primary Email</label>
+                                        <input asp-for="Setting.EmailOne" class="form-control" placeholder="info@school.com" />
+                                        <span asp-validation-for="Setting.EmailOne" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 6px;">
+                                        <label><input asp-for="Setting.ShowEmailOneInTop" /> Show in Top Header</label>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0;">
+                                        <label><input asp-for="Setting.ShowEmailOneInFooter" /> Show in Footer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email 2 -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.EmailTwo" class="control-label" style="font-weight: 600; color: #334155;">Secondary Email</label>
+                                        <input asp-for="Setting.EmailTwo" class="form-control" placeholder="admissions@school.com" />
+                                        <span asp-validation-for="Setting.EmailTwo" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 6px;">
+                                        <label><input asp-for="Setting.ShowEmailTwoInTop" /> Show in Top Header</label>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0;">
+                                        <label><input asp-for="Setting.ShowEmailTwoInFooter" /> Show in Footer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email 3 -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.EmailThree" class="control-label" style="font-weight: 600; color: #334155;">Support / Help Email</label>
+                                        <input asp-for="Setting.EmailThree" class="form-control" placeholder="support@school.com" />
+                                        <span asp-validation-for="Setting.EmailThree" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 6px;">
+                                        <label><input asp-for="Setting.ShowEmailThreeInTop" /> Show in Top Header</label>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0;">
+                                        <label><input asp-for="Setting.ShowEmailThreeInFooter" /> Show in Footer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone Numbers -->
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-phone text-success"></i> Phone Numbers &amp; Visibility
+                                </h4>
+                            </div>
+
+                            <!-- Phone 1 -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.PhoneOne" class="control-label" style="font-weight: 600; color: #334155;">Primary Phone</label>
+                                        <input asp-for="Setting.PhoneOne" class="form-control" placeholder="+234 800 000 0000" />
+                                        <span asp-validation-for="Setting.PhoneOne" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 6px;">
+                                        <label><input asp-for="Setting.ShowPhoneOneInTop" /> Show in Top Header</label>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0;">
+                                        <label><input asp-for="Setting.ShowPhoneOneInFooter" /> Show in Footer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone 2 -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.PhoneTwo" class="control-label" style="font-weight: 600; color: #334155;">Secondary Phone</label>
+                                        <input asp-for="Setting.PhoneTwo" class="form-control" placeholder="+234 800 000 0001" />
+                                        <span asp-validation-for="Setting.PhoneTwo" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 6px;">
+                                        <label><input asp-for="Setting.ShowPhoneTwoInTop" /> Show in Top Header</label>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0;">
+                                        <label><input asp-for="Setting.ShowPhoneTwoInFooter" /> Show in Footer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone 3 -->
+                            <div class="col-md-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.PhoneThree" class="control-label" style="font-weight: 600; color: #334155;">WhatsApp / Direct Line</label>
+                                        <input asp-for="Setting.PhoneThree" class="form-control" placeholder="+234 800 000 0002" />
+                                        <span asp-validation-for="Setting.PhoneThree" class="text-danger"></span>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 6px;">
+                                        <label><input asp-for="Setting.ShowPhoneThreeInTop" /> Show in Top Header</label>
+                                    </div>
+                                    <div class="checkbox" style="margin-top: 0;">
+                                        <label><input asp-for="Setting.ShowPhoneThreeInFooter" /> Show in Footer</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Addresses & Map -->
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-map-marker text-danger"></i> Campus Address &amp; Location
+                                </h4>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label asp-for="Setting.AddressOne" class="control-label" style="font-weight: 600; color: #334155;">Main Campus Address</label>
+                                    <textarea asp-for="Setting.AddressOne" class="form-control" rows="3" placeholder="Full street address, city, state..."></textarea>
+                                    <span asp-validation-for="Setting.AddressOne" class="text-danger"></span>
+                                </div>
+                                <div class="checkbox" style="margin-top: 0; margin-bottom: 20px;">
+                                    <label><input asp-for="Setting.ShowAddressOneInTop" /> Show Main Address in Top Header Bar</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.AddressTwo" class="control-label" style="font-weight: 600; color: #334155;">Annex / Secondary Campus Address</label>
+                                    <textarea asp-for="Setting.AddressTwo" class="form-control" rows="3" placeholder="Optional annex campus or branch office..."></textarea>
+                                    <span asp-validation-for="Setting.AddressTwo" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.WorkingHour" class="control-label" style="font-weight: 600; color: #334155;">Office / School Working Hours</label>
+                                    <input asp-for="Setting.WorkingHour" class="form-control" placeholder="e.g. Mon - Fri: 8:00 AM - 4:00 PM" />
+                                    <span asp-validation-for="Setting.WorkingHour" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.GoogleMap" class="control-label" style="font-weight: 600; color: #334155;">Google Map Embed URL</label>
+                                    <input asp-for="Setting.GoogleMap" class="form-control" placeholder="https://www.google.com/maps/embed?pb=..." />
+                                    <span asp-validation-for="Setting.GoogleMap" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Social Media Profiles -->
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-share-alt text-info"></i> Social Media Handles
+                                </h4>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.FacebookPage" class="control-label" style="font-weight: 600; color: #334155;"><i class="fa fa-facebook-official text-primary"></i> Facebook Page</label>
+                                    <input asp-for="Setting.FacebookPage" class="form-control" placeholder="https://facebook.com/..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.TwitterPage" class="control-label" style="font-weight: 600; color: #334155;"><i class="fa fa-twitter text-info"></i> Twitter / X Page</label>
+                                    <input asp-for="Setting.TwitterPage" class="form-control" placeholder="https://x.com/..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.InstagramPage" class="control-label" style="font-weight: 600; color: #334155;"><i class="fa fa-instagram text-danger"></i> Instagram Page</label>
+                                    <input asp-for="Setting.InstagramPage" class="form-control" placeholder="https://instagram.com/..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.TiktokPage" class="control-label" style="font-weight: 600; color: #334155;"><i class="fa fa-music"></i> TikTok Profile</label>
+                                    <input asp-for="Setting.TiktokPage" class="form-control" placeholder="https://tiktok.com/@@..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="Setting.YoutubeChannel" class="control-label" style="font-weight: 600; color: #334155;"><i class="fa fa-youtube-play text-danger"></i> YouTube Channel</label>
+                                    <input asp-for="Setting.YoutubeChannel" class="form-control" placeholder="https://youtube.com/c/..." />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 3: MENU & FEATURES                     -->
+                    <!-- ========================================== -->
+                    <div class="tab-pane fade" id="tab-features">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-toggle-on text-warning"></i> Website Navigation &amp; Section Toggles
+                                </h4>
+                            </div>
+
+                            <!-- Special CTA Button in Menu -->
+                            <div class="col-md-12">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 25px;">
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 14px;">
+                                        <label style="font-weight: 700; font-size: 14px; color: #1e293b;">
+                                            <input asp-for="SuperSetting.SpecialMenuButtonActivate" /> Activate Special Action Button in Main Navigation (e.g. "Apply Now" or "Student Portal")
+                                        </label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label asp-for="SuperSetting.SpecialMenuButtonText" class="control-label" style="font-weight: 600;">Button Text</label>
+                                                <input asp-for="SuperSetting.SpecialMenuButtonText" class="form-control" placeholder="e.g. Apply for Admission" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label asp-for="SuperSetting.SpecialMenuButtonLink" class="control-label" style="font-weight: 600;">Button Destination Link</label>
+                                                <input asp-for="SuperSetting.SpecialMenuButtonLink" class="form-control" placeholder="e.g. /Admission or /Account/Login" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Blog Settings -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-newspaper-o text-primary"></i> Blog &amp; Articles</h5>
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.BlogDisplayTitle" class="control-label" style="font-weight: 600;">Blog Section Title</label>
+                                        <input asp-for="Setting.BlogDisplayTitle" class="form-control" placeholder="e.g. Latest News &amp; Events" />
+                                    </div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddBlogToHome" /> Display Blog on Homepage</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddBlogToMenu" /> Add Blog to Main Navigation Menu</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddBlogToFooter" /> Add Blog Links to Footer</label></div>
+                                </div>
+                            </div>
+
+                            <!-- Career / Vacancies -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-briefcase text-success"></i> Career &amp; Vacancies</h5>
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="Setting.CareerDisplayTitle" class="control-label" style="font-weight: 600;">Career Section Title</label>
+                                        <input asp-for="Setting.CareerDisplayTitle" class="form-control" placeholder="e.g. Join Our Teaching Staff" />
+                                    </div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddCareerToMenu" /> Add Career to Main Menu</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddCareerToFooter" /> Add Career to Footer</label></div>
+                                </div>
+                            </div>
+
+                            <!-- FAQ & Testimonies -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-comments-o text-warning"></i> Testimonials &amp; FAQs</h5>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddTestimonyToHome" /> Show Testimonials on Homepage</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddTestimonyToFooter" /> Show Testimonials in Footer</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddFaqToHome" /> Show Frequently Asked Questions on Homepage</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.AddFaqToFooter" /> Show FAQs in Footer</label></div>
+                                </div>
+                            </div>
+
+                            <!-- Products / Courses -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-graduation-cap text-info"></i> Programs / Products Showcase</h5>
+                                    <div class="checkbox"><label><input asp-for="Setting.ActivateProductsInHome" /> Show Programs / Products on Homepage</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.ShowProductsInMenu" /> Show Programs in Navigation Menu</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.ShowProductsInFooter" /> Show Programs in Footer</label></div>
+                                    <hr style="margin: 8px 0;" />
+                                    <label style="font-weight: 600; font-size: 12px; color: #64748b;">Grid Quantity on Homepage:</label>
+                                    <div class="checkbox" style="margin-top: 4px;"><label><input asp-for="Setting.ShowTwoProducts" /> Display 2 Items</label></div>
+                                    <div class="checkbox" style="margin-top: 2px;"><label><input asp-for="Setting.ShowThreeProducts" /> Display 3 Items</label></div>
+                                    <div class="checkbox" style="margin-top: 2px;"><label><input asp-for="Setting.ShowSixProducts" /> Display 6 Items</label></div>
+                                </div>
+                            </div>
+
+                            <!-- General Navigation -->
+                            <div class="col-md-12">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-bars text-primary"></i> Main Menu Settings</h5>
+                                    <div class="checkbox"><label><input asp-for="Setting.DisableMainTopMenu" /> <strong>Disable Main Top Menu</strong> (Hide the standard header navigation bar)</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.ShowContactUsMenu" /> Include "Contact Us" link in Main Navigation</label></div>
+                                    <div class="checkbox"><label><input asp-for="Setting.ShowContactUsFooter" /> Include "Contact Us" section in Footer</label></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 4: BREAKING NEWS & RIBBON              -->
+                    <!-- ========================================== -->
+                    <div class="tab-pane fade" id="tab-news">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-bullhorn text-danger"></i> Breaking News &amp; Announcement Ribbon
+                                </h4>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div style="background: #fff8e1; border: 1px solid #ffe082; border-left: 5px solid #ff9800; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                                    <div class="checkbox" style="margin-top: 0; margin-bottom: 15px;">
+                                        <label style="font-weight: 700; font-size: 15px; color: #856404;">
+                                            <input asp-for="Setting.EnableBreakingNewsRibon" /> Enable Scrolling Breaking News / Alert Ribbon on Public Website
+                                        </label>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group" style="margin-bottom: 15px;">
+                                                <label asp-for="Setting.BreakingNewsRibonTitle" class="control-label" style="font-weight: 600; color: #856404;">Announcement / Ribbon Headline</label>
+                                                <input asp-for="Setting.BreakingNewsRibonTitle" class="form-control" style="border-radius: 6px; height: 42px;" placeholder="e.g. Admission in progress for 2025/2026 Academic Session! Register online today." />
+                                                <span asp-validation-for="Setting.BreakingNewsRibonTitle" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group" style="margin-bottom: 15px;">
+                                                <label asp-for="Setting.RibonPosition" class="control-label" style="font-weight: 600; color: #856404;">Ribbon Display Position</label>
+                                                @Html.DropDownListFor(model => model.Setting.RibonPosition, new SelectList(Enum.GetValues(typeof(ExwhyzeeSP.Core.Entities.RibonPosition))), new { @class = "form-control", @style = "border-radius: 6px; height: 42px;" })
+                                                <span asp-validation-for="Setting.RibonPosition" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small style="color: #8d2b0b;">The ribbon will display prominently on the public homepage to notify visitors of urgent updates, admission openings, or notices.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 5: MOBILE APP & FOOTER                 -->
+                    <!-- ========================================== -->
+                    <div class="tab-pane fade" id="tab-app">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-mobile text-info"></i> School Mobile App Links &amp; Badges
+                                </h4>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="checkbox" style="margin-top: 0; margin-bottom: 20px;">
+                                    <label style="font-weight: 700; font-size: 14px; color: #1e293b;">
+                                        <input asp-for="SuperSetting.ActivateDownloadOurAppFooter" /> Show "Download Our App" Section in Website Footer
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.TitleDownloadOurAppFooter" class="control-label" style="font-weight: 600;">Download App Section Title</label>
+                                    <input asp-for="SuperSetting.TitleDownloadOurAppFooter" class="form-control" placeholder="e.g. Download the Divine Threshers Portal App" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="SuperSetting.DescriptionDownloadOurAppFooter" class="control-label" style="font-weight: 600;">Download App Description</label>
+                                    <input asp-for="SuperSetting.DescriptionDownloadOurAppFooter" class="form-control" placeholder="e.g. Check results, attendance, and school fees on your smartphone" />
+                                </div>
+                            </div>
+
+                            <!-- App Store Card -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-apple"></i> Apple App Store</h5>
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="SuperSetting.AppStoreLink" class="control-label" style="font-weight: 600;">iOS App Store URL</label>
+                                        <input asp-for="SuperSetting.AppStoreLink" class="form-control" placeholder="https://apps.apple.com/app/..." />
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.SuperSetting.AppStoreImageUrl))
+                                    {
+                                        <div style="margin-bottom: 10px; background: #fff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.SuperSetting.AppStoreImageUrl" alt="App Store Badge" style="max-height: 45px;" />
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Current App Store Badge</div>
+                                        </div>
+                                    }
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="control-label" style="font-weight: 600; font-size: 12px;">Upload Custom App Store Badge</label>
+                                        <input type="file" asp-for="appStoreImage" class="form-control" accept="image/*" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Google Play Store Card -->
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                                    <h5 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 12px;"><i class="fa fa-android text-success"></i> Google Play Store</h5>
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label asp-for="SuperSetting.PlayStoreLink" class="control-label" style="font-weight: 600;">Google Play Store URL</label>
+                                        <input asp-for="SuperSetting.PlayStoreLink" class="form-control" placeholder="https://play.google.com/store/apps/details?id=..." />
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.SuperSetting.PlayStoreImageUrl))
+                                    {
+                                        <div style="margin-bottom: 10px; background: #fff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center;">
+                                            <img src="@Model.SuperSetting.PlayStoreImageUrl" alt="Play Store Badge" style="max-height: 45px;" />
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Current App Store Badge</div>
+                                        </div>
+                                    }
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label class="control-label" style="font-weight: 600; font-size: 12px;">Upload Custom Google Play Badge</label>
+                                        <input type="file" asp-for="playStoreImage" class="form-control" accept="image/*" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Extra Options -->
+                            <div class="col-md-12">
+                                <h4 style="font-weight: 700; color: #1e293b; margin-top: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;">
+                                    <i class="fa fa-file-text-o text-primary"></i> Additional Footer Elements
+                                </h4>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="checkbox" style="margin-top: 0; margin-bottom: 10px;">
+                                    <label><input asp-for="SuperSetting.ActivateWorkWithUsFooter" /> Show "Work With Us" link in Footer</label>
+                                </div>
+                                <div class="checkbox" style="margin-top: 0; margin-bottom: 10px;">
+                                    <label><input asp-for="SuperSetting.ActivateSubscribeFormOnFooter" /> Show Newsletter Subscription Form on Footer</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Action Bar -->
+                <div style="padding: 16px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                    <a asp-page="./Index" class="btn btn-default" style="font-weight: 600; border-radius: 6px; padding: 10px 20px;">
+                        <i class="fa fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" id="saveSettingsBtn" class="btn btn-primary" style="font-weight: 700; border-radius: 6px; padding: 10px 28px; font-size: 15px; box-shadow: 0 2px 8px rgba(60,141,188,0.3);">
+                        <i class="fa fa-save"></i> Save Website Settings
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
-
-
-
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

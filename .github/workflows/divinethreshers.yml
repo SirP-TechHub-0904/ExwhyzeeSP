@@ -6,23 +6,6 @@ on:
       - master
       - main
   workflow_dispatch:
-    inputs:
-      target_dir:
-        description: 'Target Deployment Directory on VPS'
-        required: false
-        default: '/var/www/divinethreshers-web'
-      service_name:
-        description: 'Systemd Service Name to Restart'
-        required: false
-        default: 'divinethreshers-web'
-
-# ==============================================================================
-# DEFAULT SCHOOL CONFIGURATION: Divine Threshers
-# To deploy another school in the future, copy this workflow or update these variables.
-# ==============================================================================
-env:
-  DEPLOY_PATH: ${{ github.event.inputs.target_dir || '/var/www/divinethreshers-web' }}
-  SERVICE_NAME: ${{ github.event.inputs.service_name || 'divinethreshers-web' }}
 
 jobs:
   build-and-deploy:
@@ -56,9 +39,10 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           source: "publish/web/**"
-          target: ${{ env.DEPLOY_PATH }}
+          target: "/var/www/divinethreshers-web"
           strip_components: 2
 
       - name: 7. Apply Server Permissions & Restart Divine Threshers Service
@@ -67,20 +51,22 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
-            echo "Configuring permissions for ${{ env.DEPLOY_PATH }}..."
-            mkdir -p ${{ env.DEPLOY_PATH }}
-            chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
-            chmod -R 755 ${{ env.DEPLOY_PATH }}
+            # Ensure target folder and file permissions
+            mkdir -p /var/www/divinethreshers-web
+            chown -R www-data:www-data /var/www/divinethreshers-web
+            chmod -R 755 /var/www/divinethreshers-web
 
-            # Restart the school-specific service (divinethreshers-web)
-            if systemctl is-active --quiet ${{ env.SERVICE_NAME }}; then
-              echo "Restarting service: ${{ env.SERVICE_NAME }}..."
-              systemctl restart ${{ env.SERVICE_NAME }}
+            # Restart Divine Threshers Web Service
+            if systemctl is-active --quiet divinethreshers-web; then
+              echo "Restarting divinethreshers-web service..."
+              systemctl restart divinethreshers-web
             else
-              echo "Starting service: ${{ env.SERVICE_NAME }}..."
-              systemctl start ${{ env.SERVICE_NAME }} || true
+              echo "Starting divinethreshers-web service..."
+              systemctl start divinethreshers-web || true
             fi
 
-            systemctl status ${{ env.SERVICE_NAME }} --no-pager || true
+            # Check status
+            systemctl status divinethreshers-web --no-pager || true

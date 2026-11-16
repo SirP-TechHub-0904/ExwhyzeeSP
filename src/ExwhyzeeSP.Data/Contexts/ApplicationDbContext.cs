@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using ExwhyzeeSP.Core.Entities;
 using ExwhyzeeSP.Core.Entities.ResultArchive;
 using ExwhyzeeSP.Core.Entities.UI;
@@ -52,8 +53,7 @@ namespace ExwhyzeeSP.Data.Contexts
                 }
             }
 
-            optionsBuilder.ConfigureWarnings(warnings =>
-                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, ExwhyzeeSP.Data.Migrations.IdempotentSqlServerMigrationsSqlGenerator>();
 
             base.OnConfiguring(optionsBuilder);
         }

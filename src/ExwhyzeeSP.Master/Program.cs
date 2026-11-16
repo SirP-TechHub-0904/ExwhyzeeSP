@@ -77,7 +77,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ExwhyzeeSP.Services.Provisioning.IDatabaseProvisioningService, ExwhyzeeSP.Services.Provisioning.DatabaseProvisioningService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.Provisioning.ITenantMigrationService, ExwhyzeeSP.Services.Provisioning.TenantMigrationService>();
-builder.Services.AddScoped<ExwhyzeeSP.Services.Provisioning.ITenantBackupService, ExwhyzeeSP.Services.Provisioning.TenantBackupService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.IDelegatedSsoService, ExwhyzeeSP.Services.DelegatedSsoService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.IAuditLogService, ExwhyzeeSP.Services.AuditLogService>();
 builder.Services.AddScoped<ExwhyzeeSP.Services.IEmailLoggingService, ExwhyzeeSP.Services.EmailLoggingService>();
@@ -86,9 +85,8 @@ builder.Services.AddScoped<ExwhyzeeSP.Services.IMarketingService, ExwhyzeeSP.Ser
 var app = builder.Build();
 
 // ==============================================================================
-// 4. SEED MASTER DATABASE (Disabled - Initial Setup Completed)
+// 4. SEED MASTER DATABASE (Local Safe Setup)
 // ==============================================================================
-/*
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -103,7 +101,6 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the Master Database.");
     }
 }
-*/
 
 // ==============================================================================
 // 5. CONFIGURE HTTP PIPELINE

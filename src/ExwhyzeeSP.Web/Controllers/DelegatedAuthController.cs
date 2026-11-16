@@ -16,7 +16,7 @@ namespace ExwhyzeeSP.Web.Controllers
     public class DelegatedAuthController : Controller
     {
         private readonly IDelegatedSsoService _ssoService;
-        private readonly ITenantService _tenantService;
+        private readonly ITenantService? _tenantService;
         private readonly IAuditLogService _auditService;
         private readonly ApplicationUserManager _userManager;
         private readonly ApplicationSignInManager _signInManager;
@@ -24,11 +24,11 @@ namespace ExwhyzeeSP.Web.Controllers
 
         public DelegatedAuthController(
             IDelegatedSsoService ssoService,
-            ITenantService tenantService,
             IAuditLogService auditService,
             ApplicationUserManager userManager,
             ApplicationSignInManager signInManager,
-            ApplicationRoleManager roleManager)
+            ApplicationRoleManager roleManager,
+            ITenantService? tenantService = null)
         {
             _ssoService = ssoService;
             _tenantService = tenantService;
@@ -42,7 +42,7 @@ namespace ExwhyzeeSP.Web.Controllers
         [HttpGet("/Auth/DelegatedLogin")]
         public async Task<IActionResult> DelegatedLogin(string token)
         {
-            var activeTenant = _tenantService.GetCurrentTenant();
+            var activeTenant = _tenantService?.GetCurrentTenant();
             var validation = _ssoService.ValidateDelegatedToken(token, activeTenant?.SubDomain);
 
             if (!validation.IsValid)
@@ -137,7 +137,7 @@ namespace ExwhyzeeSP.Web.Controllers
         [HttpGet("/Auth/ExitDelegatedLogin")]
         public async Task<IActionResult> ExitDelegatedLogin()
         {
-            var activeTenant = _tenantService.GetCurrentTenant();
+            var activeTenant = _tenantService?.GetCurrentTenant();
             var impersonator = User.FindFirst("ImpersonatedBy")?.Value ?? User.Identity?.Name;
 
             await _auditService.LogAsync(

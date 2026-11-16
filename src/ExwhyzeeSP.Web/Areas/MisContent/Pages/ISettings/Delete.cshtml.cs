@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.ISettings
 {
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "mSuperAdmin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin")]
 
     public class DeleteModel : PageModel
     {

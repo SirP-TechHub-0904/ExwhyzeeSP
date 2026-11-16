@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Main
 {
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "mSuperAdmin,Editor")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,Editor")]
 
     public class DetailsModel : PageModel
     {

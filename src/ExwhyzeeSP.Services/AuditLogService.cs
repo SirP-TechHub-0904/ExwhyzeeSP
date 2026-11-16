@@ -9,10 +9,10 @@ namespace ExwhyzeeSP.Services
 {
     public class AuditLogService : IAuditLogService
     {
-        private readonly MasterDbContext _context;
+        private readonly MasterDbContext? _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuditLogService(MasterDbContext context, IHttpContextAccessor httpContextAccessor)
+        public AuditLogService(IHttpContextAccessor httpContextAccessor, MasterDbContext? context = null)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
@@ -59,14 +59,17 @@ namespace ExwhyzeeSP.Services
                 TenantSchoolId = tenantSchoolId
             };
 
-            try
+            if (_context != null)
             {
-                await _context.AuditLogs.AddAsync(log);
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                // Safety guard: failure to write an audit log should never crash the main application thread
+                try
+                {
+                    await _context.AuditLogs.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    // Safety guard: failure to write an audit log should never crash the main application thread
+                }
             }
 
             return log;

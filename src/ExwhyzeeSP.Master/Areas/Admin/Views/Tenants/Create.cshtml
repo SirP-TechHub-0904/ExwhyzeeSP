@@ -67,7 +67,7 @@
                     <div class="space-y-4">
                         <div>
                             <label asp-for="SchoolName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">School Name <span class="text-rose-500">*</span></label>
-                            <input asp-for="SchoolName" id="schoolNameInput" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Enter school name..." required />
+                            <input asp-for="SchoolName" id="schoolNameInput" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. Divine Threshers Academy" required />
                             <span asp-validation-for="SchoolName" class="text-xs text-rose-600 mt-1 block"></span>
                         </div>
 
@@ -75,7 +75,7 @@
                             <div>
                                 <label asp-for="SubDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Default Subdomain <span class="text-rose-500">*</span></label>
                                 <div class="flex items-center">
-                                    <input asp-for="SubDomain" id="subdomainInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="schoolname" required />
+                                    <input asp-for="SubDomain" id="subdomainInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="divinethreshers" required />
                                     <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-xs font-mono text-[var(--text-secondary)] shrink-0">.exwhyzee.ng</span>
                                 </div>
                                 <span asp-validation-for="SubDomain" class="text-xs text-rose-600 mt-1 block"></span>
@@ -87,7 +87,7 @@
 
                             <div>
                                 <label asp-for="HostDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Custom Domain (Optional)</label>
-                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.yourschool.edu.ng or yourschool.com" />
+                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.divinethreshers.edu.ng" />
                                 <span asp-validation-for="HostDomain" class="text-xs text-rose-600 mt-1 block"></span>
                                 <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">School's proprietary domain if they don't want the default URL.</span>
                             </div>
@@ -135,89 +135,70 @@
                     </div>
 
                     <!-- Mode A: Auto DB Form -->
-                    <div id="sectionAutoDb" class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-5">
-                        
-                        <!-- 1. SQL Server Host & Admin Connection -->
-                        <div class="space-y-3">
-                            <div>
-                                <h3 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="icon-server text-[14px] text-[var(--color-primary-600)]"></i> 1. SQL Server Host &amp; Admin Access
-                                </h3>
-                                <p class="text-xs text-[var(--text-secondary)]">The SQL Server instance where this new school database will be created.</p>
-                            </div>
+                    <div id="sectionAutoDb" class="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-4">
+                        <h3 class="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="icon-server text-[14px] text-[var(--color-primary-600)]"></i> Master Server Details
+                        </h3>
 
-                            <div class="flex flex-col sm:flex-row gap-4" style="display: flex; flex-direction: row; gap: 16px; align-items: flex-start; width: 100%;">
-                                <div style="flex: 1 1 auto; min-width: 0;">
-                                    <label asp-for="ServerHost" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server IP / Hostname <span class="text-rose-500">*</span></label>
-                                    <input asp-for="ServerHost" id="serverHostInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="e.g. 187.77.172.27 or JSS\SQLEXPRESS" required />
-                                    <span asp-validation-for="ServerHost" class="text-xs text-rose-600 mt-1 block"></span>
-                                </div>
-                                <div style="width: 130px; flex-shrink: 0;">
-                                    <label asp-for="ServerPort" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Port</label>
-                                    <input asp-for="ServerPort" type="number" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="1433" />
-                                    <span asp-validation-for="ServerPort" class="text-xs text-rose-600 mt-1 block"></span>
-                                </div>
+                        <div class="flex flex-col sm:flex-row gap-4" style="display: flex; flex-direction: row; gap: 16px; align-items: flex-start; width: 100%;">
+                            <div style="flex: 1 1 auto; min-width: 0;">
+                                <label asp-for="ServerHost" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server IP / Hostname</label>
+                                <input asp-for="ServerHost" id="serverHostInput" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50 or db.exwhyzee.ng" />
+                                <span asp-validation-for="ServerHost" class="text-xs text-rose-600 mt-1 block"></span>
                             </div>
-
-                            <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-between gap-4">
-                                <div>
-                                    <span class="text-xs font-bold text-[var(--text-primary)] block">Windows / Integrated Security</span>
-                                    <span class="text-[11px] text-[var(--text-secondary)]">Use local process identity (for local machine only). Uncheck for remote servers.</span>
-                                </div>
-                                <input asp-for="UseIntegratedSecurity" type="checkbox" id="chkIntegrated" onchange="toggleIntegratedAuth()" class="rounded text-[var(--color-primary-600)]" />
-                            </div>
-
-                            <div id="authCredentialsGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
-                                <div>
-                                    <label asp-for="AdminUser" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Username</label>
-                                    <input asp-for="AdminUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="sa" />
-                                    <span asp-validation-for="AdminUser" class="text-xs text-rose-600 mt-1 block"></span>
-                                </div>
-                                <div>
-                                    <label asp-for="AdminPassword" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Password</label>
-                                    <div class="flex items-center">
-                                        <input asp-for="AdminPassword" id="adminPasswordInput" type="password" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="Server admin password" />
-                                        <button type="button" class="h-10 px-3.5 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="togglePasswordVisibility('adminPasswordInput', this)" title="Show/Hide Password">
-                                            <i class="icon-eye text-[14px]"></i>
-                                        </button>
-                                    </div>
-                                    <span asp-validation-for="AdminPassword" class="text-xs text-rose-600 mt-1 block"></span>
-                                </div>
+                            <div style="width: 140px; flex-shrink: 0;">
+                                <label asp-for="ServerPort" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Port (Optional)</label>
+                                <input asp-for="ServerPort" type="number" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="1433" />
+                                <span asp-validation-for="ServerPort" class="text-xs text-rose-600 mt-1 block"></span>
                             </div>
                         </div>
 
-                        <!-- 2. Target School Database & Dedicated User -->
-                        <div class="pt-4 border-t border-[var(--border-subtle)] space-y-3">
+                        <div class="p-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-between gap-4">
                             <div>
-                                <h3 class="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="icon-database text-[14px] text-[var(--color-primary-600)]"></i> 2. Target School Database &amp; Dedicated Credentials
-                                </h3>
-                                <p class="text-xs text-[var(--text-secondary)]">The new isolated database and user to be created on the server for this school.</p>
+                                <span class="text-xs font-bold text-[var(--text-primary)] block">Windows / Integrated Security</span>
+                                <span class="text-[11px] text-[var(--text-secondary)]">Use local process identity to create the database.</span>
                             </div>
+                            <input asp-for="UseIntegratedSecurity" type="checkbox" id="chkIntegrated" onchange="toggleIntegratedAuth()" class="rounded text-[var(--color-primary-600)]" />
+                        </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label asp-for="CustomDatabaseName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Database Name <span class="text-rose-500">*</span></label>
-                                    <input asp-for="CustomDatabaseName" id="customDbName" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. DivineThresers" />
-                                    <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">Name of the SQL database.</span>
-                                </div>
-                                <div>
-                                    <label asp-for="CustomUsername" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Dedicated User</label>
-                                    <input asp-for="CustomUsername" id="customUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. site_user" />
-                                    <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">Isolated SQL username.</span>
-                                </div>
-                                <div>
-                                    <label asp-for="CustomPassword" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Database Password</label>
-                                    <div class="flex items-center">
-                                        <input asp-for="CustomPassword" id="customPass" type="password" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Auto-generated" />
-                                        <button type="button" class="h-10 px-3 bg-[var(--surface-sunken)] border border-e-0 border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="togglePasswordVisibility('customPass', this)" title="Show/Hide Password">
-                                            <i class="icon-eye text-[14px]"></i>
-                                        </button>
-                                        <button type="button" class="h-10 px-3 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="generatePassword()" title="Generate Random Secure Password">
-                                            <i class="icon-key text-[13px]"></i>
-                                        </button>
+                        <div id="authCredentialsGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+                            <div>
+                                <label asp-for="AdminUser" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Username</label>
+                                <input asp-for="AdminUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="sa" />
+                                <span asp-validation-for="AdminUser" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                            <div>
+                                <label asp-for="AdminPassword" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server Admin Password</label>
+                                <input asp-for="AdminPassword" type="password" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" style="width: 100%; display: block;" placeholder="Master Server SA Password" />
+                                <span asp-validation-for="AdminPassword" class="text-xs text-rose-600 mt-1 block"></span>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Custom Naming -->
+                        <div class="pt-2 border-t border-[var(--border-subtle)]">
+                            <button type="button" class="text-xs font-semibold text-[var(--color-primary-600)] flex items-center gap-1.5" onclick="document.getElementById('advancedDbNaming').classList.toggle('hidden')">
+                                <i class="icon-sliders text-[13px]"></i>
+                                <span>Advanced: Custom Database &amp; User Identifiers</span>
+                            </button>
+                            <div class="hidden mt-3 p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] space-y-3" id="advancedDbNaming">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                        <label asp-for="CustomDatabaseName" class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Database Name</label>
+                                        <input asp-for="CustomDatabaseName" id="customDbName" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Default: db_school_[sub]" />
                                     </div>
-                                    <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">Auto-generated 16-char password if left blank.</span>
+                                    <div>
+                                        <label asp-for="CustomUsername" class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Dedicated User</label>
+                                        <input asp-for="CustomUsername" id="customUser" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Default: usr_[sub]" />
+                                    </div>
+                                    <div>
+                                        <label asp-for="CustomPassword" class="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">User Password</label>
+                                        <div class="flex items-center">
+                                            <input asp-for="CustomPassword" id="customPass" class="w-full h-9 px-3 py-1.5 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Auto-generated" />
+                                            <button type="button" class="h-9 px-3 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onclick="generatePassword()" title="Generate Random Password">
+                                                <i class="icon-key text-[13px]"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -244,11 +225,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Server / Host <span class="text-rose-500">*</span></label>
-                                    <input type="text" id="bldServer" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. 187.77.172.27,1433 or localhost\SQLEXPRESS" oninput="assembleConnectionString()" />
+                                    <input type="text" id="bldServer" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. JSS\SQLEXPRESS or 192.168.1.50,1433" oninput="assembleConnectionString()" />
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Database Name <span class="text-rose-500">*</span></label>
-                                    <input type="text" id="bldDatabase" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. db_school_portal" oninput="assembleConnectionString()" />
+                                    <input type="text" id="bldDatabase" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. db_school_divine" oninput="assembleConnectionString()" />
                                 </div>
                             </div>
 
@@ -269,7 +250,7 @@
                             <div id="bldSqlAuthInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Username <span class="text-rose-500">*</span></label>
-                                    <input type="text" id="bldUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. usr_school or sa" oninput="assembleConnectionString()" />
+                                    <input type="text" id="bldUser" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. usr_divine or sa" oninput="assembleConnectionString()" />
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Password <span class="text-rose-500">*</span></label>
@@ -399,38 +380,10 @@
             }
         });
 
-        let customDbNameTouched = false;
-        let customUserTouched = false;
-
-        const customDbInput = document.getElementById('customDbName');
-        const customUserInput = document.getElementById('customUser');
-
-        if (customDbInput) {
-            customDbInput.addEventListener('input', function() {
-                customDbNameTouched = customDbInput.value.trim().length > 0;
-            });
-        }
-        if (customUserInput) {
-            customUserInput.addEventListener('input', function() {
-                customUserTouched = customUserInput.value.trim().length > 0;
-            });
-        }
-
         subInput.addEventListener('input', function() {
             subInput.dataset.manual = "true";
             updatePreview(subInput.value);
-            syncCustomDbNames(subInput.value);
         });
-
-        function syncCustomDbNames(sub) {
-            const clean = (sub || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
-            if (clean && !customDbNameTouched && customDbInput) {
-                customDbInput.value = `db_school_${clean}`;
-            }
-            if (clean && !customUserTouched && customUserInput) {
-                customUserInput.value = `usr_${clean}`;
-            }
-        }
 
         function updatePreview(sub) {
             const clean = sub.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '');

@@ -7,35 +7,35 @@
 }
 
 @section HeaderActions {
-    <a asp-page="./Edit" asp-route-id="@Model.PageSection.Id" class="btn bg-gradient-warning rounded-pill px-4"><i class="fas fa-edit me-1"></i> Update Section</a>
+    <a asp-page="./Edit" asp-route-id="@Model.PageSection.Id" class="btn btn-warning rounded-pill px-4"><i class="fas fa-edit me-1"></i> Update Section</a>
 }
 
-<div class="card shadow-sm border-0">
-    <div class="card-header p-0 border-bottom">
+<div class="box box-primary shadow-sm border-0">
+    <div class="box-header with-border p-0 border-bottom">
         <ul class="nav nav-tabs px-4 pt-3 border-0" id="sectionDetailsTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active fw-bold px-4" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                <button class="nav-link active fw-bold px-4" id="overview-tab" data-toggle="tab" href="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
                     Overview
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link fw-bold px-4" id="list-items-tab" data-bs-toggle="tab" data-bs-target="#list-items" type="button" role="tab" aria-controls="list-items" aria-selected="false">
+                <button class="nav-link fw-bold px-4" id="list-items-tab" data-toggle="tab" href="#list-items" type="button" role="tab" aria-controls="list-items" aria-selected="false">
                     List Items <span class="badge bg-secondary ms-1">@Model.PageSection.PageSectionLists.Count()</span>
                 </button>
             </li>
             <li class="nav-item ms-auto" role="presentation">
-                <button class="nav-link fw-bold px-4 text-primary" id="add-item-tab" data-bs-toggle="tab" data-bs-target="#add-item" type="button" role="tab" aria-controls="add-item" aria-selected="false">
+                <button class="nav-link fw-bold px-4 text-primary" id="add-item-tab" data-toggle="tab" href="#add-item" type="button" role="tab" aria-controls="add-item" aria-selected="false">
                     <i class="fas fa-plus-circle me-1"></i> Add New List Item
                 </button>
             </li>
         </ul>
     </div>
     
-    <div class="card-body p-0">
+    <div class="box-body p-0">
         <div class="tab-content" id="sectionDetailsTabContent">
             
             <!-- OVERVIEW TAB -->
-            <div class="tab-pane fade show active p-4 p-md-5" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <div class="tab-pane fade in active p-4 p-md-5" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                 <div class="row">
                     <div class="col-lg-7 mb-4 mb-lg-0">
                         <h5 class="fw-bold text-primary mb-1">Mini Title</h5>
@@ -73,7 +73,7 @@
                             @if (!string.IsNullOrEmpty(Model.PageSection.ImageUrl))
                             {
                                 <div class="col-sm-6">
-                                    <div class="card shadow-sm border-0 bg-light p-2 text-center h-100">
+                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100">
                                         <p class="fw-bold text-muted mb-2">Primary Image</p>
                                         <img src="@Model.PageSection.ImageUrl" class="img-fluid rounded" style="max-height:150px; object-fit:contain;" />
                                     </div>
@@ -82,7 +82,7 @@
                             @if (!string.IsNullOrEmpty(Model.PageSection.SecondImageUrl))
                             {
                                 <div class="col-sm-6">
-                                    <div class="card shadow-sm border-0 bg-light p-2 text-center h-100">
+                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100">
                                         <p class="fw-bold text-muted mb-2">Secondary Image</p>
                                         <img src="@Model.PageSection.SecondImageUrl" class="img-fluid rounded" style="max-height:150px; object-fit:contain;" />
                                     </div>
@@ -91,7 +91,7 @@
                             @if (!string.IsNullOrEmpty(Model.PageSection.VideoUrl))
                             {
                                 <div class="col-sm-6">
-                                    <div class="card shadow-sm border-0 bg-light p-2 text-center h-100 d-flex align-items-center justify-content-center">
+                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100 d-flex align-items-center justify-content-center">
                                         <p class="fw-bold text-muted mb-2 w-100">Video</p>
                                         <a href="@Model.PageSection.VideoUrl" target="_blank" class="btn btn-outline-primary"><i class="bi bi-play-circle"></i> View Video</a>
                                     </div>
@@ -100,7 +100,7 @@
                             @if (!string.IsNullOrEmpty(Model.PageSection.YoutubeUrlLink))
                             {
                                 <div class="col-sm-6">
-                                    <div class="card shadow-sm border-0 bg-light p-2 text-center h-100 d-flex align-items-center justify-content-center">
+                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100 d-flex align-items-center justify-content-center">
                                         <p class="fw-bold text-muted mb-2 w-100">YouTube</p>
                                         <a href="@Model.PageSection.YoutubeUrlLink" target="_blank" class="btn btn-outline-danger"><i class="bi bi-youtube"></i> View YouTube</a>
                                     </div>
@@ -110,8 +110,8 @@
                     </div>
                     
                     <div class="col-lg-5">
-                        <div class="card border-0 bg-light shadow-sm mb-4">
-                            <div class="card-body p-4">
+                        <div class="box box-primary border-0 bg-light shadow-sm mb-4">
+                            <div class="box-body p-4">
                                 <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Links & Buttons</h5>
                                 <dl class="row mb-0">
                                     <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.ButtonText)</dt>
@@ -126,8 +126,8 @@
                             </div>
                         </div>
 
-                        <div class="card border-0 bg-light shadow-sm mb-4">
-                            <div class="card-body p-4">
+                        <div class="box box-primary border-0 bg-light shadow-sm mb-4">
+                            <div class="box-body p-4">
                                 <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Display & Sorting</h5>
                                 <dl class="row mb-0">
                                     <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.ShowInHome)</dt>
@@ -154,8 +154,8 @@
                             </div>
                         </div>
 
-                        <div class="card border-0 bg-light shadow-sm mb-4">
-                            <div class="card-body p-4">
+                        <div class="box box-primary border-0 bg-light shadow-sm mb-4">
+                            <div class="box-body p-4">
                                 <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Design & Blog</h5>
                                 <dl class="row mb-0">
                                     <dt class="col-sm-6 text-muted">Template Key</dt>
@@ -173,8 +173,8 @@
                             </div>
                         </div>
 
-                        <div class="card border-0 bg-light shadow-sm">
-                            <div class="card-body p-4">
+                        <div class="box box-primary border-0 bg-light shadow-sm">
+                            <div class="box-body p-4">
                                 <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Ribbon Settings</h5>
                                 <dl class="row mb-0">
                                     <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.AddToRibon)</dt>
@@ -215,14 +215,14 @@
                                     <td>@item.SortOrder</td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
                                                 Manage
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end shadow">
                                                 <li><a class="dropdown-item" asp-page="/IPages/List/Edit" asp-route-id="@item.Id"><i class="bi bi-pencil text-warning me-2"></i> Edit</a></li>
                                                 <li><hr class="dropdown-divider"></li>
-                                                <li><button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal" data-bs-target="#moveListItemModal_@item.Id"><i class="bi bi-arrows-move me-2"></i> Move Item</button></li>
-                                                <li><button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal" data-bs-target="#copyListItemModal_@item.Id"><i class="bi bi-files me-2"></i> Copy Item</button></li>
+                                                <li><button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal" href="#moveListItemModal_@item.Id"><i class="bi bi-arrows-move me-2"></i> Move Item</button></li>
+                                                <li><button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal" href="#copyListItemModal_@item.Id"><i class="bi bi-files me-2"></i> Copy Item</button></li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li><a class="dropdown-item text-danger" asp-page="/IPages/List/Delete" asp-route-id="@item.Id"><i class="bi bi-trash me-2"></i> Delete</a></li>
                                             </ul>
@@ -237,7 +237,7 @@
                                             <form method="post" asp-page-handler="MoveListItem">
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title fw-bold" id="moveListItemModalLabel_@item.Id"><i class="bi bi-arrows-move text-primary me-2"></i>Move List Item</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <p class="mb-3">Move item <strong>@item.Title</strong> to another section:</p>
@@ -250,7 +250,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-primary"><i class="bi bi-arrows-move me-1"></i> Move Item</button>
                                                 </div>
                                             </form>
@@ -265,7 +265,7 @@
                                             <form method="post" asp-page-handler="CopyListItem">
                                                 <div class="modal-header bg-light">
                                                     <h5 class="modal-title fw-bold" id="copyListItemModalLabel_@item.Id"><i class="bi bi-files text-success me-2"></i>Copy List Item</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <p class="mb-3">Copy item <strong>@item.Title</strong> to another section:</p>
@@ -278,7 +278,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-success"><i class="bi bi-files me-1"></i> Copy Item</button>
                                                 </div>
                                             </form>
@@ -295,11 +295,11 @@
             <div class="tab-pane fade p-4 p-md-5 bg-light" id="add-item" role="tabpanel" aria-labelledby="add-item-tab">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card shadow-sm border-0">
-                            <div class="card-header bg-white border-bottom py-3">
+                        <div class="box box-primary shadow-sm border-0">
+                            <div class="box-header with-border bg-white border-bottom py-3">
                                 <h5 class="fw-bold mb-0 text-primary">Create New List Item</h5>
                             </div>
-                            <div class="card-body p-4">
+                            <div class="box-body p-4">
                                 <form method="post" enctype="multipart/form-data" asp-page-handler="List">
                                     <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 shadow-sm"></div>
                                     <input asp-for="PageSectionList.PageSectionId" type="hidden" value="@Model.PageSection.Id" />

@@ -1,142 +1,86 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Section.IndexModel
 
 @{
-    ViewData["Title"] = "PAGE SECTION ";
+    ViewData["Title"] = "Page Sections";
 }
 
 @section HeaderActions {
-    <a asp-page="./Create" class="btn bg-gradient-warning btn-sm" style="float:right;">Add New</a>
+    <a asp-page="./Create" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add New</a>
 }
 
-<div class="card">
-    
-    <!-- /.card-header -->
-    <div class="card-body p-4">
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-th-large"></i> Page Sections &amp; Layouts</h3>
+    </div>
+    <div class="box-body">
         <div class="table-responsive">
-            <table id="example1" class="table table-bordered table-striped">
+            <table id="example1" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>S/N</th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].VideoUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].VideoKey)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].ImageKey)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].FullDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].ButtonText)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].ButtonLink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].ShowInHome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].Disable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].HomePageSortOrder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].PageSortOrder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageSection[0].WebPage)
-            </th>
-            <th></th>
-        </tr>
+                        <th style="width: 50px;">S/N</th>
+                        <th style="width: 100px;">Image</th>
+                        <th>Title</th>
+                        <th>Web Page</th>
+                        <th style="width: 90px;">Home</th>
+                        <th style="width: 90px;">Status</th>
+                        <th style="width: 90px;">Order</th>
+                        <th style="width: 130px;">Action</th>
+                    </tr>
                 </thead>
-
-                @{
-                    int sn = 0;
-                }
-    <tbody>
-@foreach (var item in Model.PageSection) {
+                <tbody>
+                    @{ int sn = 0; }
+                    @foreach (var item in Model.PageSection)
+                    {
+                        sn++;
                         <tr>
-
+                            <td>@sn</td>
                             <td>
-                                @{
-                                    sn++;
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Title" style="max-height:55px; max-width:85px; object-fit:cover; border-radius:4px;" />
                                 }
-                                @sn
+                                else
+                                {
+                                    <span class="text-muted">No Image</span>
+                                }
                             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VideoUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VideoKey)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageKey)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ButtonText)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ButtonLink)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShowInHome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Disable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HomePageSortOrder)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PageSortOrder)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WebPage.Title)
-            </td>
+                            <td><strong>@item.Title</strong></td>
+                            <td>@(item.WebPage?.Title ?? "-")</td>
+                            <td>
+                                @if (item.ShowInHome)
+                                {
+                                    <span class="label label-info">Home</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-default">No</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!item.Disable)
+                                {
+                                    <span class="label label-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-danger">Disabled</span>
+                                }
+                            </td>
+                            <td>@item.PageSortOrder</td>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-success">Action</button>
-
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                        </button>
-                                        <div class="dropdown-menu" style="">
-
-                                            <a class="dropdown-item" asp-page="./Details" asp-route-id="@item.Id">Details</a>
-                                            <a class="dropdown-item" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-
-                                        </div>
-                                    </div>
+                                    <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        Action <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a asp-page="./Details" asp-route-id="@item.Id"><i class="fa fa-eye"></i> Details</a></li>
+                                        <li><a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i> Edit</a></li>
+                                        <li class="divider"></li>
+                                        <li><a asp-page="./Delete" asp-route-id="@item.Id" class="text-danger"><i class="fa fa-trash"></i> Delete</a></li>
+                                    </ul>
                                 </div>
-
                             </td>
-
                         </tr>
                     }
                 </tbody>
@@ -144,7 +88,3 @@
         </div>
     </div>
 </div>
-
-
-
-

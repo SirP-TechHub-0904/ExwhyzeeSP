@@ -65,10 +65,7 @@
 
     <!-- Interactive Page Tour Styles (Driver.js) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css" />
-    <link rel="stylesheet" href="~/css/portal-tour.css" asp-append-version="true" />
-    
-    <!-- Modern Toast Notification Styles -->
-    <link rel="stylesheet" href="~/css/portal-toasts.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/portal-tour.css?v=1" />
 
     <style>
         /* Explicit Font-Face Fallback Definitions */
@@ -165,95 +162,30 @@
             transition: transform 0.2s ease-in-out !important;
         }
 
-        /* ================= DESKTOP SIDEBAR & MAIN SHELL (ZERO-GAP FLUSH LAYOUT) ================= */
-        @@media (min-width: 1024px) {
-            .app-shell {
-                display: flex !important;
-                flex-direction: row !important;
-                min-height: 100vh !important;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .app-sidebar {
-                width: 260px !important;
-                min-width: 260px !important;
-                max-width: 260px !important;
-                flex-shrink: 0 !important;
-                position: sticky !important;
-                top: 0 !important;
-                height: 100vh !important;
-                margin: 0 !important;
-                left: 0 !important;
-                transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            }
-            .app-main {
-                flex: 1 1 0% !important;
-                min-width: 0 !important;
-                width: auto !important;
-                margin-left: 0 !important;
-                margin-inline-start: 0 !important;
-                padding-left: 0 !important;
-                padding-inline-start: 0 !important;
-                margin-right: 0 !important;
-                padding-right: 0 !important;
-                left: 0 !important;
-                position: relative !important;
-            }
-            .app-header {
-                width: 100% !important;
-                margin-left: 0 !important;
-                margin-inline-start: 0 !important;
-                padding-left: 0 !important;
-                padding-inline-start: 0 !important;
-                left: 0 !important;
-            }
-            .main-content {
-                width: 100% !important;
-                margin-left: 0 !important;
-                margin-inline-start: 0 !important;
-            }
-            .app-shell.is-collapsed .app-sidebar {
-                width: 76px !important;
-                min-width: 76px !important;
-                max-width: 76px !important;
-            }
-            .app-shell.is-collapsed .app-main {
-                margin-left: 0 !important;
-                margin-inline-start: 0 !important;
-                padding-left: 0 !important;
-                padding-inline-start: 0 !important;
-            }
-            .app-shell.is-collapsed .sidebar-logo-full {
-                display: none !important;
-            }
-            .app-shell.is-collapsed .sidebar-logo-small {
-                display: block !important;
-            }
-            .app-shell.is-collapsed #sidebarCollapseBtn {
-                margin: 0 auto !important;
-            }
-            .app-shell.is-collapsed .sidebar-label,
-            .app-shell.is-collapsed .sidebar-group-title,
-            .app-shell.is-collapsed .sidebar-chevron,
-            .app-shell.is-collapsed .sidebar-meta,
-            .app-shell.is-collapsed .workspace-text,
-            .app-shell.is-collapsed .sidebar-search,
-            .app-shell.is-collapsed .sidebar-favorites,
-            .app-shell.is-collapsed .sidebar-submenu {
-                display: none !important;
-            }
-            .app-shell.is-collapsed .sidebar-link {
-                justify-content: center !important;
-                padding-left: 0.5rem !important;
-                padding-right: 0.5rem !important;
-                text-align: center !important;
-                position: relative !important;
-            }
-            .app-shell.is-collapsed .sidebar-link i {
-                font-size: 1.25rem !important;
-                margin: 0 !important;
-            }
+        /* Sidebar collapsed mode */
+        .app-shell.is-collapsed .app-sidebar {
+            width: 80px !important;
+        }
+        .app-shell.is-collapsed .sidebar-label,
+        .app-shell.is-collapsed .sidebar-group-title,
+        .app-shell.is-collapsed .sidebar-chevron,
+        .app-shell.is-collapsed .sidebar-meta,
+        .app-shell.is-collapsed .workspace-text,
+        .app-shell.is-collapsed .sidebar-search,
+        .app-shell.is-collapsed .sidebar-favorites,
+        .app-shell.is-collapsed .sidebar-submenu {
+            display: none !important;
+        }
+        .app-shell.is-collapsed .sidebar-logo-full {
+            display: none !important;
+        }
+        .app-shell.is-collapsed .sidebar-logo-small {
+            display: block !important;
+        }
+        .app-shell.is-collapsed .sidebar-link {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
         }
 
         /* Header and Page Search Bar Styling */
@@ -293,25 +225,6 @@
         .header-search-input:focus {
             border-color: var(--color-primary-500) !important;
             box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15) !important;
-        }
-
-        /* Universal Search Input & Icon Alignment */
-        .relative:has(.icon-search) input,
-        .relative:has(i[class*="search"]) input,
-        .relative:has(span > .icon-search) input {
-            padding-left: 42px !important;
-            padding-inline-start: 42px !important;
-        }
-        .relative:has(.icon-search) .icon-search,
-        .relative:has(i[class*="search"]) i[class*="search"],
-        .relative:has(span > .icon-search) span {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            pointer-events: none !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
         }
 
         /* Modal & Backdrop Styling */
@@ -480,6 +393,32 @@
             color: var(--text-tertiary);
         }
 
+        /* Mobile sidebar visibility */
+        @@media (max-width: 1023px) {
+            #appSidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 999;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            #appSidebar.is-mobile-open {
+                transform: translateX(0);
+            }
+        }
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+        .sidebar-backdrop.is-active {
+            display: block;
+        }
+
         /* Layout Grid & Card Helpers for Forms & Detail Views */
         .row {
             display: flex;
@@ -598,206 +537,11 @@
             border-bottom-left-radius: 0;
             margin-left: -1px;
         }
-
-        /* ================= FAIL-SAFE CUSTOM MOBILE SIDEBAR DRAWER CSS ================= */
-        #sidebarMobileBackdrop, .sidebar-backdrop {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            background-color: rgba(15, 23, 42, 0.75) !important;
-            backdrop-filter: blur(4px) !important;
-            -webkit-backdrop-filter: blur(4px) !important;
-            z-index: 99990 !important;
-            display: none !important;
-            opacity: 0;
-            transition: opacity 0.25s ease-in-out;
-            pointer-events: none;
-        }
-        #sidebarMobileBackdrop.is-active,
-        .sidebar-backdrop.is-active,
-        body.mobile-sidebar-open #sidebarMobileBackdrop,
-        body.mobile-sidebar-open .sidebar-backdrop {
-            display: block !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
-        }
-
-        @@media (max-width: 1023.98px) {
-            body.mobile-sidebar-open {
-                overflow: hidden !important;
-                position: relative !important;
-            }
-            .app-shell {
-                overflow-x: hidden !important;
-            }
-            #appSidebar, .app-sidebar {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                bottom: 0 !important;
-                width: 280px !important;
-                max-width: 85vw !important;
-                height: 100vh !important;
-                z-index: 99999 !important;
-                background-color: #0b1329 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                transform: translateX(-100%) !important;
-                transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
-                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.45) !important;
-            }
-            #appSidebar.is-mobile-open,
-            .app-sidebar.is-mobile-open,
-            body.mobile-sidebar-open #appSidebar,
-            body.mobile-sidebar-open .app-sidebar {
-                transform: translateX(0) !important;
-                display: flex !important;
-                visibility: visible !important;
-            }
-            #sidebarMobileCloseBtn {
-                display: inline-flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                background: transparent !important;
-                border: none !important;
-                color: #ffffff !important;
-                cursor: pointer !important;
-            }
-            #mobileSidebarBtn {
-                display: inline-flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                cursor: pointer !important;
-            }
-            #sidebarCollapseBtn, #topbarSidebarToggle {
-                display: none !important;
-            }
-        }
-
-        @@media (min-width: 1024px) {
-            #sidebarMobileBackdrop, .sidebar-backdrop {
-                display: none !important;
-            }
-            #sidebarMobileCloseBtn {
-                display: none !important;
-            }
-            #mobileSidebarBtn {
-                display: none !important;
-            }
-            #appSidebar, .app-sidebar {
-                transform: none !important;
-            }
-        }
     </style>
-    <!-- Standalone Instant Mobile & Desktop Sidebar Engine -->
-    <script>
-        // Desktop mini-sidebar collapse engine
-        window.toggleDesktopSidebar = function(e) {
-            if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(err){} }
-            var shell = document.getElementById('appShell');
-            if (!shell) return;
-            shell.classList.toggle('is-collapsed');
-            var isCollapsed = shell.classList.contains('is-collapsed');
-            try {
-                localStorage.setItem('dreamscore-sidebar-collapsed', isCollapsed ? '1' : '0');
-            } catch(err) {}
-            
-            var collapseIcon = document.querySelector('#sidebarCollapseBtn i');
-            if (collapseIcon) {
-                collapseIcon.className = isCollapsed ? 'icon-panel-left-open text-[17px]' : 'icon-panel-left-close text-[17px]';
-            }
-        };
-
-        // Mobile drawer open/close/toggle functions
-        window.openMobileSidebar = function(e) {
-            if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(err){} }
-            var sb = document.getElementById('appSidebar');
-            var bd = document.getElementById('sidebarMobileBackdrop');
-            if (sb) {
-                sb.classList.add('is-mobile-open');
-                sb.style.setProperty('transform', 'translateX(0px)', 'important');
-                sb.style.setProperty('display', 'flex', 'important');
-                sb.style.setProperty('visibility', 'visible', 'important');
-            }
-            if (bd) {
-                bd.classList.add('is-active');
-                bd.style.setProperty('display', 'block', 'important');
-                bd.style.setProperty('opacity', '1', 'important');
-            }
-            document.body.classList.add('mobile-sidebar-open');
-            document.body.style.overflow = 'hidden';
-        };
-
-        window.closeMobileSidebar = function(e) {
-            if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(err){} }
-            var sb = document.getElementById('appSidebar');
-            var bd = document.getElementById('sidebarMobileBackdrop');
-            if (sb) {
-                sb.classList.remove('is-mobile-open');
-                if (window.innerWidth < 1024) {
-                    sb.style.setProperty('transform', 'translateX(-100%)', 'important');
-                } else {
-                    sb.style.removeProperty('transform');
-                }
-            }
-            if (bd) {
-                bd.classList.remove('is-active');
-                bd.style.setProperty('display', 'none', 'important');
-                bd.style.setProperty('opacity', '0', 'important');
-            }
-            document.body.classList.remove('mobile-sidebar-open');
-            document.body.style.overflow = '';
-        };
-
-        window.toggleMobileSidebar = function(e) {
-            if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(err){} }
-            var sb = document.getElementById('appSidebar');
-            var isOpen = document.body.classList.contains('mobile-sidebar-open') || (sb && sb.classList.contains('is-mobile-open'));
-            if (isOpen) {
-                window.closeMobileSidebar(e);
-            } else {
-                window.openMobileSidebar(e);
-            }
-        };
-
-        // Keyboard ESC handler
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                window.closeMobileSidebar();
-            }
-        });
-
-        // Window resize handler: clean up inline transforms if resized to desktop
-        window.addEventListener('resize', function() {
-            var sb = document.getElementById('appSidebar');
-            if (window.innerWidth >= 1024) {
-                window.closeMobileSidebar();
-                if (sb) {
-                    sb.style.removeProperty('transform');
-                }
-            }
-        });
-
-        // Restore desktop collapsed preference on DOM load
-        try {
-            if (localStorage.getItem('dreamscore-sidebar-collapsed') === '1' && window.innerWidth >= 1024) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    var shell = document.getElementById('appShell');
-                    if (shell) shell.classList.add('is-collapsed');
-                    var collapseIcon = document.querySelector('#sidebarCollapseBtn i');
-                    if (collapseIcon) collapseIcon.className = 'icon-panel-left-open text-[17px]';
-                });
-            }
-        } catch(err) {}
-    </script>
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-[var(--surface-base)] text-[var(--text-primary)] antialiased font-sans">
-    <div id="sidebarMobileBackdrop" class="sidebar-backdrop" onclick="window.closeMobileSidebar(event)"></div>
+    <div id="sidebarMobileBackdrop" class="sidebar-backdrop"></div>
 
     <div class="app-shell" id="appShell">
 
@@ -810,11 +554,8 @@
                     <img src="/img/exwhyzeesp-logo.jpg" alt="Exwhyzee SP" class="sidebar-logo-full sidebar-brand-img rounded" />
                     <img src="/img/icon-exwhyzeesp.jpg?v=2" alt="Exwhyzee SP" class="sidebar-logo-small size-8 object-cover rounded-full border border-info hidden" />
                 </a>
-                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0" onclick="window.toggleDesktopSidebar(event)" aria-label="Collapse sidebar">
+                <button type="button" id="sidebarCollapseBtn" class="header-icon-btn !text-white/60 hover:!text-white hover:!bg-white/10 !size-8 shrink-0" aria-label="Collapse sidebar">
                     <i class="icon-panel-left-close text-[17px]"></i>
-                </button>
-                <button type="button" id="sidebarMobileCloseBtn" class="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 shrink-0" onclick="window.closeMobileSidebar(event)" aria-label="Close sidebar">
-                    <i class="bi bi-x-lg text-[16px]"></i>
                 </button>
             </div>
 
@@ -846,14 +587,6 @@
                             <a asp-area="Admin" asp-controller="Tenants" asp-action="Create" class="sidebar-link @(routeController == "Tenants" && routeAction == "Create" ? "nav-item-active is-active" : "")">
                                 <i class="icon-plus-circle text-[16px]"></i>
                                 <span class="sidebar-label">Add New School</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a asp-area="Admin" asp-controller="Backups" asp-action="Index" class="sidebar-link @(routeController == "Backups" ? "nav-item-active is-active" : "")">
-                                <i class="icon-database text-[16px]"></i>
-                                <span class="sidebar-label">Database Backups</span>
-                                <span class="sidebar-badge badge-solid-success sidebar-meta">Vault</span>
                             </a>
                         </li>
                     }
@@ -1069,12 +802,12 @@
                 <div class="flex items-center gap-3 px-4 lg:px-6 h-16">
 
                     <!-- Mobile sidebar toggle -->
-                    <button type="button" id="mobileSidebarBtn" class="header-icon-btn lg:hidden flex items-center justify-center size-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--surface-sunken)] shadow-sm" onclick="window.toggleMobileSidebar(event)" aria-label="Open menu">
-                        <i class="bi bi-list text-[22px]"></i>
+                    <button type="button" id="mobileSidebarBtn" class="header-icon-btn lg:hidden" aria-label="Open menu">
+                        <i class="icon-menu text-[18px]"></i>
                     </button>
 
                     <!-- Desktop sidebar collapse toggle -->
-                    <button type="button" id="topbarSidebarToggle" class="header-icon-btn hidden lg:inline-flex" onclick="window.toggleDesktopSidebar(event)" title="Toggle Sidebar" aria-label="Toggle sidebar collapse">
+                    <button type="button" id="topbarSidebarToggle" class="header-icon-btn hidden lg:inline-flex" title="Toggle Sidebar" aria-label="Toggle sidebar collapse">
                         <i class="icon-menu text-[18px]"></i>
                     </button>
 
@@ -1176,41 +909,19 @@
 
             <!-- ================= BODY CONTENT ================= -->
             <main class="main-content flex-1 p-4 lg:p-6 overflow-y-auto">
-                <!-- Alerts Container & Server Toast Feed -->
-                @if (TempData["SuccessMessage"] != null || TempData["Success"] != null)
+                <!-- Alerts Container -->
+                @if (TempData["SuccessMessage"] != null)
                 {
-                    var msg = TempData["SuccessMessage"] ?? TempData["Success"];
-                    <div class="server-toast-item hidden" data-type="success" data-title="Success" data-message="@msg"></div>
                     <div class="mb-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-3">
                         <i class="icon-check-circle text-[18px]"></i>
-                        <span class="text-sm font-semibold">@msg</span>
+                        <span class="text-sm font-semibold">@TempData["SuccessMessage"]</span>
                     </div>
                 }
-                @if (TempData["ErrorMessage"] != null || TempData["Error"] != null || TempData["Danger"] != null)
+                @if (TempData["ErrorMessage"] != null)
                 {
-                    var msg = TempData["ErrorMessage"] ?? TempData["Error"] ?? TempData["Danger"];
-                    <div class="server-toast-item hidden" data-type="danger" data-title="Error Occurred" data-message="@msg"></div>
                     <div class="mb-4 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center gap-3">
                         <i class="icon-alert-triangle text-[18px]"></i>
-                        <span class="text-sm font-semibold">@msg</span>
-                    </div>
-                }
-                @if (TempData["WarningMessage"] != null || TempData["Warning"] != null)
-                {
-                    var msg = TempData["WarningMessage"] ?? TempData["Warning"];
-                    <div class="server-toast-item hidden" data-type="warning" data-title="Warning" data-message="@msg"></div>
-                    <div class="mb-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center gap-3">
-                        <i class="icon-alert-triangle text-[18px]"></i>
-                        <span class="text-sm font-semibold">@msg</span>
-                    </div>
-                }
-                @if (TempData["InfoMessage"] != null || TempData["Info"] != null)
-                {
-                    var msg = TempData["InfoMessage"] ?? TempData["Info"];
-                    <div class="server-toast-item hidden" data-type="info" data-title="Information" data-message="@msg"></div>
-                    <div class="mb-4 p-4 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center gap-3">
-                        <i class="icon-info text-[18px]"></i>
-                        <span class="text-sm font-semibold">@msg</span>
+                        <span class="text-sm font-semibold">@TempData["ErrorMessage"]</span>
                     </div>
                 }
 
@@ -1270,13 +981,17 @@
                     toggleDesktopSidebar();
                 });
 
-                // Auto-close drawer on mobile when clicking navigation links
-                sidebar?.querySelectorAll('.sidebar-link:not([data-submenu-toggle])').forEach(link => {
-                    link.addEventListener('click', function() {
-                        if (window.innerWidth < 1024) {
-                            window.closeMobileSidebar();
-                        }
-                    });
+                // 2. Mobile Sidebar Drawer
+                mobileBtn?.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sidebar?.classList.toggle('is-mobile-open');
+                    backdrop?.classList.toggle('is-active');
+                });
+
+                backdrop?.addEventListener('click', function() {
+                    sidebar?.classList.remove('is-mobile-open');
+                    backdrop?.classList.remove('is-active');
                 });
 
                 // 3. Universal Event Delegation for Submenus, Dropdowns, Theme, and Modals
@@ -1410,10 +1125,7 @@
 
     <!-- Interactive Tour Guide Engine -->
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="~/js/portal-tour.js" asp-append-version="true"></script>
-    
-    <!-- Modern Toast Notification Engine -->
-    <script src="~/js/portal-toasts.js" asp-append-version="true"></script>
+    <script src="/js/portal-tour.js?v=1"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,0 +1,81 @@
+@page
+@model ExwhyzeeSP.Web.Areas.MisContent.Pages.Reconciliation.IndexModel
+@{
+    ViewData["Title"] = "Image / File Reconciliation";
+}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-refresh"></i> Image / File Reconciliation</h3>
+        <span class="pull-right label @(Model.HasAwsCredentials ? "label-info" : "label-warning")">
+            Bucket: @Model.BucketName (us-east-1)
+        </span>
+    </div>
+    <div class="box-body">
+        @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+        {
+            <div class="alert alert-success">
+                <i class="fa fa-check-circle"></i> @Model.StatusMessage
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-triangle"></i> @Model.ErrorMessage
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table id="example1" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">S/N</th>
+                        <th style="width: 110px;">Preview</th>
+                        <th>Table</th>
+                        <th style="width: 70px;">ID</th>
+                        <th>Column</th>
+                        <th>Key</th>
+                        <th style="width: 120px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int sn = 0; }
+                    @foreach (var item in Model.Items)
+                    {
+                        sn++;
+                        <tr>
+                            <td>@sn</td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(item.Url))
+                                {
+                                    <a href="@item.Url" target="_blank" title="Open in new tab">
+                                        <img src="@item.Url" alt="@item.Key" style="max-height:55px; max-width:95px; object-fit:cover; border-radius:4px;" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No URL</span>
+                                }
+                            </td>
+                            <td><strong>@item.Table</strong></td>
+                            <td>@item.RecordId</td>
+                            <td>@item.ColumnPair</td>
+                            <td><code>@item.Key</code></td>
+                            <td>
+                                <form method="post" asp-page-handler="ReassignOne" target="_blank" style="display:inline;">
+                                    <input type="hidden" name="table" value="@item.Table" />
+                                    <input type="hidden" name="recordId" value="@item.RecordId" />
+                                    <input type="hidden" name="columnPair" value="@item.ColumnPair" />
+                                    <input type="hidden" name="key" value="@item.Key" />
+                                    <button type="submit" class="btn btn-primary btn-xs">
+                                        <i class="fa fa-refresh"></i> Reassign
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

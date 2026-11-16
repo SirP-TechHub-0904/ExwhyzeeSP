@@ -415,6 +415,7 @@
                                 <li><a href="/MisContent/ITestimony"><i class="fa fa-quote-left"></i> Testimonials</a></li>
                                 <li><a href="/MisContent/IFaq"><i class="fa fa-question-circle"></i> FAQs</a></li>
                                 <li><a href="/MisContent/IModal"><i class="fa fa-bullhorn"></i> Pop-up Announcements</a></li>
+                                <li><a href="/MisContent/Reconciliation"><i class="fa fa-refresh"></i> Image/File Reconciliation</a></li>
                             </ul>
                         </li>
                         <li><a href="@Url.Action("Index", "DeviceManager", new { area = "SuperDevice" })"><i class="fa fa-desktop"></i> <span> Super Admin Device</span></a></li>
@@ -476,6 +477,7 @@
 
                     <!-- Header Action Buttons -->
                     <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        @await RenderSectionAsync("HeaderActions", required: false)
                         <a href="http://support.esp.exwhyzee.ng/" target="_blank" class="btn btn-sm btn-info" style="border-radius: 4px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                             <i class="fa fa-book"></i> Help Documents
                         </a>

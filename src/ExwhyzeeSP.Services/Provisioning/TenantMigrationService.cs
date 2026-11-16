@@ -73,8 +73,6 @@ namespace ExwhyzeeSP.Services.Provisioning
                     sqlOptions.MigrationsAssembly("ExwhyzeeSP.Data");
                     sqlOptions.CommandTimeout(10); // Fast timeout for status check
                 });
-                optionsBuilder.ConfigureWarnings(warnings =>
-                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
                 using var tenantContext = new ApplicationDbContext(optionsBuilder.Options);
                 var pending = (await tenantContext.Database.GetPendingMigrationsAsync()).ToList();
@@ -135,8 +133,6 @@ namespace ExwhyzeeSP.Services.Provisioning
                     sqlOptions.MigrationsAssembly("ExwhyzeeSP.Data");
                     sqlOptions.CommandTimeout(180);
                 });
-                optionsBuilder.ConfigureWarnings(warnings =>
-                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
                 using var tenantContext = new ApplicationDbContext(optionsBuilder.Options);
                 var pending = (await tenantContext.Database.GetPendingMigrationsAsync()).ToList();

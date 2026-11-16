@@ -1,811 +1,151 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting.IndexModel
 @{
+    ViewData["Title"] = "Website Settings & Theme";
+    var ss = Model.SuperSetting;
+    var st = Model.Setting;
 }
-<div class="card card-default">
-    
-    <!-- /.card-header -->
 
-    <div class="card-body p-4">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class=" ">ABOUT COMPANY</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <ul class="todo-list" data-widget="todo-list">
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.CompanyName)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.CompanyName)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.CompanyDescription)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.CompanyDescription)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.CompanyWebsiteLink)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.CompanyWebsiteLink)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.WebsiteTitle)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.WebsiteTitle)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.CompanyLogoUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.CompanyLogoUrl))
-                                    {
-                                        <img src="@Model.SuperSetting.CompanyLogoUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.CompanyWhiteLogoUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.CompanyWhiteLogoUrl))
-                                    {
-                                        <img src="@Model.SuperSetting.CompanyWhiteLogoUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.CompanyIconUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.CompanyIconUrl))
-                                    {
-                                        <img src="@Model.SuperSetting.CompanyIconUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.ReloaderIconUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.ReloaderIconUrl))
-                                    {
-                                        <img src="@Model.SuperSetting.ReloaderIconUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-
-                            <li>
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.ProductTitle)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.ProductTitle)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.ProductTitleHome)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.ProductTitleHome)
-                                </span>
-
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.Qoute)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.Qoute)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.TopNote)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.TopNote)
-                                </span>
-                            </li>
-                            <li>
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.FacebookPage)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.FacebookPage)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.InstagramPage)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.InstagramPage)
-                                </span>
-                            </li>
-                            <li>
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.TwitterPage)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.TwitterPage)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.TiktokPage)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.TiktokPage)
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.YoutubeChannel)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.YoutubeChannel)
-                                </span>
-
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-
-
-
-
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.WorkingHour)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.WorkingHour)
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class=" ">CONTACT INFORMATIONY</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <ul class="todo-list" data-widget="todo-list">
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddressOne)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddressOne)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowAddressOneInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowAddressOneInTop)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddressTwo)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddressTwo)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.EmailOne)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.EmailOne)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowEmailOneInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowEmailOneInTop)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowEmailOneInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowEmailOneInFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.EmailTwo)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.EmailTwo)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowEmailTwoInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowEmailTwoInTop)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowEmailTwoInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowEmailTwoInFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.EmailThree)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.EmailThree)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowEmailThreeInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowEmailThreeInTop)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowEmailThreeInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowEmailThreeInFooter)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.PhoneOne)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.PhoneOne)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowPhoneOneInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowPhoneOneInTop)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowPhoneOneInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowPhoneOneInFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.PhoneTwo)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.PhoneTwo)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowPhoneTwoInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowPhoneTwoInTop)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowPhoneTwoInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowPhoneTwoInFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.PhoneThree)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.PhoneThree)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowPhoneThreeInTop)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowPhoneThreeInTop)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowPhoneThreeInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowPhoneThreeInFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.GoogleMap)
-                                </span>
-                                <span>
-                                    @Html.Raw(Model.Setting.GoogleMap)
-                                </span>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class=" ">OTHER FEATURES</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <ul class="todo-list" data-widget="todo-list">
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddFaqToHome)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddFaqToHome)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddFaqToFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddFaqToFooter)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowContactUsMenu)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowContactUsMenu)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowContactUsFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowContactUsFooter)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddTestimonyToHome)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddTestimonyToHome)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddTestimonyToFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddTestimonyToFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.DisableMainTopMenu)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.DisableMainTopMenu)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowProductsInMenu)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowProductsInMenu)
-                                </span>
-
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowProductsInFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowProductsInFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ActivateProductsInHome)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ActivateProductsInHome)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowTwoProducts)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowTwoProducts)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowThreeProducts)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowThreeProducts)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.ShowSixProducts)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.ShowSixProducts)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.DefaultTitleBackgroundUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.Setting.DefaultTitleBackgroundUrl))
-                                    {
-                                        <img src="@Model.Setting.DefaultTitleBackgroundUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.GoogleMap)
-                                </span>
-                                <span>
-                                    @Html.Raw(Model.Setting.GoogleMap)
-                                </span>
-
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.BlogDisplayTitle)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.BlogDisplayTitle)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddBlogToFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddBlogToFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddBlogToHome)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddBlogToHome)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddBlogToMenu)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddBlogToMenu)
-                                </span>
-                            </li>
-
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.CareerDisplayTitle)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.CareerDisplayTitle)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddCareerToFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddCareerToFooter)
-                                </span>
-                            </li>
-
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.AddCareerToMenu)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.AddCareerToMenu)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.SpecialMenuButtonActivate)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.SpecialMenuButtonActivate)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.SpecialMenuButtonLink)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.SpecialMenuButtonLink)
-                                </span>
-                            </li>
-
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.SpecialMenuButtonText)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.SpecialMenuButtonText)
-                                </span>
-                            </li>
-
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.ActivateWorkWithUsFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.ActivateWorkWithUsFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.ActivateDownloadOurAppFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.ActivateDownloadOurAppFooter)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.TitleDownloadOurAppFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.TitleDownloadOurAppFooter)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.DescriptionDownloadOurAppFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.DescriptionDownloadOurAppFooter)
-                                </span>
-                            </li>
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.AppStoreLink)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.AppStoreLink)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.PlayStoreLink)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.PlayStoreLink)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.ActivateSubscribeFormOnFooter)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.SuperSetting.ActivateSubscribeFormOnFooter)
-                                </span>
-                            </li>
-
-
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.AppStoreImageUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.AppStoreImageUrl))
-                                    {
-                                        <img src="@Model.SuperSetting.AppStoreImageUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-                            <li>
-                                <!-- drag handle -->
-
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.SuperSetting.PlayStoreImageUrl)
-                                </span>
-                                <span>
-                                    @if (!String.IsNullOrEmpty(Model.SuperSetting.PlayStoreImageUrl))
-                                    {
-                                        <img src="@Model.SuperSetting.PlayStoreImageUrl" class="img-fluid" style="max-height:150px;" />
-
-                                    }
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.EnableBreakingNewsRibon)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.EnableBreakingNewsRibon)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.BreakingNewsRibonTitle)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.BreakingNewsRibonTitle)
-                                </span>
-                            </li>
-                            <li>
-                                <span style="font-weight: 900; margin-right: 30px;">
-                                    @Html.DisplayNameFor(model => model.Setting.RibonPosition)
-                                </span>
-                                <span>
-                                    @Html.DisplayFor(model => model.Setting.RibonPosition)
-                                </span>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-footer">
-                    <a class="dropdown-item" asp-page="./Update">Edit</a>
-
-                </div>
-            </div>
-
+@section HeaderActions {
+    <a asp-page="./Update" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit Settings</a>
+    <a asp-page="./DesignSettings" class="btn btn-info btn-sm"><i class="fa fa-paint-brush"></i> Design &amp; Theme</a>
+    <a asp-page="./UiProperty" class="btn btn-default btn-sm"><i class="fa fa-sliders"></i> UI Properties</a>
+}
+
+@if (!Model.HasSuperSetting)
+{
+    <div class="alert alert-warning">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>No Website SuperSetting record found yet.</strong>
+        Click <a asp-page="./Update" class="btn btn-warning btn-xs"><i class="fa fa-plus"></i> Configure Website Settings</a> to initialize it.
+    </div>
+}
+
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab-branding" data-toggle="tab"><i class="fa fa-building-o"></i> Company &amp; Branding</a></li>
+        <li><a href="#tab-theme" data-toggle="tab"><i class="fa fa-paint-brush"></i> Theme &amp; Layout</a></li>
+        <li><a href="#tab-features" data-toggle="tab"><i class="fa fa-toggle-on"></i> Menu &amp; Features</a></li>
+        <li><a href="#tab-contact" data-toggle="tab"><i class="fa fa-share-alt"></i> Contact, Social &amp; Footer</a></li>
+        <li><a href="#tab-payment" data-toggle="tab"><i class="fa fa-credit-card"></i> Payment &amp; Storage</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Tab 1: Company & Branding -->
+        <div class="tab-pane fade in active" id="tab-branding">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr><th style="width:260px;">Company / School Name</th><td>@(ss.CompanyName ?? "-")</td></tr>
+                    <tr><th>Abbreviation</th><td>@(ss.CompanyNameAbbreviation ?? "-")</td></tr>
+                    <tr><th>Website Title</th><td>@(ss.WebsiteTitle ?? "-")</td></tr>
+                    <tr><th>Dashboard Title</th><td>@(ss.DashboardTitle ?? "-")</td></tr>
+                    <tr><th>Company Description</th><td>@(ss.CompanyDescription ?? "-")</td></tr>
+                    <tr><th>Website Link</th><td>@(ss.CompanyWebsiteLink ?? "-")</td></tr>
+                    <tr>
+                        <th>Company Logo</th>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(ss.CompanyLogoUrl))
+                            {
+                                <img src="@ss.CompanyLogoUrl" alt="Logo" style="max-height:60px;" />
+                            }
+                            else { <span class="text-muted">Not set</span> }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>White Logo</th>
+                        <td style="background:#222d32;">
+                            @if (!string.IsNullOrWhiteSpace(ss.CompanyWhiteLogoUrl))
+                            {
+                                <img src="@ss.CompanyWhiteLogoUrl" alt="White Logo" style="max-height:60px;" />
+                            }
+                            else { <span style="color:#ccc;">Not set</span> }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Favicon / Icon</th>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(ss.CompanyIconUrl))
+                            {
+                                <img src="@ss.CompanyIconUrl" alt="Icon" style="max-height:48px;" />
+                            }
+                            else { <span class="text-muted">Not set</span> }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Reloader Icon</th>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(ss.ReloaderIconUrl))
+                            {
+                                <img src="@ss.ReloaderIconUrl" alt="Reloader" style="max-height:48px;" />
+                            }
+                            else { <span class="text-muted">Not set</span> }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab 2: Theme & Layout -->
+        <div class="tab-pane fade" id="tab-theme">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr><th style="width:260px;">Template Layout Key</th><td><code>@(ss.TemplateLayoutKey ?? "-")</code></td></tr>
+                    <tr><th>Color Template Key</th><td><code>@(ss.ColorTemplateKey ?? "-")</code></td></tr>
+                    <tr><th>Slider Template Key</th><td><code>@(ss.SliderTemplateKey ?? "-")</code></td></tr>
+                    <tr><th>Blog Template Key</th><td><code>@(ss.BlogTemplateKey ?? "-")</code></td></tr>
+                    <tr><th>Footer Template Key</th><td><code>@(ss.FooterTemplateKey ?? "-")</code></td></tr>
+                    <tr><th>Page Header Template Key</th><td><code>@(ss.PageHeaderTemplateKey ?? "-")</code></td></tr>
+                    <tr><th>Login Template Key</th><td><code>@(ss.LoginTemplateKey ?? "-")</code></td></tr>
+                    <tr><th>Reloader Template Key</th><td><code>@(ss.ReloaderTemplateKey ?? "-")</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab 3: Menu & Features -->
+        <div class="tab-pane fade" id="tab-features">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr><th style="width:280px;">Activate Login</th><td><span class="label @(ss.ActivateLogin ? "label-success" : "label-default")">@(ss.ActivateLogin ? "Yes" : "No")</span></td></tr>
+                    <tr><th>Activate Login In Menu</th><td><span class="label @(ss.ActivateLoginInMenu ? "label-success" : "label-default")">@(ss.ActivateLoginInMenu ? "Yes" : "No")</span></td></tr>
+                    <tr><th>Special Menu Button</th><td><span class="label @(ss.SpecialMenuButtonActivate ? "label-success" : "label-default")">@(ss.SpecialMenuButtonActivate ? "Yes" : "No")</span> @ss.SpecialMenuButtonText (@ss.SpecialMenuButtonLink)</td></tr>
+                    <tr><th>Coming Soon Mode</th><td><span class="label @(ss.ActivateComingSoon ? "label-warning" : "label-default")">@(ss.ActivateComingSoon ? "Yes" : "No")</span></td></tr>
+                    <tr><th>Show Made By XYZ</th><td><span class="label @(ss.ShowMadeByXYZ ? "label-success" : "label-default")">@(ss.ShowMadeByXYZ ? "Yes" : "No")</span></td></tr>
+                    <tr><th>Breaking News Ribbon</th><td><span class="label @(st.EnableBreakingNewsRibon ? "label-success" : "label-default")">@(st.EnableBreakingNewsRibon ? "Yes" : "No")</span> @st.BreakingNewsRibonTitle</td></tr>
+                    <tr><th>Add Blog To Home / Menu / Footer</th><td>Home: @(st.AddBlogToHome ? "Yes" : "No") | Menu: @(st.AddBlogToMenu ? "Yes" : "No") | Footer: @(st.AddBlogToFooter ? "Yes" : "No")</td></tr>
+                    <tr><th>Add Testimony To Home / Footer</th><td>Home: @(st.AddTestimonyToHome ? "Yes" : "No") | Footer: @(st.AddTestimonyToFooter ? "Yes" : "No")</td></tr>
+                    <tr><th>Add FAQ To Home / Footer</th><td>Home: @(st.AddFaqToHome ? "Yes" : "No") | Footer: @(st.AddFaqToFooter ? "Yes" : "No")</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab 4: Contact, Social & Footer -->
+        <div class="tab-pane fade" id="tab-contact">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr><th style="width:260px;">Contact Email</th><td>@(st.EmailOne ?? st.ContactEmail ?? "-")</td></tr>
+                    <tr><th>Contact Phone</th><td>@(st.PhoneOne ?? st.ContactPhoneNumber ?? "-")</td></tr>
+                    <tr><th>Address</th><td>@(st.AddressOne ?? st.SchoolAddress ?? "-")</td></tr>
+                    <tr><th>Facebook</th><td>@(st.FacebookPage ?? "-")</td></tr>
+                    <tr><th>Twitter / X</th><td>@(st.TwitterPage ?? "-")</td></tr>
+                    <tr><th>Instagram</th><td>@(st.InstagramPage ?? "-")</td></tr>
+                    <tr><th>TikTok</th><td>@(st.TiktokPage ?? "-")</td></tr>
+                    <tr><th>YouTube</th><td>@(st.YoutubeChannel ?? "-")</td></tr>
+                    <tr><th>Play Store Link</th><td>@(ss.PlayStoreLink ?? "-")</td></tr>
+                    <tr><th>App Store Link</th><td>@(ss.AppStoreLink ?? "-")</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab 5: Payment & Storage -->
+        <div class="tab-pane fade" id="tab-payment">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr><th style="width:260px;">Payment Module Active</th><td><span class="label @(ss.PaymentModuleActive ? "label-success" : "label-default")">@(ss.PaymentModuleActive ? "Yes" : "No")</span></td></tr>
+                    <tr><th>Currency</th><td>@(ss.CurrencyCode ?? "-") (@(ss.CurrencySymbol ?? "-"))</td></tr>
+                    <tr><th>Paystack Public Key</th><td>@(string.IsNullOrWhiteSpace(ss.PaystackPublicKey) ? "-" : ss.PaystackPublicKey)</td></tr>
+                    <tr><th>AWS Bucket Name</th><td><code>@(ss.BucketName ?? "-")</code></td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
-
-

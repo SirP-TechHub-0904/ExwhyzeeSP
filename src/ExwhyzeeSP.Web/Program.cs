@@ -11,7 +11,6 @@ using DotNetEnv;
 using ExwhyzeeSP.Core.Models;
 using ExwhyzeeSP.Data.Contexts;
 using ExwhyzeeSP.Data.Identity;
-using ExwhyzeeSP.Data.MultiTenancy;
 
 // ==============================================================================
 // 1. LOAD ENVIRONMENT VARIABLES (.env)
@@ -29,47 +28,24 @@ if (File.Exists(envPath))
 var builder = WebApplication.CreateBuilder(args);
 
 // ==============================================================================
-// 2. CONFIGURE MASTER & DYNAMIC TENANT DATABASES
+// 2. CONFIGURE SCHOOL DATABASE FROM .env
 // ==============================================================================
-var masterConnectionString = Environment.GetEnvironmentVariable("MASTER_DB_CONNECTION")
-    ?? builder.Configuration.GetConnectionString("MasterConnection");
+var defaultConnectionString = Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-if (string.IsNullOrWhiteSpace(masterConnectionString))
+if (string.IsNullOrWhiteSpace(defaultConnectionString))
 {
-    throw new InvalidOperationException("CRITICAL CONFIGURATION ERROR: 'MASTER_DB_CONNECTION' is not configured in .env or configuration providers.");
+    throw new InvalidOperationException("CRITICAL CONFIGURATION ERROR: 'DEFAULT_DB_CONNECTION' is not configured in .env or configuration providers.");
 }
 
-// Master DB Context (For resolving school tenant domains and metadata)
-builder.Services.AddDbContext<MasterDbContext>(options =>
-    options.UseSqlServer(masterConnectionString, sqlOptions =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(defaultConnectionString, sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
             maxRetryCount: 3,
             maxRetryDelay: TimeSpan.FromSeconds(5),
             errorNumbersToAdd: null);
     }));
-
-// Multi-Tenant Service & Caching (Sub-millisecond host lookup)
-builder.Services.AddMemoryCache();
-builder.Services.AddScoped<ITenantService, TenantService>();
-
-// Dynamic Tenant Application DbContext (Switches SQL connection string dynamically per request)
-builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
-{
-    var tenantService = serviceProvider.GetService<ITenantService>();
-    var connStr = tenantService?.GetActiveConnectionString();
-
-    if (!string.IsNullOrWhiteSpace(connStr))
-    {
-        options.UseSqlServer(connStr, sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 3,
-                maxRetryDelay: TimeSpan.FromSeconds(5),
-                errorNumbersToAdd: null);
-        });
-    }
-});
 
 
 builder.Services.AddHttpContextAccessor();
@@ -134,6 +110,22 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
+// Safely apply missing Website CMS columns/tables on startup without touching existing data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<ApplicationDbContext>();
+        await ExwhyzeeSP.Data.Seed.WebsiteCmsSchemaInitializer.EnsureAppliedAsync(dbContext);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while ensuring Website CMS schema.");
+    }
+}
+
 // HttpContextAccessor bridge
 HttpHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 
@@ -152,9 +144,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
-
-// Dynamic Multi-Tenant Middleware (Executes on every request to bind school tenant)
-app.UseTenantResolution();
 
 app.UseAuthentication();
 app.UseAuthorization();

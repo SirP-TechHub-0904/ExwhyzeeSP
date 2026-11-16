@@ -10,7 +10,7 @@ using ExwhyzeeSP.Core.Models;
 
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Category
 {
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "mSuperAdmin,Editor")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,Editor")]
 
     public class IndexModel : PageModel
     {

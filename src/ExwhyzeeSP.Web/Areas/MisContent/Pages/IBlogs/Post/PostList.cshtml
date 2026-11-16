@@ -2,7 +2,7 @@
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.IBlogs.Post.PostListModel
 @{
     ViewData["Title"] = "BLOG LIST";
-    @if (User.Identity.IsAuthenticated && User.IsInRole("SubAdmin") || User.IsInRole("mSuperAdmin"))
+    @if (User.Identity.IsAuthenticated && User.IsInRole("SubAdmin") || User.IsInRole("SuperAdmin,Admin"))
     {
         
 
@@ -17,14 +17,14 @@
 
 }
 @section HeaderActions {
-    <a asp-page="/IBlogs/Category/Index" class="btn bg-gradient-warning btn-sm" style="float:right;">Blog Category</a>
-        <a asp-page="./Create" class="btn bg-gradient-warning btn-sm" style="float:right;">Add New</a>
+    <a asp-page="/IBlogs/Category/Index" class="btn btn-warning btn-sm" style="float:right;">Blog Category</a>
+        <a asp-page="./Create" class="btn btn-warning btn-sm" style="float:right;">Add New</a>
 }
-<div class="card">
+<div class="box box-primary">
     
     <!-- /.card-header -->
     
-<div class="card-body p-4">
+<div class="box-body p-4">
         <div class="table-responsive">
             <table id="example1" class="table table-bordered table-striped">
                 <thead>
@@ -75,7 +75,7 @@
                                     <button type="button" class="btn btn-success">Action</button>
 
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
                                         </button>
                                         <div class="dropdown-menu" style="">
 

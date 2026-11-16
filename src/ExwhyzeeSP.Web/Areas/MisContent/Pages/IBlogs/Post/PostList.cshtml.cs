@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.IBlogs.Post
 {
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "mSuperAdmin,Editor")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,Editor")]
 
     public class PostListModel : PageModel
     {

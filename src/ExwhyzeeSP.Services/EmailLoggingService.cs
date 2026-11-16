@@ -7,9 +7,9 @@ namespace ExwhyzeeSP.Services
 {
     public class EmailLoggingService : IEmailLoggingService
     {
-        private readonly MasterDbContext _context;
+        private readonly MasterDbContext? _context;
 
-        public EmailLoggingService(MasterDbContext context)
+        public EmailLoggingService(MasterDbContext? context = null)
         {
             _context = context;
         }
@@ -40,14 +40,17 @@ namespace ExwhyzeeSP.Services
                 TenantSubDomain = tenantSubDomain
             };
 
-            try
+            if (_context != null)
             {
-                await _context.EmailLogs.AddAsync(emailLog);
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                // Safety guard: failure to write email log should not interrupt parent business logic
+                try
+                {
+                    await _context.EmailLogs.AddAsync(emailLog);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    // Safety guard: failure to write email log should not interrupt parent business logic
+                }
             }
 
             return emailLog;

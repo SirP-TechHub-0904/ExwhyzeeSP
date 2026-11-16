@@ -1,100 +1,73 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.ITestimony.IndexModel
 
 @{
-    ViewData["Title"] = "TESTIMONY ";
-    @if (User.Identity.IsAuthenticated && User.IsInRole("SubAdmin") || User.IsInRole("mSuperAdmin"))
-    {
-        
-
-    }
-
-
-    else
-    {
-        
-
-    }
+    ViewData["Title"] = "Testimonials";
 }
 
 @section HeaderActions {
-    <a asp-page="./Create" class="btn bg-gradient-warning btn-sm" style="float:right;">Add New</a>
+    <a asp-page="./Create" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add New</a>
 }
-<div class="card">
-    
-    <!-- /.card-header -->
-    
-<div class="card-body p-4">
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-quote-left"></i> Testimonials</h3>
+    </div>
+    <div class="box-body">
         <div class="table-responsive">
-            <table id="example1" class="table table-bordered table-striped">
+            <table id="example1" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>S/N</th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Testimony[0].Title)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Testimony[0].Description)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Testimony[0].SortOrder)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Testimony[0].Show)
-                        </th>
-                        <th>
-                            Image
-                        </th>
-                        <th></th>
+                        <th style="width: 50px;">S/N</th>
+                        <th style="width: 90px;">Image</th>
+                        <th>Title</th>
+                        <th style="width: 90px;">Sort Order</th>
+                        <th style="width: 90px;">Show</th>
+                        <th style="width: 130px;">Action</th>
                     </tr>
                 </thead>
-
-                @{
-                    int sn = 0;
-                }
                 <tbody>
+                    @{ int sn = 0; }
                     @foreach (var item in Model.Testimony)
                     {
+                        sn++;
                         <tr>
-
+                            <td>@sn</td>
                             <td>
-                                @{
-                                    sn++;
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Title" style="max-height:55px; max-width:75px; object-fit:cover; border-radius:4px;" />
                                 }
-                                @sn
+                                else
+                                {
+                                    <span class="text-muted">No Image</span>
+                                }
                             </td>
+                            <td><strong>@item.Title</strong></td>
+                            <td>@item.SortOrder</td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Title)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SortOrder)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Show)
-                            </td>
-                            <td>
-                                <img src="@item.ImageUrl" class="img-fluid" style="max-height:150px;" />
+                                @if (item.Show)
+                                {
+                                    <span class="label label-success">Visible</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-default">Hidden</span>
+                                }
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-success">Action</button>
-
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                        </button>
-                                        <div class="dropdown-menu" style="">
-
-                                            <a class="dropdown-item" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-
-                                        </div>
-                                    </div>
+                                    <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        Action <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a asp-page="./Details" asp-route-id="@item.Id"><i class="fa fa-eye"></i> Details</a></li>
+                                        <li><a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i> Edit</a></li>
+                                        <li class="divider"></li>
+                                        <li><a asp-page="./Delete" asp-route-id="@item.Id" class="text-danger"><i class="fa fa-trash"></i> Delete</a></li>
+                                    </ul>
                                 </div>
-
                             </td>
-
                         </tr>
                     }
                 </tbody>
@@ -102,10 +75,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-

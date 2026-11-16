@@ -1,83 +1,64 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Category.IndexModel
 
 @{
-    ViewData["Title"] = "PAGE CATEGORY ";
-    ViewData["ShowBackButton"] = true;
-    ViewData["BackUrl"] = "/MisContent/IPages/Main/Index";
+    ViewData["Title"] = "Page Categories";
 }
 
 @section HeaderActions {
-    <a asp-page="./Create" class="btn bg-gradient-warning btn-sm" style="float:right;">Add New</a>
+    <a asp-page="./Create" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add New</a>
 }
 
-
-
-<div class="card">
-    
-    <!-- /.card-header -->
-    <div class="card-body p-4">
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-folder-open-o"></i> Page Categories</h3>
+    </div>
+    <div class="box-body">
         <div class="table-responsive">
-            <table id="example1" class="table table-bordered table-striped">
+            <table id="example1" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>S/N</th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageCategory[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PageCategory[0].Publish)
-            </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.PageCategory[0].MenuSortOrder)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.PageCategory[0].HomeSortFrom)
-                        </th>
-            <th></th>
-        </tr>
-                </thead>  @{
-                    int sn = 0;
-                }
-    <tbody>
-@foreach (var item in Model.PageCategory) {
-        <tr>
+                        <th style="width: 50px;">S/N</th>
+                        <th>Title</th>
+                        <th style="width: 90px;">Publish</th>
+                        <th style="width: 110px;">Menu Order</th>
+                        <th style="width: 110px;">Home Sort</th>
+                        <th style="width: 130px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int sn = 0; }
+                    @foreach (var item in Model.PageCategory)
+                    {
+                        sn++;
+                        <tr>
+                            <td>@sn</td>
+                            <td><strong>@item.Title</strong></td>
                             <td>
-                                @{
-                                    sn++;
+                                @if (item.Publish)
+                                {
+                                    <span class="label label-success">Published</span>
                                 }
-                                @sn
+                                else
+                                {
+                                    <span class="label label-default">Draft</span>
+                                }
                             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publish)
-            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.MenuSortOrder)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.HomeSortFrom)
-                            </td>
+                            <td>@item.MenuSortOrder</td>
+                            <td>@item.HomeSortFrom</td>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-success">Action</button>
-
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                        </button>
-                                        <div class="dropdown-menu" style="">
-
-                                            <a class="dropdown-item" asp-page="./Details" asp-route-id="@item.Id">Details</a>
-                                            <a class="dropdown-item" asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-
-                                        </div>
-                                    </div>
+                                    <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        Action <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a asp-page="./Details" asp-route-id="@item.Id"><i class="fa fa-eye"></i> Details</a></li>
+                                        <li><a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i> Edit</a></li>
+                                        <li class="divider"></li>
+                                        <li><a asp-page="./Delete" asp-route-id="@item.Id" class="text-danger"><i class="fa fa-trash"></i> Delete</a></li>
+                                    </ul>
                                 </div>
-
                             </td>
-
                         </tr>
                     }
                 </tbody>
@@ -85,6 +66,3 @@
         </div>
     </div>
 </div>
-
-
-

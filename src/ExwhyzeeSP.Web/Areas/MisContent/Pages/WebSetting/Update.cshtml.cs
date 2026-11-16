@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 {
-     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "mSuperAdmin,Manager,Admin,Editor")]
+     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,Manager,Admin,Editor")]
 
     public class UpdateModel : PageModel
     {

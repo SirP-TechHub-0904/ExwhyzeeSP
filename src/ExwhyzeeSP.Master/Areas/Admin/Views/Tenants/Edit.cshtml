@@ -95,7 +95,7 @@
                     <div class="space-y-4">
                         <div>
                             <label asp-for="SchoolName" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">School Name <span class="text-rose-500">*</span></label>
-                            <input asp-for="SchoolName" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="Enter school name..." required />
+                            <input asp-for="SchoolName" class="w-full h-10 px-3.5 py-2 text-sm rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] font-semibold focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. St. Jude Catholic High School" required />
                             <span asp-validation-for="SchoolName" class="text-xs text-rose-600 mt-1 block"></span>
                         </div>
 
@@ -103,7 +103,7 @@
                             <div>
                                 <label asp-for="SubDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Default Subdomain</label>
                                 <div class="flex items-center">
-                                    <input asp-for="SubDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="schoolname" />
+                                    <input asp-for="SubDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-s-lg border border-e-0 border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="stjude" />
                                     <span class="h-10 px-3.5 flex items-center bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded-e-lg text-xs font-mono text-[var(--text-secondary)] shrink-0">.exwhyzee.ng</span>
                                 </div>
                                 <span asp-validation-for="SubDomain" class="text-xs text-rose-600 mt-1 block"></span>
@@ -112,7 +112,7 @@
 
                             <div>
                                 <label asp-for="HostDomain" class="block text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Custom Domain (Optional)</label>
-                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.yourschool.edu.ng or yourschool.com" />
+                                <input asp-for="HostDomain" class="w-full h-10 px-3.5 py-2 text-xs font-mono rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] text-[var(--text-primary)] focus:border-[var(--color-primary-500)] focus:outline-none" placeholder="e.g. portal.stjudehigh.sch.ng" />
                                 <span asp-validation-for="HostDomain" class="text-xs text-rose-600 mt-1 block"></span>
                                 <span class="text-[11px] text-[var(--text-tertiary)] mt-1 block">Custom white-label domain mapped to this school.</span>
                             </div>

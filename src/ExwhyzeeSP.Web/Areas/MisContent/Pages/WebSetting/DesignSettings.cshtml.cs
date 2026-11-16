@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
 {
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "mSuperAdmin,SubAdmin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,SubAdmin")]
 
     public class DesignSettingsModel : PageModel
     {
@@ -62,7 +62,7 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting
             superupdate.LiveConfiguration = DataConfig.LiveConfiguration;
 
             superupdate.LayoutJavaScript = DataConfig.LayoutJavaScript;
-            if (User.IsInRole("mSuperAdmin"))
+            if (User.IsInRole("SuperAdmin,Admin"))
             {
                 superupdate.MailSender = DataConfig.MailSender;
                 superupdate.OutlookServer = DataConfig.OutlookServer;

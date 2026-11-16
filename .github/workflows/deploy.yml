@@ -1,4 +1,4 @@
-name: Build and Deploy ExwhyzeeSP Web to Hostinger VPS
+name: Build and Deploy Divine Threshers Web to Hostinger VPS
 
 on:
   push:
@@ -6,6 +6,23 @@ on:
       - master
       - main
   workflow_dispatch:
+    inputs:
+      target_dir:
+        description: 'Target Deployment Directory on VPS'
+        required: false
+        default: '/var/www/divinethreshers-web'
+      service_name:
+        description: 'Systemd Service Name to Restart'
+        required: false
+        default: 'divinethreshers-web'
+
+# ==============================================================================
+# DEFAULT SCHOOL CONFIGURATION: Divine Threshers
+# To deploy another school in the future, copy this workflow or update these variables.
+# ==============================================================================
+env:
+  DEPLOY_PATH: ${{ github.event.inputs.target_dir || '/var/www/divinethreshers-web' }}
+  SERVICE_NAME: ${{ github.event.inputs.service_name || 'divinethreshers-web' }}
 
 jobs:
   build-and-deploy:
@@ -41,10 +58,10 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           source: "publish/web/**"
-          target: "/var/www/exwhyzee-web"
+          target: ${{ env.DEPLOY_PATH }}
           strip_components: 2
 
-      - name: 7. Apply Server Permissions & Restart Service
+      - name: 7. Apply Server Permissions & Restart Divine Threshers Service
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -52,18 +69,18 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
-            # Ensure target folder exists and set permissions
-            mkdir -p /var/www/exwhyzee-web
-            chown -R www-data:www-data /var/www/exwhyzee-web
-            chmod -R 755 /var/www/exwhyzee-web
+            echo "Configuring permissions for ${{ env.DEPLOY_PATH }}..."
+            mkdir -p ${{ env.DEPLOY_PATH }}
+            chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
+            chmod -R 755 ${{ env.DEPLOY_PATH }}
 
-            # Restart ExwhyzeeSP Web Service if configured
-            if systemctl is-active --quiet exwhyzee-web; then
-              echo "Restarting exwhyzee-web service..."
-              systemctl restart exwhyzee-web
+            # Restart the school-specific service (divinethreshers-web)
+            if systemctl is-active --quiet ${{ env.SERVICE_NAME }}; then
+              echo "Restarting service: ${{ env.SERVICE_NAME }}..."
+              systemctl restart ${{ env.SERVICE_NAME }}
             else
-              echo "Starting exwhyzee-web service..."
-              systemctl start exwhyzee-web || true
+              echo "Starting service: ${{ env.SERVICE_NAME }}..."
+              systemctl start ${{ env.SERVICE_NAME }} || true
             fi
 
-            systemctl status exwhyzee-web --no-pager || true
+            systemctl status ${{ env.SERVICE_NAME }} --no-pager || true

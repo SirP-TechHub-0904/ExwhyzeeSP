@@ -80,7 +80,7 @@ namespace ExwhyzeeSP.Master.Controllers
 
             // Available active schools for quick trigger
             var schools = await _context.TenantSchools
-                .Where(s => s.IsActive && !s.IsDeleted)
+                .Where(s => s.IsActive)
                 .OrderBy(s => s.SchoolName)
                 .Select(s => new { s.Id, s.SchoolName, s.SubDomain })
                 .ToListAsync();

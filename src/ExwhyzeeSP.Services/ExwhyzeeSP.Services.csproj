@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Provisioning\TenantBackupService.cs" />
-    <Compile Remove="Provisioning\ITenantBackupService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ExwhyzeeSP.Core\ExwhyzeeSP.Core.csproj" />
     <ProjectReference Include="..\ExwhyzeeSP.Data\ExwhyzeeSP.Data.csproj" />
   </ItemGroup>

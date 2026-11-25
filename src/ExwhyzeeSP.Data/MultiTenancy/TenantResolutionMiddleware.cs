@@ -100,15 +100,7 @@ namespace ExwhyzeeSP.Data.MultiTenancy
                 return;
             }
 
-            // Allow default fallback if DEFAULT_DB_CONNECTION exists
-            var fallbackConn = Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION");
-            if (!string.IsNullOrWhiteSpace(fallbackConn))
-            {
-                await _next(context);
-                return;
-            }
-
-            // Tenant NOT found -> Return clean, friendly branded error page
+            // Tenant NOT found -> Return clean, friendly branded error page (NO SILENT FALLBACK)
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             context.Response.ContentType = "text/html; charset=utf-8";
 
@@ -123,8 +115,8 @@ namespace ExwhyzeeSP.Data.MultiTenancy
             var notice = !string.IsNullOrWhiteSpace(tenant.SuspensionNotice)
                 ? tenant.SuspensionNotice
                 : (isPortalOnly
-                    ? "Administrative and student portal dashboards are temporarily locked for this institution. The public website remains accessible."
-                    : $"The platform services for <strong>{host}</strong> are currently deactivated.");
+                    ? "The portal is temporarily unavailable. Please contact the school administration."
+                    : "This school portal is currently inactive. Please contact the school administration.");
 
             return $@"<!DOCTYPE html>
 <html lang=""en"">
@@ -260,9 +252,9 @@ namespace ExwhyzeeSP.Data.MultiTenancy
 
         private static string GenerateTenantNotFoundHtml(string host)
         {
-            var title = "School Portal Not Found";
-            var heading = "School Portal Not Found";
-            var description = $"The school portal address <strong>{host}</strong> is not recognized or has not been registered in the system yet.";
+            var title = "School Not Found";
+            var heading = "School Not Found";
+            var description = $"Unable to find the school portal for <strong>{host}</strong>.";
 
             return $@"<!DOCTYPE html>
 <html lang=""en"">

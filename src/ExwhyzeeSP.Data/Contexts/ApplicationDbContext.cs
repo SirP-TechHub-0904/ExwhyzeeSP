@@ -37,9 +37,21 @@ namespace ExwhyzeeSP.Data.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connStr = TenantContext.CurrentConnectionString
-                    ?? _tenantService?.GetActiveConnectionString();
+                var connStr = TenantContext.CurrentConnectionString;
 
+                if (string.IsNullOrWhiteSpace(connStr) && _tenantService != null)
+                {
+                    try
+                    {
+                        connStr = _tenantService.GetActiveConnectionString();
+                    }
+                    catch
+                    {
+                        // In non-web CLI context
+                    }
+                }
+
+                // CLI & design-time migrations only (when running 'dotnet ef' without HTTP context):
                 if (string.IsNullOrWhiteSpace(connStr))
                 {
                     var activeTarget = Environment.GetEnvironmentVariable("ACTIVE_MIGRATION_TENANT");

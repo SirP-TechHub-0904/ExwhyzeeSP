@@ -56,9 +56,7 @@ namespace ExwhyzeeSP.Data.MultiTenancy
                 return TenantContext.CurrentConnectionString;
             }
 
-            return _configuration["DEFAULT_DB_CONNECTION"]
-                ?? Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION")
-                ?? string.Empty;
+            throw new InvalidOperationException("Unable to access school.");
         }
 
         private List<TenantSchool> GetEnvTenants()

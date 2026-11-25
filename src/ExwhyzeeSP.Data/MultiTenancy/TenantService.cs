@@ -41,6 +41,7 @@ namespace ExwhyzeeSP.Data.MultiTenancy
         public void SetCurrentTenant(TenantSchool tenant)
         {
             _currentTenant = tenant;
+            TenantContext.CurrentTenant = tenant;
         }
 
         public string GetActiveConnectionString()
@@ -48,6 +49,11 @@ namespace ExwhyzeeSP.Data.MultiTenancy
             if (_currentTenant != null && !string.IsNullOrWhiteSpace(_currentTenant.ConnectionString))
             {
                 return _currentTenant.ConnectionString;
+            }
+
+            if (TenantContext.CurrentTenant != null && !string.IsNullOrWhiteSpace(TenantContext.CurrentConnectionString))
+            {
+                return TenantContext.CurrentConnectionString;
             }
 
             return _configuration["DEFAULT_DB_CONNECTION"]

@@ -90,6 +90,7 @@ namespace ExwhyzeeSP.Data.MultiTenancy
                 }
 
                 tenantService.SetCurrentTenant(tenant);
+                TenantContext.CurrentTenant = tenant;
                 context.Items["CurrentTenant"] = tenant;
                 context.Items["TenantSchoolName"] = tenant.SchoolName;
                 context.Items["TenantSubDomain"] = tenant.SubDomain;

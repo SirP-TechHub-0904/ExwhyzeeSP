@@ -37,7 +37,8 @@ namespace ExwhyzeeSP.Data.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connStr = _tenantService?.GetActiveConnectionString();
+                var connStr = TenantContext.CurrentConnectionString
+                    ?? _tenantService?.GetActiveConnectionString();
 
                 if (string.IsNullOrWhiteSpace(connStr))
                 {

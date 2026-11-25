@@ -45,7 +45,8 @@ builder.Services.AddScoped<ExwhyzeeSP.Data.MultiTenancy.ITenantService, Exwhyzee
 builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 {
     var tenantService = serviceProvider.GetService<ExwhyzeeSP.Data.MultiTenancy.ITenantService>();
-    var connStr = tenantService?.GetActiveConnectionString();
+    var connStr = ExwhyzeeSP.Data.MultiTenancy.TenantContext.CurrentConnectionString
+        ?? tenantService?.GetActiveConnectionString();
 
     if (string.IsNullOrWhiteSpace(connStr))
     {

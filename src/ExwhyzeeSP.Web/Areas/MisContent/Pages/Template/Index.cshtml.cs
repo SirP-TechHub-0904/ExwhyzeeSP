@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExwhyzeeSP.Web.Areas.UI.Pages
+namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.Template
 {
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,SubAdmin,mSuperAdmin")]
     public class IndexModel : PageModel

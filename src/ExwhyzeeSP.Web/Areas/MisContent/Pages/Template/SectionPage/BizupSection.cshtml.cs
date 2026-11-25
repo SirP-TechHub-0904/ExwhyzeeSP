@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ExwhyzeeSP.Web.Areas.UI.Pages.SectionPage
+namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.Template.SectionPage
 {
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,SubAdmin,mSuperAdmin")]
 

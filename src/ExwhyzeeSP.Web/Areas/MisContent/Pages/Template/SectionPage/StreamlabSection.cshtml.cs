@@ -1,36 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ExwhyzeeSP.Web.Areas.UI.Pages.SectionPage
+namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.Template.SectionPage
 {
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,SubAdmin,mSuperAdmin")]
-
-    public class ArchoSectionModel : PageModel
+    public class StreamlabSectionModel : PageModel
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ArchoSectionModel(IWebHostEnvironment hostingEnvironment)
+        public StreamlabSectionModel(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public List<string> ImagePaths { get; private set; } // List to temporarily store the image paths
+        public List<string> ImagePaths { get; private set; }
 
         public void OnGet()
         {
             string webRootPath = _hostingEnvironment.WebRootPath;
-            string folderPath = Path.Combine(webRootPath, "templatesample/archo"); // Path to your image folder
+            string folderPath = Path.Combine(webRootPath, "templatesample/streamlab");
             ImagePaths = new List<string>();
             if (Directory.Exists(folderPath))
             {
-                IEnumerable<string> ImagePath = Directory.GetFiles(folderPath);
-
-                foreach (var d in ImagePath.ToArray())
+                IEnumerable<string> paths = Directory.GetFiles(folderPath);
+                foreach (var d in paths)
                 {
-
-                    string fileName = Path.GetFileName(d);
-
-                    ImagePaths.Add(fileName);
+                    ImagePaths.Add(Path.GetFileName(d));
                 }
                 ImagePaths.Sort();
             }

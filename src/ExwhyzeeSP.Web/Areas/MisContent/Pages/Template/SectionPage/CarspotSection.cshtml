@@ -1,7 +1,7 @@
 @page
-@model ExwhyzeeSP.Web.Areas.UI.Pages.SectionPage.AlinaSectionModel
+@model ExwhyzeeSP.Web.Areas.MisContent.Pages.Template.SectionPage.CarspotSectionModel
 @{
-    ViewData["Title"] = "Alina Section Samples";
+    ViewData["Title"] = "Carspot Section Samples";
 }
 
 <div class="row" style="margin-top: 10px; margin-bottom: 35px;">
@@ -9,14 +9,14 @@
         <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
             <div>
                 <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #1e293b;">
-                    <i class="fa fa-th-large text-primary" style="margin-right: 8px;"></i> Alina Section Component Catalog
+                    <i class="fa fa-th-large text-primary" style="margin-right: 8px;"></i> Carspot Section Component Catalog
                 </h3>
                 <span style="font-size: 13px; color: #64748b;">
-                    Visual reference for each Section Code in the Alina layout. Use these codes when adding homepage sections in Section Management.
+                    Visual reference for each Section Code in the Carspot layout. Use these codes when adding homepage sections in Section Management.
                 </span>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <a asp-page="/Index" asp-area="UI" class="btn btn-default" style="font-weight: 600; border-radius: 6px; background: #fff; border-color: #cbd5e1;">
+                <a href="/MisContent/Template" class="btn btn-default" style="font-weight: 600; border-radius: 6px; background: #fff; border-color: #cbd5e1;">
                     <i class="fa fa-arrow-left"></i> All Themes
                 </a>
                 <a href="/MisContent/IPages/Section" class="btn btn-primary" style="font-weight: 600; border-radius: 6px;">
@@ -28,7 +28,7 @@
         <div class="box box-primary" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #3c8dbc;">
             <div class="box-header with-border" style="padding: 16px 20px;">
                 <h3 class="box-title" style="font-weight: 700; font-size: 16px; color: #1e293b;">
-                    <i class="fa fa-image text-primary" style="margin-right: 6px;"></i> ALINA SECTIONS REFERENCE
+                    <i class="fa fa-image text-primary" style="margin-right: 6px;"></i> CARSPOT SECTIONS REFERENCE
                 </h3>
             </div>
             <div class="box-body table-responsive" style="padding: 0;">
@@ -52,8 +52,8 @@
                                         <div style="font-size: 11px; color: #64748b; margin-top: 6px;">File: @imagePath</div>
                                     </td>
                                     <td style="padding: 18px; vertical-align: middle;">
-                                        <a href="~/templatesample/alina/@imagePath" target="_blank">
-                                            <img src="~/templatesample/alina/@imagePath" alt="Alina Section @imagePath" style="max-width: 650px; width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);" />
+                                        <a href="~/templatesample/carsport/@imagePath" target="_blank">
+                                            <img src="~/templatesample/carsport/@imagePath" alt="Carspot Section @imagePath" style="max-width: 650px; width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);" />
                                         </a>
                                     </td>
                                 </tr>
@@ -63,7 +63,7 @@
                         {
                             <tr>
                                 <td colspan="2" style="padding: 30px; text-align: center; color: #64748b;">
-                                    No sample preview images found for Alina.
+                                    No sample preview images found for Carspot.
                                 </td>
                             </tr>
                         }

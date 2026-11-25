@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ExwhyzeeSP.Web.Areas.UI.Pages.SectionPage
+namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.Template.SectionPage
 {
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Admin,SubAdmin,mSuperAdmin")]
 
-    public class IndustrySectionModel : PageModel
+    public class MistroSectionModel : PageModel
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public IndustrySectionModel(IWebHostEnvironment hostingEnvironment)
+        public MistroSectionModel(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -19,7 +19,7 @@ namespace ExwhyzeeSP.Web.Areas.UI.Pages.SectionPage
         public void OnGet()
         {
             string webRootPath = _hostingEnvironment.WebRootPath;
-            string folderPath = Path.Combine(webRootPath, "templatesample/industry"); // Path to your image folder
+            string folderPath = Path.Combine(webRootPath, "templatesample/mistro"); // Path to your image folder
             ImagePaths = new List<string>();
             if (Directory.Exists(folderPath))
             {

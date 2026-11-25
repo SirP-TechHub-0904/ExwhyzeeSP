@@ -1,84 +1,75 @@
-﻿@page
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@page
 @model ExwhyzeeSP.Web.Areas.UI.Pages.SectionPage.EducationSectionModel
 @{
+    ViewData["Title"] = "Education Section Samples";
 }
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Education UI Section</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ExwhyzeeSP.Web.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="UI" asp-page="/Index">← All Themes</a> <a href="/Admin/Dashboard" class="btn btn-sm btn-outline-secondary ms-2">Admin Dashboard</a> <span class="d-none">Education UI Section</a>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                </div>
+<div class="row" style="margin-top: 10px; margin-bottom: 35px;">
+    <div class="col-md-12">
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #1e293b;">
+                    <i class="fa fa-th-large text-primary" style="margin-right: 8px;"></i> Education Section Component Catalog
+                </h3>
+                <span style="font-size: 13px; color: #64748b;">
+                    Visual reference for each Section Code in the Education layout. Use these codes when adding homepage sections in Section Management.
+                </span>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <h3>EDUCATION THEME SECTION</h3>
-            <table id="" class="table table-bordered table-striped">
-                <tr>
-                    <th>Section Code</th>
-
-                    <th>Image Sample</th>
-                </tr>
-
-                @foreach (var imagePath in Model.ImagePaths)
-                {
-                    <tr>
-
-                        @{
-
-
-                        }
-                        <th>
-                            @imagePath
-                        </th>
-                        <th>
-                            <a href="">
-                                <img src="~/templatesample/education/@imagePath" alt="Image" style="width:500px;" />
-                            </a>
-                        </th>
-                    </tr>
-                }
-
-
-            </table>
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 -
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a asp-page="/Index" asp-area="UI" class="btn btn-default" style="font-weight: 600; border-radius: 6px; background: #fff; border-color: #cbd5e1;">
+                    <i class="fa fa-arrow-left"></i> All Themes
+                </a>
+                <a href="/MisContent/IPages/Section" class="btn btn-primary" style="font-weight: 600; border-radius: 6px;">
+                    <i class="fa fa-th-large"></i> Homepage Sections
+                </a>
+            </div>
         </div>
-    </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        var currentURL = window.location.href;
-
-        var origin = new URL(currentURL).origin;
-        console.log(origin); // Output: "http://www.fom.com"
-        document.getElementById("origin1").textContent = origin;
-        document.getElementById("origin2").textContent = origin;
-        document.getElementById("origin3").textContent = origin;
-
-    </script>
-</body>
-</html>
+        <div class="box box-primary" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #3c8dbc;">
+            <div class="box-header with-border" style="padding: 16px 20px;">
+                <h3 class="box-title" style="font-weight: 700; font-size: 16px; color: #1e293b;">
+                    <i class="fa fa-image text-primary" style="margin-right: 6px;"></i> EDUCATION SECTIONS REFERENCE
+                </h3>
+            </div>
+            <div class="box-body table-responsive" style="padding: 0;">
+                <table class="table table-bordered table-striped" style="margin-bottom: 0;">
+                    <thead>
+                        <tr style="background: #f8fafc; color: #334155;">
+                            <th style="width: 180px; padding: 14px 18px; font-weight: 700;">Section Code</th>
+                            <th style="padding: 14px 18px; font-weight: 700;">Component Image Preview</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ImagePaths != null && Model.ImagePaths.Any())
+                        {
+                            @foreach (var imagePath in Model.ImagePaths)
+                            {
+                                <tr>
+                                    <td style="padding: 18px; vertical-align: middle;">
+                                        <span class="label label-primary" style="font-size: 14px; padding: 6px 14px; border-radius: 4px; display: inline-block;">
+                                            @imagePath.Replace(".png", "").Replace(".PNG", "").Replace(".jpg", "").Replace(".JPG", "")
+                                        </span>
+                                        <div style="font-size: 11px; color: #64748b; margin-top: 6px;">File: @imagePath</div>
+                                    </td>
+                                    <td style="padding: 18px; vertical-align: middle;">
+                                        <a href="~/templatesample/education/@imagePath" target="_blank">
+                                            <img src="~/templatesample/education/@imagePath" alt="Education Section @imagePath" style="max-width: 650px; width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" style="padding: 30px; text-align: center; color: #64748b;">
+                                    No sample preview images found for Education.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

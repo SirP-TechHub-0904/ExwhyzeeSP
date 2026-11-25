@@ -1,353 +1,325 @@
 ﻿@page
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model ExwhyzeeSP.Web.Areas.UI.Pages.IndexModel
 @{
-    Layout = null;
-
+    ViewData["Title"] = "UI Themes & Templates Catalog";
 }
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UI Samples</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ExwhyzeeSP.Web.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand fw-bold" asp-area="UI" asp-page="/Index">UI Themes & Templates Catalog</a>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end"><a href="/Admin/Dashboard" class="btn btn-primary btn-sm me-2">Back to Admin Dashboard</a><a href="/MisContent/WebSetting/UiProperty" class="btn btn-outline-secondary btn-sm">UI Properties</a></div>
+<div class="row" style="margin-top: 10px; margin-bottom: 35px;">
+    <div class="col-md-12">
+        <!-- Top Action Card -->
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #1e293b;">
+                    <i class="fa fa-television text-primary" style="margin-right: 8px;"></i> Website Themes &amp; Template Catalog
+                </h3>
+                <span style="font-size: 13px; color: #64748b;">
+                    Preview all available website layout designs, inspect live demos, and check template section components.
+                </span>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <h3>THEMES</h3>
-            <table id="" class="table table-bordered table-striped">
-                <tr>
-                    <th>Theme</th>
-                    <th>Code</th>
-                    <th>Sections</th>
-                    <th>Site Link with Demo images</th>
-                    <th>Site Link main images</th>
-                    <th>Status</th>
-                </tr>
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout1111")
-                {
-                    <tr>
-                        <th>Redbiz</th>
-                        <th>
-                            Layout1111
-                        </th>
-                        <th>
-
-                            <a asp-page="/SectionPage/RedbizSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin1"></span>/Layout/RedBiz-template/index.html
-                        </th>
-                        <th>
-                            <a href="https://redbizwp.themesflat.co/" target="_blank">https://redbizwp.themesflat.co/</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout1111")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout2222")
-                {
-
-                    <tr>
-                        <th>Carspot</th>
-                        <th>
-                            Layout2222
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/CarspotSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin2"></span>/Layout/carspot/index.html
-                        </th>
-                        <th>
-                            <a href="https://templates.scriptsbundle.com/carspot/demos/index.html" target="_blank">https://templates.scriptsbundle.com/carspot/demos/index.html</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout2222")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout3333")
-                {
-
-                    <tr>
-                        <th>Alina</th>
-                        <th>
-                            Layout3333
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/AlinaSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin3"></span>/Layout/Alina/index.html
-                        </th>
-                        <th>
-                            <a href="" target="_blank"></a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout3333")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout4444")
-                {
-
-                    <tr>
-                        <th>Archo</th>
-                        <th>
-                            Layout4444
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/ArchoSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin4"></span>/Layout/archo/index.html
-                        </th>
-                        <th>
-                            <a href="https://ui-themez.smartinnovates.net/items/archo/#0" target="_blank">https://ui-themez.smartinnovates.net/items/archo/#0</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout4444")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout5555")
-                {
-
-                    <tr>
-                        <th>Bizup</th>
-                        <th>
-                            Layout5555
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/BizupSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin5"></span>/Layout/Bizup/index.html
-                        </th>
-                        <th>
-                            <a href="https://reactheme.com/products/html/bizup/" target="_blank">https://reactheme.com/products/html/bizup/</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout5555")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout6666")
-                {
-
-                    <tr>
-                        <th>Industry</th>
-                        <th>
-                            Layout6666
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/IndustrySection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin6"></span>/Layout/Industry/index.html
-                        </th>
-                        <th>
-                            <a href="https://zozothemes.com/html/induzy/index-2.html" target="_blank">https://zozothemes.com/html/induzy/index-2.html</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout6666")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout7777")
-                {
-
-                    <tr>
-                        <th>Lawnella</th>
-                        <th>
-                            Layout7777
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/LawnellaSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin7"></span>/Layout/Lawnella/index.html
-                        </th>
-                        <th>
-                            <a href="http://st.ourhtmldemo.com/template/Lawnella/index.html" target="_blank">http://st.ourhtmldemo.com/template/Lawnella/index.html</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout7777")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout8888")
-                {
-
-                    <tr>
-                        <th>Mistro</th>
-                        <th>
-                            Layout8888
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/MistroSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin8"></span>/Layout/Mistro/index.html
-                        </th>
-                        <th>
-                            <a href="https://themeht.com/template/misto/html/ltr/index.html" target="_blank">https://themeht.com/template/misto/html/ltr/index.html</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout8888")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout9999")
-                {
-
-                    <tr>
-                        <th>Senatory</th>
-                        <th>
-                            Layout9999
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/SenatorySection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin9"></span>/Layout/Senatory/index.html
-                        </th>
-                        <th>
-                            <a href="https://themeim.com/demo/senatory/index.html#" target="_blank">https://themeim.com/demo/senatory/index.html#</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout9999")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout11111111")
-                {
-
-                    <tr>
-                        <th>Education</th>
-                        <th>
-                            Layout11111111
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/EducationSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin10"></span>/Layout/Education/index.html
-                        </th>
-                        <th>
-                            <a href="https://kodesolution.com/html/2016/studypress-html/demo/index-mp-layout1.html" target="_blank">https://kodesolution.com/html/2016/studypress-html/demo/index-mp-layout1.html</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout11111111")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-
-                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("mSuperAdmin") || User.IsInRole("SubAdmin") || Model.SuperSetting.TemplateLayoutKey == "Layout12121212")
-                {
-
-                    <tr>
-                        <th>Streamlab</th>
-                        <th>
-                            Layout12121212
-                        </th>
-                        <th>
-                            <a asp-page="/SectionPage/StreamlabSection" asp-area="UI">Section List</a>
-                        </th>
-                        <th>
-                            <span id="origin11"></span>/Layout/Streamlab/index.html
-                        </th>
-                        <th>
-                            <a href="https://template.gentechtreedesign.com/html/streamlab/red-html/index.html" target="_blank">https://template.gentechtreedesign.com/html/streamlab/red-html/index.html</a>
-                        </th>
-                        <th>
-                            @if (Model.SuperSetting.TemplateLayoutKey == "Layout12121212")
-                            {
-                                <span>Active</span>
-                            }
-                        </th>
-                    </tr>
-                }
-
-            </table>
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 -
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="/MisContent/WebSetting/UiProperty" class="btn btn-primary" style="font-weight: 600; border-radius: 6px;">
+                    <i class="fa fa-sliders"></i> Change Active Theme (UI Properties)
+                </a>
+                <a href="/MisContent/WebSetting" class="btn btn-default" style="font-weight: 600; border-radius: 6px; background: #fff; border-color: #cbd5e1;">
+                    <i class="fa fa-arrow-left"></i> Website Settings
+                </a>
+            </div>
         </div>
-    </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        var currentURL = window.location.href;
+        <div class="box box-primary" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #3c8dbc;">
+            <div class="box-header with-border" style="padding: 16px 20px;">
+                <h3 class="box-title" style="font-weight: 700; font-size: 16px; color: #1e293b;">
+                    <i class="fa fa-list-alt text-primary" style="margin-right: 6px;"></i> AVAILABLE THEMES &amp; LAYOUT CODES
+                </h3>
+            </div>
+            <div class="box-body table-responsive" style="padding: 0;">
+                <table class="table table-bordered table-striped table-hover" style="margin-bottom: 0;">
+                    <thead>
+                        <tr style="background: #f8fafc; color: #334155;">
+                            <th style="padding: 14px 18px; font-weight: 700;">Theme</th>
+                            <th style="padding: 14px 18px; font-weight: 700;">Code</th>
+                            <th style="padding: 14px 18px; font-weight: 700;">Sections Catalog</th>
+                            <th style="padding: 14px 18px; font-weight: 700;">Site Link with Demo Images</th>
+                            <th style="padding: 14px 18px; font-weight: 700;">Site Link Main Images</th>
+                            <th style="padding: 14px 18px; font-weight: 700; text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Redbiz -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout1111" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Redbiz</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout1111</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/RedbizSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/RedBiz-template/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/RedBiz-template/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://redbizwp.themesflat.co/" target="_blank" rel="noopener noreferrer">https://redbizwp.themesflat.co/</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout1111")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
 
-        var origin = new URL(currentURL).origin;
-        console.log(origin); // Output: "http://www.fom.com"
-        document.getElementById("origin1").textContent = origin;
-        document.getElementById("origin2").textContent = origin;
-        document.getElementById("origin3").textContent = origin;
-        document.getElementById("origin4").textContent = origin;
-        document.getElementById("origin5").textContent = origin;
-        document.getElementById("origin6").textContent = origin;
-        document.getElementById("origin7").textContent = origin;
-        document.getElementById("origin8").textContent = origin;
-        document.getElementById("origin9").textContent = origin;
-        document.getElementById("origin10").textContent = origin;
-        document.getElementById("origin11").textContent = origin;
-        document.getElementById("origin12").textContent = origin;
+                        <!-- Education -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout11111111" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Education</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout11111111</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/EducationSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/education/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/education/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://kodesolution.com/html/2016/studypress-html/demo/index-mp-layout1.html" target="_blank" rel="noopener noreferrer">https://kodesolution.com/html/2016/studypress-html/demo/index-mp-layout1.html</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout11111111")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
 
+                        <!-- Carspot -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout2222" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Carspot</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout2222</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/CarspotSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/carspot/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/carspot/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://templates.scriptsbundle.com/carspot/demos/index.html" target="_blank" rel="noopener noreferrer">https://templates.scriptsbundle.com/carspot/demos/index.html</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout2222")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
 
-    </script>
-</body>
-</html>
+                        <!-- Alina -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout3333" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Alina</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout3333</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/AlinaSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/Alina/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/Alina/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">-</td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout3333")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Archo -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout4444" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Archo</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout4444</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/ArchoSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/archo/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/archo/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://ui-themez.smartinnovates.net/items/archo/#0" target="_blank" rel="noopener noreferrer">https://ui-themez.smartinnovates.net/items/archo/#0</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout4444")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Bizup -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout5555" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Bizup</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout5555</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/BizupSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/bizup/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/bizup/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://reactheme.com/products/html/bizup/" target="_blank" rel="noopener noreferrer">https://reactheme.com/products/html/bizup/</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout5555")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Industry -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout6666" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Industry</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout6666</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/IndustrySection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/industry/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/industry/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://zozothemes.com/html/induzy/index-2.html" target="_blank" rel="noopener noreferrer">https://zozothemes.com/html/induzy/index-2.html</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout6666")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Lawnella -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout7777" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Lawnella</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout7777</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/LawnellaSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/lawnella/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/lawnella/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="http://st.ourhtmldemo.com/template/Lawnella/index.html" target="_blank" rel="noopener noreferrer">http://st.ourhtmldemo.com/template/Lawnella/index.html</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout7777")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Mistro -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout8888" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Mistro</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout8888</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/MistroSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/mistro/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/mistro/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://themeht.com/template/misto/html/ltr/index.html" target="_blank" rel="noopener noreferrer">https://themeht.com/template/misto/html/ltr/index.html</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout8888")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Senatory -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout9999" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Senatory</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout9999</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/SenatorySection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/Senatory/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/Senatory/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://themeim.com/demo/senatory/index.html#" target="_blank" rel="noopener noreferrer">https://themeim.com/demo/senatory/index.html#</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout9999")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Streamlab -->
+                        <tr style="@(Model.SuperSetting?.TemplateLayoutKey == "Layout12121212" ? "background-color: #f0fdf4;" : "")">
+                            <td style="padding: 14px 18px; font-weight: 700; vertical-align: middle;">Streamlab</td>
+                            <td style="padding: 14px 18px; vertical-align: middle;"><code>Layout12121212</code></td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a asp-page="/SectionPage/StreamlabSection" asp-area="UI" class="btn btn-xs btn-primary" style="font-weight: 600;">
+                                    <i class="fa fa-th-large"></i> Section List
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="/Layout/Streamlab/index.html" target="_blank" class="text-primary font-weight-bold">
+                                    <i class="fa fa-external-link"></i> /Layout/Streamlab/index.html
+                                </a>
+                            </td>
+                            <td style="padding: 14px 18px; vertical-align: middle;">
+                                <a href="https://template.gentechtreedesign.com/html/streamlab/red-html/index.html" target="_blank" rel="noopener noreferrer">https://template.gentechtreedesign.com/html/streamlab/red-html/index.html</a>
+                            </td>
+                            <td style="padding: 14px 18px; text-align: center; vertical-align: middle;">
+                                @if (Model.SuperSetting?.TemplateLayoutKey == "Layout12121212")
+                                {
+                                    <span class="label label-success" style="font-size: 12px; padding: 5px 12px; border-radius: 12px;">Active</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

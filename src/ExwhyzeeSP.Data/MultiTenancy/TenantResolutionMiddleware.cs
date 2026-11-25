@@ -35,9 +35,15 @@ namespace ExwhyzeeSP.Data.MultiTenancy
                 return;
             }
 
-            var host = context.Request.Host.Host;
+            var host = context.Request.Headers["X-Forwarded-Host"].FirstOrDefault()
+                ?? context.Request.Host.Host;
 
-            // Resolve tenant asynchronously from Master DB
+            if (host.Contains(":"))
+            {
+                host = host.Split(':')[0].Trim();
+            }
+
+            // Resolve tenant asynchronously from .env / Master DB
             var tenant = await tenantService.ResolveTenantByHostAsync(host);
 
             if (tenant != null && !string.IsNullOrWhiteSpace(tenant.ConnectionString))
@@ -89,6 +95,14 @@ namespace ExwhyzeeSP.Data.MultiTenancy
                 context.Items["TenantSubDomain"] = tenant.SubDomain;
                 context.Items["TenantHostDomain"] = tenant.HostDomain;
 
+                await _next(context);
+                return;
+            }
+
+            // Allow default fallback if DEFAULT_DB_CONNECTION exists
+            var fallbackConn = Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION");
+            if (!string.IsNullOrWhiteSpace(fallbackConn))
+            {
                 await _next(context);
                 return;
             }

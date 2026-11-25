@@ -19,7 +19,7 @@ namespace ExwhyzeeSP.Data.MultiTenancy
     {
         private readonly IMemoryCache _cache;
         private readonly IConfiguration _configuration;
-        private readonly MasterDbContext _masterDbContext;
+        private readonly MasterDbContext? _masterDbContext;
         private TenantSchool? _currentTenant;
 
         private static readonly List<TenantSchool> _envTenants = new();
@@ -29,7 +29,7 @@ namespace ExwhyzeeSP.Data.MultiTenancy
         public TenantService(
             IMemoryCache cache,
             IConfiguration configuration,
-            MasterDbContext masterDbContext)
+            MasterDbContext? masterDbContext = null)
         {
             _cache = cache;
             _configuration = configuration;
@@ -150,22 +150,25 @@ namespace ExwhyzeeSP.Data.MultiTenancy
                 }
             }
 
-            // 2. Query Master Database safely with fallback protection
+            // 2. Query Master Database safely with fallback protection (if available)
             TenantSchool? tenant = null;
-            try
+            if (_masterDbContext != null)
             {
-                tenant = await _masterDbContext.TenantSchools
-                    .AsNoTracking()
-                    .Where(t => t.IsActive && (
-                        (t.HostDomain != null && t.HostDomain.ToLower() == cleanedHost) ||
-                        (potentialSubdomain != null && t.SubDomain.ToLower() == potentialSubdomain) ||
-                        t.SubDomain.ToLower() == cleanedHost
-                    ))
-                    .FirstOrDefaultAsync();
-            }
-            catch
-            {
-                tenant = null;
+                try
+                {
+                    tenant = await _masterDbContext.TenantSchools
+                        .AsNoTracking()
+                        .Where(t => t.IsActive && (
+                            (t.HostDomain != null && t.HostDomain.ToLower() == cleanedHost) ||
+                            (potentialSubdomain != null && t.SubDomain.ToLower() == potentialSubdomain) ||
+                            t.SubDomain.ToLower() == cleanedHost
+                        ))
+                        .FirstOrDefaultAsync();
+                }
+                catch
+                {
+                    tenant = null;
+                }
             }
 
             // 3. Fallback to default tenant (Divine Threshers safe default)

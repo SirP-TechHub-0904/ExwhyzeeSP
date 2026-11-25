@@ -38,14 +38,32 @@ if (string.IsNullOrWhiteSpace(defaultConnectionString))
     throw new InvalidOperationException("CRITICAL CONFIGURATION ERROR: 'DEFAULT_DB_CONNECTION' is not configured in .env or configuration providers.");
 }
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(defaultConnectionString, sqlOptions =>
+// Multi-Tenant Services (.env & host routing)
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ExwhyzeeSP.Data.MultiTenancy.ITenantService, ExwhyzeeSP.Data.MultiTenancy.TenantService>();
+
+builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+{
+    var tenantService = serviceProvider.GetService<ExwhyzeeSP.Data.MultiTenancy.ITenantService>();
+    var connStr = tenantService?.GetActiveConnectionString();
+
+    if (string.IsNullOrWhiteSpace(connStr))
     {
-        sqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 3,
-            maxRetryDelay: TimeSpan.FromSeconds(5),
-            errorNumbersToAdd: null);
-    }));
+        connStr = Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION")
+            ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+
+    if (!string.IsNullOrWhiteSpace(connStr))
+    {
+        options.UseSqlServer(connStr, sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 3,
+                maxRetryDelay: TimeSpan.FromSeconds(5),
+                errorNumbersToAdd: null);
+        });
+    }
+});
 
 
 builder.Services.AddHttpContextAccessor();
@@ -132,8 +150,13 @@ HttpHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 // Support reverse proxy headers (Nginx / Cloudflare SSL termination)
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                       Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto | 
+                       Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedHost
 });
+
+// Dynamic Multi-Tenant Host Resolution (Resolves dedicated school database per request from .env)
+app.UseMiddleware<ExwhyzeeSP.Data.MultiTenancy.TenantResolutionMiddleware>();
 
 // ==============================================================================
 // 5. CONFIGURE HTTP PIPELINE

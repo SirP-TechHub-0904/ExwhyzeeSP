@@ -1,0 +1,72 @@
+name: Build and Deploy ExwhyzeSchoolPortal to Hostinger VPS
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: 2. Setup .NET 9.0 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: 3. Restore NuGet Dependencies
+        run: dotnet restore src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj
+
+      - name: 4. Build ExwhyzeeSP.Web in Release Mode
+        run: dotnet build src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj --configuration Release --no-restore
+
+      - name: 5. Publish ExwhyzeeSP.Web Project
+        run: |
+          dotnet publish src/ExwhyzeeSP.Web/ExwhyzeeSP.Web.csproj \
+            --configuration Release \
+            --no-build \
+            --output ./publish/web
+
+      - name: 6. Deploy Published Bundle to VPS via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          source: "publish/web/**"
+          target: "/var/www/exwhyzeeschoolportal"
+          strip_components: 2
+
+      - name: 7. Apply Server Permissions & Restart ExwhyzeSchoolPortal Service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            # Ensure target folder and file permissions
+            mkdir -p /var/www/exwhyzeeschoolportal
+            chown -R root:root /var/www/exwhyzeeschoolportal
+            chmod -R 755 /var/www/exwhyzeeschoolportal
+
+            # Restart ExwhyzeSchoolPortal Web Service (Running on dedicated port 5030)
+            if systemctl is-active --quiet exwhyzeeschoolportal; then
+              echo "Restarting exwhyzeeschoolportal service..."
+              systemctl restart exwhyzeeschoolportal
+            else
+              echo "Starting exwhyzeeschoolportal service..."
+              systemctl enable --now exwhyzeeschoolportal || true
+            fi
+
+            # Check status
+            systemctl status exwhyzeeschoolportal --no-pager || true

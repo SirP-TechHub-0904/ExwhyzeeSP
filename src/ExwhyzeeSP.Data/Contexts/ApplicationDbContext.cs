@@ -37,9 +37,22 @@ namespace ExwhyzeeSP.Data.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connStr = _tenantService?.GetActiveConnectionString()
-                    ?? Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION")
-                    ?? Environment.GetEnvironmentVariable("MASTER_DB_CONNECTION");
+                var connStr = _tenantService?.GetActiveConnectionString();
+
+                if (string.IsNullOrWhiteSpace(connStr))
+                {
+                    var activeTarget = Environment.GetEnvironmentVariable("ACTIVE_MIGRATION_TENANT");
+                    if (!string.IsNullOrWhiteSpace(activeTarget))
+                    {
+                        connStr = Environment.GetEnvironmentVariable($"{activeTarget}_CONNECTION");
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(connStr))
+                {
+                    connStr = Environment.GetEnvironmentVariable("DEFAULT_DB_CONNECTION")
+                        ?? Environment.GetEnvironmentVariable("MASTER_DB_CONNECTION");
+                }
 
                 if (!string.IsNullOrWhiteSpace(connStr))
                 {

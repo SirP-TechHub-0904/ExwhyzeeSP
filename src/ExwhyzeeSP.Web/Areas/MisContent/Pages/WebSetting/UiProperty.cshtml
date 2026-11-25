@@ -1,233 +1,218 @@
 ﻿@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting.UiPropertyModel
 @{
+    ViewData["Title"] = "UI & Layout Properties";
 }
-<div class="box box-primary card-default">
-    
-    <!-- /.card-header -->
-    <form method="post">
 
-        <div class="box-body p-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h5 class=" ">UNIVERSAL SETTINGS</h5>
-                        </div>
-                        <div class="box-body p-4">
-                            <ul class="todo-list" data-widget="todo-list">
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.TemplateLayoutKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.TemplateLayoutKey" class="form-control">
-                                            <option value="Layout1111">Redbiz Template</option>
-                                            <option value="Layout2222">Carsport Template</option>
-                                            <option value="Layout3333">Alina Template</option>
-                                            <option value="Layout4444">Archo Template</option>
-                                            <option value="Layout5555">Bizup Template</option>
-                                            <option value="Layout6666">Industry Template</option>
-                                            <option value="Layout7777">Lawnella Template</option>
-                                            <option value="Layout8888">Mistro Template</option>
-                                            <option value="Layout9999">Senatory Template</option>
-                                            <option value="Layout11111111">Education Template</option>
-                                            <option value="Layout12121212">Streamlab Template</option>
-                                            <option value="Layout13131313">Judge Template</option>
-
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.TemplateLayoutKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.LoginTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.LoginTemplateKey" class="form-control">
-                                            <option value="Login1111">Login One</option>
-                                            <option value="Login2222">Login Two</option>
-                                            <option value="Login3333">Login Three</option>
-                                            <option value="Login4444">Login Four</option>
-                                            <option value="Login5555">Login Five</option>
-                                            <option value="Login6666">Login Agilevendor</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.LoginTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.ColorTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.ColorTemplateKey" class="form-control">
-                                            <option value="Colour1111">Colour One</option>
-                                            <option value="Colour2222">Colour Two</option>
-                                            <option value="Colour3333">Colour Three</option>
-                                            <option value="Colour4444">Colour Four</option>
-                                            <option value="Colour5555">Colour Five</option>
-                                            <option value="Colour6666">Colour Six</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.ColorTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.SliderTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.SliderTemplateKey" class="form-control">
-                                            <option value="Slider1111">Slider One</option>
-                                            <option value="Slider2222">Slider Two</option>
-                                            <option value="Slider3333">Slider Three</option>
-                                            <option value="Slider4444">Slider Four</option>
-                                            <option value="Slider5555">Slider Five</option>
-                                            <option value="Slider6666">Slider Six</option>
-                                            <option value="Slider7777">Slider Seven</option>
-                                            <option value="Slider8888">Slider Eight</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.SliderTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.ProductTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.ProductTemplateKey" class="form-control">
-                                            <option value="">Choose</option>
-                                            <option value="Product1111">Product One</option>
-                                            <option value="Product2222">Product Two</option>
-                                            <option value="Product3333">Product Three</option>
-                                            <option value="Product4444">Product Four</option>
-                                            <option value="Product5555">Product Five</option>
-                                            <option value="Product6666">Product Six</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.ProductTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.BlogTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.BlogTemplateKey" class="form-control">
-                                            <option value="">Choose</option>
-                                            <option value="Blog1111">Blog One</option>
-                                            <option value="Blog2222">Blog Two</option>
-                                            <option value="Blog3333">Blog Three</option>
-                                            <option value="Blog4444">Blog Four</option>
-                                            <option value="Blog5555">Blog Five</option>
-                                            <option value="Blog6666">Blog Six</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.BlogTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.ReloaderTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.ReloaderTemplateKey" class="form-control">
-                                            <option value="">Choose</option>
-                                            <option value="Reloader1111">Reloader One</option>
-                                            <option value="Reloader2222">Reloader Two</option>
-                                            <option value="Reloader3333">Reloader Three</option>
-                                            <option value="Reloader4444">Reloader Four</option>
-                                            <option value="Reloader5555">Reloader Five</option>
-                                            <option value="Reloader6666">Reloader Six</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.ReloaderTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.PageHeaderTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.PageHeaderTemplateKey" class="form-control">
-                                            <option value="">Choose</option>
-                                            <option value="PageHeader1111">PageHeader One</option>
-                                            <option value="PageHeader2222">PageHeader Two</option>
-                                            <option value="PageHeader3333">PageHeader Three</option>
-                                            <option value="PageHeader4444">PageHeader Four</option>
-                                            <option value="PageHeader5555">PageHeader Five</option>
-                                            <option value="PageHeader6666">PageHeader Six</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.PageHeaderTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.FooterTemplateKey" class="control-label"></label>
-                                        <select asp-for="SuperSetting.FooterTemplateKey" class="form-control">
-                                            <option value="">Choose</option>
-                                            <option value="Footer1111">Footer One</option>
-                                            <option value="Footer2222">Footer Two</option>
-                                            <option value="Footer3333">Footer Three</option>
-                                            <option value="Footer4444">Footer Four</option>
-                                            <option value="Footer5555">Footer Five</option>
-                                            <option value="Footer6666">Footer Six</option>
-                                        </select>
-                                        <span asp-validation-for="SuperSetting.FooterTemplateKey" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-
-
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.LoginTitle" class="control-label"></label>
-                                        <input asp-for="SuperSetting.LoginTitle" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.LoginTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label asp-for="SuperSetting.LoginNoteTitle" class="control-label"></label>
-                                        <input asp-for="SuperSetting.LoginNoteTitle" class="form-control" />
-                                        <span asp-validation-for="SuperSetting.LoginNoteTitle" class="text-danger"></span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="SuperSetting.LoginNote"></label><br />
-
-                                        <textarea asp-for="SuperSetting.LoginNote" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="SuperSetting.LoginNoteFooter"></label><br />
-
-                                        <textarea asp-for="SuperSetting.LoginNoteFooter" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.UseNormalLogoInLogin" /> @Html.DisplayNameFor(model => model.SuperSetting.UseNormalLogoInLogin)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.UseWhiteLogoInLogin" /> @Html.DisplayNameFor(model => model.SuperSetting.UseWhiteLogoInLogin)
-                                        </label>
-                                    </div>
-                                </li>
-                             
-                                 
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="SuperSetting.ShowMadeByJuray" /> @Html.DisplayNameFor(model => model.SuperSetting.ShowMadeByJuray)
-                                        </label>
-                                    </div>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="box box-primary">
-                    <div class="box-footer">
-                        <input type="submit" value="Update" class="btn btn-primary" />
-
-                    </div>
-                </div>
-
+<div class="row" style="margin-top: 10px; margin-bottom: 35px;">
+    <div class="col-md-12">
+        <!-- Top Header & Action Banner -->
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #1e293b;">
+                    <i class="fa fa-sliders text-primary" style="margin-right: 8px;"></i> Universal UI &amp; Template Settings
+                </h3>
+                <span style="font-size: 13px; color: #64748b;">
+                    Configure website template layouts, sliders, color schemes, and login page appearance.
+                </span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="/UI" target="_blank" class="btn btn-info" style="font-weight: 600; border-radius: 6px;">
+                    <i class="fa fa-desktop"></i> View UI Theme Samples
+                </a>
+                <a href="/MisContent/WebSetting" class="btn btn-default" style="font-weight: 600; border-radius: 6px; background: #fff; border-color: #cbd5e1;">
+                    <i class="fa fa-arrow-left"></i> Back to Overview
+                </a>
             </div>
         </div>
 
-    </form>
+        <form method="post">
+            <div class="box box-primary" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #3c8dbc;">
+                <div class="box-header with-border" style="padding: 16px 20px;">
+                    <h3 class="box-title" style="font-weight: 700; font-size: 16px; color: #1e293b;">
+                        <i class="fa fa-television text-primary" style="margin-right: 6px;"></i> Template &amp; Theme Selectors
+                    </h3>
+                </div>
+                <div class="box-body" style="padding: 24px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.TemplateLayoutKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Active Website Template</label>
+                                <select asp-for="SuperSetting.TemplateLayoutKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="Layout1111">Redbiz Template (Layout1111)</option>
+                                    <option value="Layout2222">Carsport Template (Layout2222)</option>
+                                    <option value="Layout3333">Alina Template (Layout3333)</option>
+                                    <option value="Layout4444">Archo Template (Layout4444)</option>
+                                    <option value="Layout5555">Bizup Template (Layout5555)</option>
+                                    <option value="Layout6666">Industry Template (Layout6666)</option>
+                                    <option value="Layout7777">Lawnella Template (Layout7777)</option>
+                                    <option value="Layout8888">Mistro Template (Layout8888)</option>
+                                    <option value="Layout9999">Senatory Template (Layout9999)</option>
+                                    <option value="Layout11111111">Education Template (Layout11111111)</option>
+                                    <option value="Layout12121212">Streamlab Template (Layout12121212)</option>
+                                    <option value="Layout13131313">Judge Template (Layout13131313)</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.TemplateLayoutKey" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.SliderTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Slider Style</label>
+                                <select asp-for="SuperSetting.SliderTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="Slider1111">Slider One (Slider1111)</option>
+                                    <option value="Slider2222">Slider Two (Slider2222)</option>
+                                    <option value="Slider3333">Slider Three (Slider3333)</option>
+                                    <option value="Slider4444">Slider Four (Slider4444)</option>
+                                    <option value="Slider5555">Slider Five (Slider5555)</option>
+                                    <option value="Slider6666">Slider Six (Slider6666)</option>
+                                    <option value="Slider7777">Slider Seven (Slider7777)</option>
+                                    <option value="Slider8888">Slider Eight (Slider8888)</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.SliderTemplateKey" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.ColorTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Color Palette</label>
+                                <select asp-for="SuperSetting.ColorTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="Colour1111">Colour One</option>
+                                    <option value="Colour2222">Colour Two</option>
+                                    <option value="Colour3333">Colour Three</option>
+                                    <option value="Colour4444">Colour Four</option>
+                                    <option value="Colour5555">Colour Five</option>
+                                    <option value="Colour6666">Colour Six</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.ColorTemplateKey" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.LoginTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Login Page Design</label>
+                                <select asp-for="SuperSetting.LoginTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="Login1111">Login One</option>
+                                    <option value="Login2222">Login Two</option>
+                                    <option value="Login3333">Login Three</option>
+                                    <option value="Login4444">Login Four</option>
+                                    <option value="Login5555">Login Five</option>
+                                    <option value="Login6666">Login Agilevendor</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.LoginTemplateKey" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.FooterTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Footer Design</label>
+                                <select asp-for="SuperSetting.FooterTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="">Default Footer</option>
+                                    <option value="Footer1111">Footer One</option>
+                                    <option value="Footer2222">Footer Two</option>
+                                    <option value="Footer3333">Footer Three</option>
+                                    <option value="Footer4444">Footer Four</option>
+                                    <option value="Footer5555">Footer Five</option>
+                                    <option value="Footer6666">Footer Six</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.FooterTemplateKey" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.PageHeaderTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Header &amp; Breadcrumb Style</label>
+                                <select asp-for="SuperSetting.PageHeaderTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="">Default Header</option>
+                                    <option value="PageHeader1111">PageHeader One</option>
+                                    <option value="PageHeader2222">PageHeader Two</option>
+                                    <option value="PageHeader3333">PageHeader Three</option>
+                                    <option value="PageHeader4444">PageHeader Four</option>
+                                    <option value="PageHeader5555">PageHeader Five</option>
+                                    <option value="PageHeader6666">PageHeader Six</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.PageHeaderTemplateKey" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.ReloaderTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Preloader Animation</label>
+                                <select asp-for="SuperSetting.ReloaderTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="">None / Default</option>
+                                    <option value="Reloader1111">Reloader One</option>
+                                    <option value="Reloader2222">Reloader Two</option>
+                                    <option value="Reloader3333">Reloader Three</option>
+                                    <option value="Reloader4444">Reloader Four</option>
+                                    <option value="Reloader5555">Reloader Five</option>
+                                    <option value="Reloader6666">Reloader Six</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.ReloaderTemplateKey" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label asp-for="SuperSetting.BlogTemplateKey" class="control-label" style="font-weight: 700; font-size: 13px; color: #334155;">Blog Layout Style</label>
+                                <select asp-for="SuperSetting.BlogTemplateKey" class="form-control" style="height: 42px; border-radius: 6px;">
+                                    <option value="">Default Blog</option>
+                                    <option value="Blog1111">Blog One</option>
+                                    <option value="Blog2222">Blog Two</option>
+                                    <option value="Blog3333">Blog Three</option>
+                                    <option value="Blog4444">Blog Four</option>
+                                    <option value="Blog5555">Blog Five</option>
+                                    <option value="Blog6666">Blog Six</option>
+                                </select>
+                                <span asp-validation-for="SuperSetting.BlogTemplateKey" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid #e2e8f0; margin: 25px 0 20px 0; padding-top: 20px;">
+                        <h4 style="font-weight: 700; font-size: 15px; color: #1e293b; margin-bottom: 16px;">
+                            <i class="fa fa-lock text-info" style="margin-right: 6px;"></i> Login Page Content &amp; Brand Options
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label asp-for="SuperSetting.LoginTitle" class="control-label" style="font-weight: 600; color: #475569;">Login Page Heading</label>
+                                    <input asp-for="SuperSetting.LoginTitle" class="form-control" style="height: 40px; border-radius: 6px;" />
+                                    <span asp-validation-for="SuperSetting.LoginTitle" class="text-danger"></span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label asp-for="SuperSetting.LoginNoteTitle" class="control-label" style="font-weight: 600; color: #475569;">Login Sub-Heading / Note Title</label>
+                                    <input asp-for="SuperSetting.LoginNoteTitle" class="form-control" style="height: 40px; border-radius: 6px;" />
+                                    <span asp-validation-for="SuperSetting.LoginNoteTitle" class="text-danger"></span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label asp-for="SuperSetting.LoginNote" class="control-label" style="font-weight: 600; color: #475569;">Login Notice Text</label>
+                                    <textarea asp-for="SuperSetting.LoginNote" class="form-control" rows="3" style="border-radius: 6px;"></textarea>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label asp-for="SuperSetting.LoginNoteFooter" class="control-label" style="font-weight: 600; color: #475569;">Login Footer Note</label>
+                                    <textarea asp-for="SuperSetting.LoginNoteFooter" class="form-control" rows="2" style="border-radius: 6px;"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div style="background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px; margin-top: 5px;">
+                                    <div class="checkbox" style="margin: 8px 0 16px 0;">
+                                        <label style="font-weight: 600; color: #334155;">
+                                            <input type="checkbox" asp-for="SuperSetting.UseNormalLogoInLogin" style="margin-top: 2px;" />
+                                            Use Standard School Logo on Login Page
+                                        </label>
+                                    </div>
+                                    <div class="checkbox" style="margin: 0 0 16px 0;">
+                                        <label style="font-weight: 600; color: #334155;">
+                                            <input type="checkbox" asp-for="SuperSetting.UseWhiteLogoInLogin" style="margin-top: 2px;" />
+                                            Use White Logo on Login Page (for dark hero backgrounds)
+                                        </label>
+                                    </div>
+                                    <div class="checkbox" style="margin: 0;">
+                                        <label style="font-weight: 600; color: #334155;">
+                                            <input type="checkbox" asp-for="SuperSetting.ShowMadeByJuray" style="margin-top: 2px;" />
+                                            Show Developer Branding in Footer
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer" style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary btn-lg" style="font-weight: 600; padding: 10px 32px; border-radius: 6px;">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                    <a href="/MisContent/WebSetting" class="btn btn-default btn-lg" style="border-radius: 6px; background: #fff; border-color: #cbd5e1;">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-
-
-

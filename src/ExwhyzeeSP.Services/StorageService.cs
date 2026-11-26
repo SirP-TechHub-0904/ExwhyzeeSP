@@ -162,30 +162,8 @@ namespace ExwhyzeeSP.Services
             var (accessKey, secretKey) = ResolveCredentials(awsCredentialsValues);
             if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
             {
-                try
-                {
-                    var webRoot = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                    var uploadsDir = Path.Combine(webRoot, "uploads");
-                    if (!Directory.Exists(uploadsDir))
-                    {
-                        Directory.CreateDirectory(uploadsDir);
-                    }
-                    var localPath = Path.Combine(uploadsDir, obj.Name);
-                    if (obj.InputStream.CanSeek) obj.InputStream.Position = 0;
-                    using (var fs = new FileStream(localPath, FileMode.Create, FileAccess.Write))
-                    {
-                        await obj.InputStream.CopyToAsync(fs);
-                    }
-                    response.Url = $"/uploads/{obj.Name}";
-                    response.Key = obj.Name;
-                    response.Message = "200";
-                    return response;
-                }
-                catch (Exception localEx)
-                {
-                    response.Message = $"Storage credentials missing and local storage failed: {localEx.Message}";
-                    return response;
-                }
+                response.Message = "Storage credentials missing.";
+                return response;
             }
 
             try
@@ -234,30 +212,8 @@ namespace ExwhyzeeSP.Services
             }
             catch (Exception ex)
             {
-                try
-                {
-                    var webRoot = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                    var uploadsDir = Path.Combine(webRoot, "uploads");
-                    if (!Directory.Exists(uploadsDir))
-                    {
-                        Directory.CreateDirectory(uploadsDir);
-                    }
-                    var localPath = Path.Combine(uploadsDir, obj.Name);
-                    if (obj.InputStream.CanSeek) obj.InputStream.Position = 0;
-                    using (var fs = new FileStream(localPath, FileMode.Create, FileAccess.Write))
-                    {
-                        await obj.InputStream.CopyToAsync(fs);
-                    }
-                    response.Url = $"/uploads/{obj.Name}";
-                    response.Key = obj.Name;
-                    response.Message = "200";
-                    return response;
-                }
-                catch (Exception localEx)
-                {
-                    response.Message = $"Cloud upload failed: {ex.Message}; Local fallback failed: {localEx.Message}";
-                    return response;
-                }
+                response.Message = $"Cloud upload failed: {ex.Message}";
+                return response;
             }
         }
 
@@ -292,13 +248,7 @@ namespace ExwhyzeeSP.Services
                 }
             }
 
-            var filePath = Path.Combine(_environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", key);
-            if (File.Exists(filePath))
-            {
-                try { File.Delete(filePath); } catch { }
-            }
-
-            response.Message = "Success";
+            response.Message = "Storage credentials missing.";
             return response;
         }
     }

@@ -91,20 +91,20 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.ISliders
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, Slider.Key);
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         Slider.Url = xresult.Url;
                         Slider.Key = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
+                        TempData["error"] = "unable to upload image: " + xresult.Message;
                         //return Page();
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload image: " + c.Message;
                 }
             }
 
@@ -135,20 +135,20 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.ISliders
 
                     var xresult = await _storageService.UploadFileReturnUrlAsync(s3Obj, cred, "");
                     // 
-                    if (xresult.Message.Contains("200"))
+                    if (!string.IsNullOrEmpty(xresult.Url) || (xresult.Message != null && (xresult.Message.Contains("200") || xresult.Message.Equals("Success", StringComparison.OrdinalIgnoreCase))))
                     {
                         Slider.SecondUrl = xresult.Url;
                         Slider.SecondKey = xresult.Key;
                     }
                     else
                     {
-                        TempData["error"] = "unable to upload image";
+                        TempData["error"] = "unable to upload image: " + xresult.Message;
                         //return Page();
                     }
                 }
                 catch (Exception c)
                 {
-
+                    TempData["error"] = "unable to upload image: " + c.Message;
                 }
             }
             _context.Attach(Slider).State = EntityState.Modified;

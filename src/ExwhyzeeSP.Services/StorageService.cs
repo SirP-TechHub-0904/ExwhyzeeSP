@@ -162,8 +162,30 @@ namespace ExwhyzeeSP.Services
             var (accessKey, secretKey) = ResolveCredentials(awsCredentialsValues);
             if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
             {
-                response.Message = "Storage credentials missing. Upload aborted without fallback.";
-                return response;
+                try
+                {
+                    var webRoot = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var uploadsDir = Path.Combine(webRoot, "uploads");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+                    var localPath = Path.Combine(uploadsDir, obj.Name);
+                    if (obj.InputStream.CanSeek) obj.InputStream.Position = 0;
+                    using (var fs = new FileStream(localPath, FileMode.Create, FileAccess.Write))
+                    {
+                        await obj.InputStream.CopyToAsync(fs);
+                    }
+                    response.Url = $"/uploads/{obj.Name}";
+                    response.Key = obj.Name;
+                    response.Message = "200";
+                    return response;
+                }
+                catch (Exception localEx)
+                {
+                    response.Message = $"Storage credentials missing and local storage failed: {localEx.Message}";
+                    return response;
+                }
             }
 
             try
@@ -207,13 +229,35 @@ namespace ExwhyzeeSP.Services
 
                 response.Url = client.GetPreSignedURL(urlReq);
                 response.Key = obj.Name;
-                response.Message = "Success";
+                response.Message = "200";
                 return response;
             }
             catch (Exception ex)
             {
-                response.Message = $"Cloud upload failed: {ex.Message}";
-                return response;
+                try
+                {
+                    var webRoot = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var uploadsDir = Path.Combine(webRoot, "uploads");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+                    var localPath = Path.Combine(uploadsDir, obj.Name);
+                    if (obj.InputStream.CanSeek) obj.InputStream.Position = 0;
+                    using (var fs = new FileStream(localPath, FileMode.Create, FileAccess.Write))
+                    {
+                        await obj.InputStream.CopyToAsync(fs);
+                    }
+                    response.Url = $"/uploads/{obj.Name}";
+                    response.Key = obj.Name;
+                    response.Message = "200";
+                    return response;
+                }
+                catch (Exception localEx)
+                {
+                    response.Message = $"Cloud upload failed: {ex.Message}; Local fallback failed: {localEx.Message}";
+                    return response;
+                }
             }
         }
 

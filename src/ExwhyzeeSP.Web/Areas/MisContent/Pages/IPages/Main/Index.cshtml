@@ -17,16 +17,15 @@
     </div>
     <div class="box-body">
         <div class="table-responsive">
-            <table id="example1" class="table table-bordered table-striped table-hover">
+            <table id="example1" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th style="width: 50px;">S/N</th>
-                        <th style="width: 100px;">Image</th>
                         <th>Title</th>
                         <th>Category</th>
                         <th style="width: 90px;">Sort Order</th>
                         <th style="width: 90px;">Publish</th>
-                        <th style="width: 130px;">Action</th>
+                        <th style="width: 130px;" class="no-sort">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,16 +35,6 @@
                         sn++;
                         <tr>
                             <td>@sn</td>
-                            <td>
-                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-                                {
-                                    <img src="@item.ImageUrl" alt="@item.Title" style="max-height:55px; max-width:85px; object-fit:cover; border-radius:4px;" />
-                                }
-                                else
-                                {
-                                    <span class="text-muted">No Image</span>
-                                }
-                            </td>
                             <td><strong>@item.Title</strong></td>
                             <td>@(item.PageCategory?.Title ?? "-")</td>
                             <td>@item.SortOrder</td>

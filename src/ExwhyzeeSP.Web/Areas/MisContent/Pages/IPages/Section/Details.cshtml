@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Section.DetailsModel
 
 @{
@@ -7,445 +7,713 @@
 }
 
 @section HeaderActions {
-    <a asp-page="./Edit" asp-route-id="@Model.PageSection.Id" class="btn btn-warning rounded-pill px-4"><i class="fas fa-edit me-1"></i> Update Section</a>
+    <a asp-page="./Edit" asp-route-id="@Model.PageSection.Id" class="btn btn-warning"><i class="fa fa-edit"></i> Edit Section</a>
+    <a asp-page="./Index" class="btn btn-default"><i class="fa fa-list"></i> All Sections</a>
 }
 
-<div class="box box-primary shadow-sm border-0">
-    <div class="box-header with-border p-0 border-bottom">
-        <ul class="nav nav-tabs px-4 pt-3 border-0" id="sectionDetailsTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active fw-bold px-4" id="overview-tab" data-toggle="tab" href="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
-                    Overview
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link fw-bold px-4" id="list-items-tab" data-toggle="tab" href="#list-items" type="button" role="tab" aria-controls="list-items" aria-selected="false">
-                    List Items <span class="badge bg-secondary ms-1">@Model.PageSection.PageSectionLists.Count()</span>
-                </button>
-            </li>
-            <li class="nav-item ms-auto" role="presentation">
-                <button class="nav-link fw-bold px-4 text-primary" id="add-item-tab" data-toggle="tab" href="#add-item" type="button" role="tab" aria-controls="add-item" aria-selected="false">
-                    <i class="fas fa-plus-circle me-1"></i> Add New List Item
-                </button>
-            </li>
-        </ul>
-    </div>
-    
-    <div class="box-body p-0">
-        <div class="tab-content" id="sectionDetailsTabContent">
-            
-            <!-- OVERVIEW TAB -->
-            <div class="tab-pane fade in active p-4 p-md-5" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                <div class="row">
-                    <div class="col-lg-7 mb-4 mb-lg-0">
-                        <h5 class="fw-bold text-primary mb-1">Mini Title</h5>
-                        <h4 class="mb-4">
-                            @(string.IsNullOrEmpty(Model.PageSection.MiniTitle) ? Html.Raw("<span class='text-muted fs-6 fst-italic'>Not specified</span>") : Model.PageSection.MiniTitle)
-                        </h4>
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#overview" data-toggle="tab">
+                <i class="fa fa-info-circle text-blue"></i> <strong>Overview</strong>
+            </a>
+        </li>
+        <li>
+            <a href="#list-items" data-toggle="tab">
+                <i class="fa fa-th-list text-purple"></i> <strong>List Items</strong> 
+                <span class="label label-primary">@Model.PageSection.PageSectionLists.Count()</span>
+            </a>
+        </li>
+        <li class="pull-right">
+            <a href="#add-item" data-toggle="tab" class="btn btn-sm btn-success" style="color: #fff !important; margin: 4px 10px 0 0; background-color: #00a65a; border-color: #008d4c; border-radius: 3px; font-weight: bold; padding: 5px 12px;">
+                <i class="fa fa-plus-circle"></i> Add New List Item
+            </a>
+        </li>
+    </ul>
 
-                        <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">Quote</h5>
-                        <blockquote class="blockquote bg-light p-4 rounded-3 border-start border-4 border-primary shadow-sm mb-4">
-                            <p class="mb-0 fst-italic">
-                                @(string.IsNullOrEmpty(Model.PageSection.Qoute) ? Html.Raw("<span class='text-muted fs-6'>Not specified</span>") : Html.Raw(Model.PageSection.Qoute))
-                            </p>
-                        </blockquote>
-
-                        <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">Brief Description</h5>
-                        <div class="mb-4 text-justify fs-5 text-muted bg-light p-4 rounded-3 border">
-                            @(string.IsNullOrEmpty(Model.PageSection.Description) ? Html.Raw("<span class='text-muted fs-6 fst-italic'>Not specified</span>") : Html.Raw(Model.PageSection.Description))
-                        </div>
-
-                        <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">Full Description</h5>
-                        <div class="bg-light p-4 rounded-3 border mb-4">
-                            @(string.IsNullOrEmpty(Model.PageSection.FullDescription) ? Html.Raw("<span class='text-muted fs-6 fst-italic'>Not specified</span>") : Html.Raw(Model.PageSection.FullDescription))
-                        </div>
-                        
-                        <h5 class="fw-bold text-primary mb-3 border-bottom pb-2 mt-4">Media Assets</h5>
-                        <div class="row g-3">
-                            @if (string.IsNullOrEmpty(Model.PageSection.ImageUrl) && string.IsNullOrEmpty(Model.PageSection.SecondImageUrl) && string.IsNullOrEmpty(Model.PageSection.VideoUrl) && string.IsNullOrEmpty(Model.PageSection.YoutubeUrlLink))
-                            {
-                                <div class="col-12">
-                                    <div class="bg-light p-4 rounded-3 border text-center text-muted fst-italic">
-                                        No media assets specified
-                                    </div>
-                                </div>
-                            }
-                            @if (!string.IsNullOrEmpty(Model.PageSection.ImageUrl))
-                            {
-                                <div class="col-sm-6">
-                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100">
-                                        <p class="fw-bold text-muted mb-2">Primary Image</p>
-                                        <img src="@Model.PageSection.ImageUrl" class="img-fluid rounded" style="max-height:150px; object-fit:contain;" />
-                                    </div>
-                                </div>
-                            }
-                            @if (!string.IsNullOrEmpty(Model.PageSection.SecondImageUrl))
-                            {
-                                <div class="col-sm-6">
-                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100">
-                                        <p class="fw-bold text-muted mb-2">Secondary Image</p>
-                                        <img src="@Model.PageSection.SecondImageUrl" class="img-fluid rounded" style="max-height:150px; object-fit:contain;" />
-                                    </div>
-                                </div>
-                            }
-                            @if (!string.IsNullOrEmpty(Model.PageSection.VideoUrl))
-                            {
-                                <div class="col-sm-6">
-                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100 d-flex align-items-center justify-content-center">
-                                        <p class="fw-bold text-muted mb-2 w-100">Video</p>
-                                        <a href="@Model.PageSection.VideoUrl" target="_blank" class="btn btn-outline-primary"><i class="bi bi-play-circle"></i> View Video</a>
-                                    </div>
-                                </div>
-                            }
-                            @if (!string.IsNullOrEmpty(Model.PageSection.YoutubeUrlLink))
-                            {
-                                <div class="col-sm-6">
-                                    <div class="box box-primary shadow-sm border-0 bg-light p-2 text-center h-100 d-flex align-items-center justify-content-center">
-                                        <p class="fw-bold text-muted mb-2 w-100">YouTube</p>
-                                        <a href="@Model.PageSection.YoutubeUrlLink" target="_blank" class="btn btn-outline-danger"><i class="bi bi-youtube"></i> View YouTube</a>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
+    <div class="tab-content" style="padding: 20px;">
+        
+        <!-- ============================================================== -->
+        <!-- TAB 1: OVERVIEW -->
+        <!-- ============================================================== -->
+        <div class="tab-pane active" id="overview">
+            <div class="row">
+                <!-- Left Column: Content, Quotes, Descriptions, Media -->
+                <div class="col-md-7">
                     
-                    <div class="col-lg-5">
-                        <div class="box box-primary border-0 bg-light shadow-sm mb-4">
-                            <div class="box-body p-4">
-                                <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Links & Buttons</h5>
-                                <dl class="row mb-0">
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.ButtonText)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.ButtonText)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.ButtonLink)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.ButtonLink)</dd>
-                                    
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.DirectUrl)</dt>
-                                    <dd class="col-sm-6 fw-bold text-truncate" title="@Model.PageSection.DirectUrl">@Html.DisplayFor(model => model.PageSection.DirectUrl)</dd>
-                                </dl>
+                    <!-- Main Section Header Card -->
+                    <div class="box box-primary box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-file-text"></i> @Model.PageSection.Title</h3>
+                            <div class="box-tools pull-right">
+                                @if (Model.PageSection.ShowInHome)
+                                {
+                                    <span class="label label-success">Home Page</span>
+                                }
+                                @if (!Model.PageSection.Disable)
+                                {
+                                    <span class="label label-primary">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-danger">Disabled</span>
+                                }
                             </div>
                         </div>
+                        <div class="box-body" style="padding: 20px;">
+                            
+                            @if (!string.IsNullOrWhiteSpace(Model.PageSection.MiniTitle))
+                            {
+                                <div style="margin-bottom: 15px;">
+                                    <span class="text-uppercase text-muted" style="font-size: 11px; font-weight: bold; letter-spacing: 1px;">Mini Title / Subtitle</span>
+                                    <h4 style="margin-top: 3px; color: #3c8dbc; font-weight: bold;">@Model.PageSection.MiniTitle</h4>
+                                </div>
+                            }
 
-                        <div class="box box-primary border-0 bg-light shadow-sm mb-4">
-                            <div class="box-body p-4">
-                                <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Display & Sorting</h5>
-                                <dl class="row mb-0">
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.ShowInHome)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.ShowInHome)</dd>
+                            @if (!string.IsNullOrWhiteSpace(Model.PageSection.Qoute))
+                            {
+                                <div class="callout callout-warning" style="margin-bottom: 20px; border-left-width: 5px;">
+                                    <h5 style="margin-top: 0; font-weight: bold;"><i class="fa fa-quote-left"></i> Section Quote</h5>
+                                    <p style="font-style: italic; font-size: 15px;">@Html.Raw(Model.PageSection.Qoute)</p>
+                                </div>
+                            }
 
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.DisableButton)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.DisableButton)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.Disable)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.Disable)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.FixedAfterFooter)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.FixedAfterFooter)</dd>
-
-                                    <dt class="col-sm-6 text-muted mt-2">@Html.DisplayNameFor(model => model.PageSection.HomePageSortOrder)</dt>
-                                    <dd class="col-sm-6 fw-bold mt-2">@Html.DisplayFor(model => model.PageSection.HomePageSortOrder)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.HomeSortFrom)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.HomeSortFrom)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.PageSortOrder)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.PageSortOrder)</dd>
-                                </dl>
+                            <div style="margin-bottom: 20px;">
+                                <h5 class="text-primary" style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+                                    <i class="fa fa-align-left"></i> Brief Description
+                                </h5>
+                                <div class="well well-sm" style="background-color: #fafafa; border: 1px solid #e3e3e3; font-size: 14px; line-height: 1.6;">
+                                    @if (!string.IsNullOrWhiteSpace(Model.PageSection.Description))
+                                    {
+                                        @Html.Raw(Model.PageSection.Description)
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted" style="font-style: italic;">No brief description specified</span>
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="box box-primary border-0 bg-light shadow-sm mb-4">
-                            <div class="box-body p-4">
-                                <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Design & Blog</h5>
-                                <dl class="row mb-0">
-                                    <dt class="col-sm-6 text-muted">Template Key</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.TemplateKey)</dd>
-
-                                    <dt class="col-sm-6 text-muted">Custom Class</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.CustomClass)</dd>
-
-                                    <dt class="col-sm-6 text-muted mt-2">@Html.DisplayNameFor(model => model.PageSection.ShowSectionInBlog)</dt>
-                                    <dd class="col-sm-6 fw-bold mt-2">@Html.DisplayFor(model => model.PageSection.ShowSectionInBlog)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.BlogSectionPosition)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.BlogSectionPosition)</dd>
-                                </dl>
+                            <div style="margin-bottom: 20px;">
+                                <h5 class="text-primary" style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+                                    <i class="fa fa-newspaper-o"></i> Full Description / Details
+                                </h5>
+                                <div class="well well-sm" style="background-color: #fafafa; border: 1px solid #e3e3e3; font-size: 14px; line-height: 1.6;">
+                                    @if (!string.IsNullOrWhiteSpace(Model.PageSection.FullDescription))
+                                    {
+                                        @Html.Raw(Model.PageSection.FullDescription)
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted" style="font-style: italic;">No full description specified</span>
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="box box-primary border-0 bg-light shadow-sm">
-                            <div class="box-body p-4">
-                                <h5 class="fw-bold text-primary mb-4 border-bottom pb-2">Ribbon Settings</h5>
-                                <dl class="row mb-0">
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.AddToRibon)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.AddToRibon)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.RibonSortOrder)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.RibonSortOrder)</dd>
-
-                                    <dt class="col-sm-6 text-muted">@Html.DisplayNameFor(model => model.PageSection.RibonCustomDisplayTitle)</dt>
-                                    <dd class="col-sm-6 fw-bold">@Html.DisplayFor(model => model.PageSection.RibonCustomDisplayTitle)</dd>
-                                </dl>
+                            <!-- Media Assets -->
+                            <div>
+                                <h5 class="text-primary" style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+                                    <i class="fa fa-picture-o"></i> Media Assets
+                                </h5>
+                                <div class="row">
+                                    @if (string.IsNullOrEmpty(Model.PageSection.ImageUrl) && string.IsNullOrEmpty(Model.PageSection.SecondImageUrl) && string.IsNullOrEmpty(Model.PageSection.VideoUrl) && string.IsNullOrEmpty(Model.PageSection.YoutubeUrlLink))
+                                    {
+                                        <div class="col-xs-12">
+                                            <div class="text-center text-muted" style="padding: 25px; background: #fafafa; border: 1px dashed #ddd; border-radius: 4px;">
+                                                <i class="fa fa-image fa-2x" style="color: #ccc;"></i><br />
+                                                <span>No media assets uploaded for this section</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.PageSection.ImageUrl))
+                                    {
+                                        <div class="col-sm-6" style="margin-bottom: 15px;">
+                                            <div class="thumbnail" style="margin-bottom: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                                <img src="@Model.PageSection.ImageUrl" alt="Primary Image" style="max-height: 160px; width: 100%; object-fit: cover;" />
+                                                <div class="caption text-center">
+                                                    <strong class="text-muted">Primary Image</strong><br />
+                                                    <a href="@Model.PageSection.ImageUrl" target="_blank" class="btn btn-xs btn-primary" style="margin-top: 5px;"><i class="fa fa-external-link"></i> View Full</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.PageSection.SecondImageUrl))
+                                    {
+                                        <div class="col-sm-6" style="margin-bottom: 15px;">
+                                            <div class="thumbnail" style="margin-bottom: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                                <img src="@Model.PageSection.SecondImageUrl" alt="Secondary Image" style="max-height: 160px; width: 100%; object-fit: cover;" />
+                                                <div class="caption text-center">
+                                                    <strong class="text-muted">Secondary Image</strong><br />
+                                                    <a href="@Model.PageSection.SecondImageUrl" target="_blank" class="btn btn-xs btn-primary" style="margin-top: 5px;"><i class="fa fa-external-link"></i> View Full</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.PageSection.VideoUrl))
+                                    {
+                                        <div class="col-sm-6" style="margin-bottom: 15px;">
+                                            <div class="thumbnail text-center" style="padding: 20px; background: #f9fafc; margin-bottom: 0;">
+                                                <i class="fa fa-video-camera fa-3x text-red"></i>
+                                                <p style="margin-top: 8px; font-weight: bold;">Direct Video</p>
+                                                <a href="@Model.PageSection.VideoUrl" target="_blank" class="btn btn-xs btn-danger"><i class="fa fa-play"></i> Watch Video</a>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.PageSection.YoutubeUrlLink))
+                                    {
+                                        <div class="col-sm-6" style="margin-bottom: 15px;">
+                                            <div class="thumbnail text-center" style="padding: 20px; background: #f9fafc; margin-bottom: 0;">
+                                                <i class="fa fa-youtube-play fa-3x text-red"></i>
+                                                <p style="margin-top: 8px; font-weight: bold;">YouTube Video</p>
+                                                <a href="@Model.PageSection.YoutubeUrlLink" target="_blank" class="btn btn-xs btn-danger"><i class="fa fa-external-link"></i> Open YouTube</a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
+
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- LIST ITEMS TAB -->
-            <div class="tab-pane fade p-4" id="list-items" role="tabpanel" aria-labelledby="list-items-tab">
-                <div class="table-responsive">
-                    <table id="example1" class="table table-hover table-bordered table-striped align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>S/N</th>
-                                <th>Title</th>
-                                <th>Sort Order</th>
-                                <th class="text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{ int sn = 0; }
-                            @foreach (var item in Model.PageSection.PageSectionLists)
-                            {
-                                sn++;
+                </div>
+
+                <!-- Right Column: Settings, Properties, Toggles -->
+                <div class="col-md-5">
+
+                    <!-- Links & Buttons Box -->
+                    <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-link text-blue"></i> Links &amp; Buttons</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
                                 <tr>
-                                    <td>@sn</td>
-                                    <td class="fw-bold">@item.Title</td>
-                                    <td>@item.SortOrder</td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
-                                                Manage
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end shadow">
-                                                <li><a class="dropdown-item" asp-page="/IPages/List/Edit" asp-route-id="@item.Id"><i class="bi bi-pencil text-warning me-2"></i> Edit</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal" href="#moveListItemModal_@item.Id"><i class="bi bi-arrows-move me-2"></i> Move Item</button></li>
-                                                <li><button type="button" class="dropdown-item text-secondary" data-bs-toggle="modal" href="#copyListItemModal_@item.Id"><i class="bi bi-files me-2"></i> Copy Item</button></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item text-danger" asp-page="/IPages/List/Delete" asp-route-id="@item.Id"><i class="bi bi-trash me-2"></i> Delete</a></li>
-                                            </ul>
-                                        </div>
+                                    <th style="width: 45%;">Button Text</th>
+                                    <td>@(string.IsNullOrEmpty(Model.PageSection.ButtonText) ? "-" : Model.PageSection.ButtonText)</td>
+                                </tr>
+                                <tr>
+                                    <th>Button Link ID</th>
+                                    <td>@(string.IsNullOrEmpty(Model.PageSection.ButtonLink) ? "-" : Model.PageSection.ButtonLink)</td>
+                                </tr>
+                                <tr>
+                                    <th>Direct URL</th>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Model.PageSection.DirectUrl))
+                                        {
+                                            <a href="@Model.PageSection.DirectUrl" target="_blank" class="text-blue" title="@Model.PageSection.DirectUrl">
+                                                <i class="fa fa-external-link"></i> Direct Link
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">None</span>
+                                        }
                                     </td>
                                 </tr>
+                            </table>
+                        </div>
+                    </div>
 
-                                <!-- Move List Item Modal -->
-                                <div class="modal fade" id="moveListItemModal_@item.Id" tabindex="-1" aria-labelledby="moveListItemModalLabel_@item.Id" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content text-start">
-                                            <form method="post" asp-page-handler="MoveListItem">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold" id="moveListItemModalLabel_@item.Id"><i class="bi bi-arrows-move text-primary me-2"></i>Move List Item</h5>
-                                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p class="mb-3">Move item <strong>@item.Title</strong> to another section:</p>
-                                                    <input type="hidden" name="listId" value="@item.Id" />
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Select Target Page Section</label>
-                                                        <select name="targetSectionId" class="form-select" asp-items="ViewBag.TargetPageSections" required>
-                                                            <option value="">-- Choose Target Section --</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-primary"><i class="bi bi-arrows-move me-1"></i> Move Item</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- Display & Sorting Box -->
+                    <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-sort-amount-asc text-green"></i> Display &amp; Sorting</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th style="width: 45%;">Show In Home</th>
+                                    <td>
+                                        @if (Model.PageSection.ShowInHome)
+                                        {
+                                            <span class="label label-success"><i class="fa fa-check"></i> Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-default">No</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Disable Button</th>
+                                    <td>
+                                        @if (Model.PageSection.DisableButton)
+                                        {
+                                            <span class="label label-danger">Disabled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-success">Active</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Section Status</th>
+                                    <td>
+                                        @if (!Model.PageSection.Disable)
+                                        {
+                                            <span class="label label-success">Enabled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-danger">Disabled</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Fixed After Footer</th>
+                                    <td>
+                                        @if (Model.PageSection.FixedAfterFooter)
+                                        {
+                                            <span class="label label-info">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-default">No</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Home Page Sort Order</th>
+                                    <td><span class="badge bg-blue">@Model.PageSection.HomePageSortOrder</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Home Sort From</th>
+                                    <td><span class="label label-info">@Model.PageSection.HomeSortFrom</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Page Sort Order</th>
+                                    <td><span class="badge bg-gray">@Model.PageSection.PageSortOrder</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-                                <!-- Copy List Item Modal -->
-                                <div class="modal fade" id="copyListItemModal_@item.Id" tabindex="-1" aria-labelledby="copyListItemModalLabel_@item.Id" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content text-start">
-                                            <form method="post" asp-page-handler="CopyListItem">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold" id="copyListItemModalLabel_@item.Id"><i class="bi bi-files text-success me-2"></i>Copy List Item</h5>
-                                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p class="mb-3">Copy item <strong>@item.Title</strong> to another section:</p>
-                                                    <input type="hidden" name="listId" value="@item.Id" />
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Select Target Page Section</label>
-                                                        <select name="targetSectionId" class="form-select" asp-items="ViewBag.TargetPageSections" required>
-                                                            <option value="">-- Choose Target Section --</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-success"><i class="bi bi-files me-1"></i> Copy Item</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </tbody>
-                    </table>
+                    <!-- Design & Template Box -->
+                    <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-paint-brush text-orange"></i> Design &amp; Template</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th style="width: 45%;">Template Key</th>
+                                    <td>
+                                        <span class="badge bg-purple">@Model.PageSection.TemplateKey</span>
+                                        <a href="/MisContent/Template" target="_blank" class="btn btn-xs btn-info pull-right" style="font-weight: 600;">
+                                            <i class="fa fa-th-large"></i> View Sections Catalog
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Custom CSS Class</th>
+                                    <td><code>@(string.IsNullOrEmpty(Model.PageSection.CustomClass) ? "default" : Model.PageSection.CustomClass)</code></td>
+                                </tr>
+                                <tr>
+                                    <th>Show In Blog</th>
+                                    <td>
+                                        @if (Model.PageSection.ShowSectionInBlog)
+                                        {
+                                            <span class="label label-success">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-default">No</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Blog Position</th>
+                                    <td>@(Model.PageSection.BlogSectionPosition.ToString())</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Ribbon Settings Box -->
+                    <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-bookmark text-maroon"></i> Ribbon Menu Settings</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th style="width: 45%;">Add To Ribbon</th>
+                                    <td>
+                                        @if (Model.PageSection.AddToRibon)
+                                        {
+                                            <span class="label label-success"><i class="fa fa-check"></i> Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-default">No</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Ribbon Sort Order</th>
+                                    <td><span class="badge bg-maroon">@Model.PageSection.RibonSortOrder</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Ribbon Title Override</th>
+                                    <td>@(string.IsNullOrEmpty(Model.PageSection.RibonCustomDisplayTitle) ? "-" : Model.PageSection.RibonCustomDisplayTitle)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+        </div>
 
-            <!-- ADD NEW ITEM TAB -->
-            <div class="tab-pane fade p-4 p-md-5 bg-light" id="add-item" role="tabpanel" aria-labelledby="add-item-tab">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="box box-primary shadow-sm border-0">
-                            <div class="box-header with-border bg-white border-bottom py-3">
-                                <h5 class="fw-bold mb-0 text-primary">Create New List Item</h5>
-                            </div>
-                            <div class="box-body p-4">
-                                <form method="post" enctype="multipart/form-data" asp-page-handler="List">
-                                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 shadow-sm"></div>
-                                    <input asp-for="PageSectionList.PageSectionId" type="hidden" value="@Model.PageSection.Id" />
-                                    
-                                    <h6 class="fw-bold text-muted mb-3 text-uppercase" style="font-size: 0.8rem;">General Information</h6>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.Title" class="form-label fw-semibold"></label>
-                                                <input asp-for="PageSectionList.Title" class="form-control" />
-                                                <span asp-validation-for="PageSectionList.Title" class="text-danger small"></span>
+        <!-- ============================================================== -->
+        <!-- TAB 2: LIST ITEMS -->
+        <!-- ============================================================== -->
+        <div class="tab-pane" id="list-items">
+            <div class="box box-primary box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-th-list"></i> Sub-Items in this Section</h3>
+                    <div class="box-tools pull-right">
+                        <a href="#add-item" data-toggle="tab" class="btn btn-xs btn-success text-white" style="color: #fff !important; font-weight: bold;">
+                            <i class="fa fa-plus"></i> Add New List Item
+                        </a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">S/N</th>
+                                    <th style="width: 90px;">Image</th>
+                                    <th>Title</th>
+                                    <th>Mini Title</th>
+                                    <th style="width: 90px;">Sort Order</th>
+                                    <th style="width: 120px;" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int sn = 0; }
+                                @foreach (var item in Model.PageSection.PageSectionLists)
+                                {
+                                    sn++;
+                                    <tr>
+                                        <td>@sn</td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                            {
+                                                <img src="@item.ImageUrl" alt="@item.Title" style="max-height: 45px; max-width: 75px; object-fit: cover; border-radius: 3px;" />
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">No Image</span>
+                                            }
+                                        </td>
+                                        <td><strong>@item.Title</strong></td>
+                                        <td>@(string.IsNullOrEmpty(item.MiniTitle) ? "-" : item.MiniTitle)</td>
+                                        <td><span class="badge bg-gray">@item.SortOrder</span></td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    Action <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                    <li>
+                                                        <a asp-page="/IPages/List/Edit" asp-route-id="@item.Id">
+                                                            <i class="fa fa-edit text-yellow"></i> Edit Item
+                                                        </a>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    <li>
+                                                        <a href="#moveListItemModal_@item.Id" data-toggle="modal">
+                                                            <i class="fa fa-arrows text-blue"></i> Move to Section
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#copyListItemModal_@item.Id" data-toggle="modal">
+                                                            <i class="fa fa-clone text-green"></i> Copy to Section
+                                                        </a>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    <li>
+                                                        <a asp-page="/IPages/List/Delete" asp-route-id="@item.Id" class="text-danger">
+                                                            <i class="fa fa-trash text-red"></i> Delete
+                                                        </a>
+                                                    </li>
+                                                </ul>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.MiniTitle" class="form-label fw-semibold"></label>
-                                                <input asp-for="PageSectionList.MiniTitle" class="form-control" />
-                                                <span asp-validation-for="PageSectionList.MiniTitle" class="text-danger small"></span>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Move List Item Modal -->
+                                    <div class="modal fade" id="moveListItemModal_@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content text-left">
+                                                <form method="post" asp-page-handler="MoveListItem">
+                                                    <div class="modal-header with-border bg-primary" style="color: #fff;">
+                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;">&times;</button>
+                                                        <h4 class="modal-title"><i class="fa fa-arrows"></i> Move List Item</h4>
+                                                    </div>
+                                                    <div class="modal-body" style="padding: 20px;">
+                                                        <p>Move <strong>@item.Title</strong> to another Section:</p>
+                                                        <input type="hidden" name="listId" value="@item.Id" />
+                                                        <div class="form-group">
+                                                            <label class="control-label">Target Page Section</label>
+                                                            <select name="targetSectionId" class="form-control" asp-items="ViewBag.TargetPageSections" required>
+                                                                <option value="">-- Choose Target Section --</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Move Item</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="form-group mb-4">
-                                        <label asp-for="PageSectionList.Description" class="form-label fw-semibold">Brief Description</label>
-                                        <textarea asp-for="PageSectionList.Description" class="form-control" rows="3"></textarea>
-                                        <span asp-validation-for="PageSectionList.Description" class="text-danger small"></span>
-                                    </div>
-                                    
-                                    <div class="form-group mb-5">
-                                        <label asp-for="PageSectionList.MoreDescription" class="form-label fw-semibold">Detailed Description</label>
-                                        <textarea asp-for="PageSectionList.MoreDescription" class="form-control summernote"></textarea>
-                                        <span asp-validation-for="PageSectionList.MoreDescription" class="text-danger small"></span>
-                                    </div>
-
-                                    <hr class="my-4 border-light" />
-                                    <h6 class="fw-bold text-muted mb-3 text-uppercase" style="font-size: 0.8rem;">Links & Configuration</h6>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.ButtonText" class="form-label fw-semibold"></label>
-                                                <input asp-for="PageSectionList.ButtonText" class="form-control" />
-                                                <span asp-validation-for="PageSectionList.ButtonText" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.ButtonLink" class="form-label fw-semibold"></label>
-                                                <select asp-for="PageSectionList.ButtonLink" class="form-select" asp-items="ViewBag.WebPageId">
-                                                    <option value="0"># (No Link)</option>
-                                                    <option value="Direct">Direct Link (https://...)</option>
-                                                    <option value="000">Contact Us Page</option>
-                                                </select>
-                                                <span asp-validation-for="PageSectionList.ButtonLink" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.DirectUrl" class="form-label fw-semibold"></label>
-                                                <input asp-for="PageSectionList.DirectUrl" class="form-control" />
-                                                <span asp-validation-for="PageSectionList.DirectUrl" class="text-danger small"></span>
+                                    <!-- Copy List Item Modal -->
+                                    <div class="modal fade" id="copyListItemModal_@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content text-left">
+                                                <form method="post" asp-page-handler="CopyListItem">
+                                                    <div class="modal-header with-border bg-green" style="color: #fff;">
+                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;">&times;</button>
+                                                        <h4 class="modal-title"><i class="fa fa-clone"></i> Copy List Item</h4>
+                                                    </div>
+                                                    <div class="modal-body" style="padding: 20px;">
+                                                        <p>Duplicate <strong>@item.Title</strong> into another Section:</p>
+                                                        <input type="hidden" name="listId" value="@item.Id" />
+                                                        <div class="form-group">
+                                                            <label class="control-label">Target Page Section</label>
+                                                            <select name="targetSectionId" class="form-control" asp-items="ViewBag.TargetPageSections" required>
+                                                                <option value="">-- Choose Target Section --</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-success"><i class="fa fa-clone"></i> Duplicate</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.SortOrder" class="form-label fw-semibold"></label>
-                                                <input asp-for="PageSectionList.SortOrder" class="form-control" type="number" />
-                                                <span asp-validation-for="PageSectionList.SortOrder" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label asp-for="PageSectionList.IconText" class="form-label fw-semibold">Icon Class (e.g. fa fa-user)</label>
-                                                <input asp-for="PageSectionList.IconText" class="form-control" />
-                                                <span asp-validation-for="PageSectionList.IconText" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-4 border-light" />
-                                    <h6 class="fw-bold text-muted mb-3 text-uppercase" style="font-size: 0.8rem;">Ribbon Menu Settings</h6>
-                                    
-                                    <div class="row bg-light p-3 rounded mb-4 mx-0">
-                                        <div class="col-md-4">
-                                            <div class="form-check form-switch mt-4">
-                                                <input class="form-check-input" type="checkbox" asp-for="PageSectionList.AddToRibon">
-                                                <label class="form-check-label fw-semibold" asp-for="PageSectionList.AddToRibon">Add to Ribbon Menu</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label asp-for="PageSectionList.RibonSortOrder" class="form-label fw-semibold"></label>
-                                                <input asp-for="PageSectionList.RibonSortOrder" class="form-control" type="number" />
-                                                <span asp-validation-for="PageSectionList.RibonSortOrder" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label asp-for="PageSectionList.RibonCustomDisplayTitle" class="form-label fw-semibold">Ribbon Title Override</label>
-                                                <input asp-for="PageSectionList.RibonCustomDisplayTitle" class="form-control" />
-                                                <span asp-validation-for="PageSectionList.RibonCustomDisplayTitle" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-4 border-light" />
-                                    <h6 class="fw-bold text-muted mb-3 text-uppercase" style="font-size: 0.8rem;">Media Uploads &amp; Video Links</h6>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label class="form-label fw-semibold">Image Upload</label>
-                                                <input type="file" class="form-control" asp-for="imagefile" accept="image/*" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label class="form-label fw-semibold">Video Direct URL (YouTube / Vimeo / MP4 Link)</label>
-                                                <input asp-for="PageSectionList.VideoUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=... or https://.../video.mp4" />
-                                                <span asp-validation-for="PageSectionList.VideoUrl" class="text-danger small"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label class="form-label fw-semibold">Or Upload Video File (MP4)</label>
-                                                <input type="file" class="form-control" asp-for="videofile" accept="video/mp4" />
-                                                <div class="form-text text-muted">Uploading a file will automatically override the Direct Video URL.</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group mt-5 text-end">
-                                        <button type="submit" class="btn btn-primary px-5 rounded-pill"><i class="fas fa-save me-1"></i> Save List Item</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-
         </div>
+
+        <!-- ============================================================== -->
+        <!-- TAB 3: CREATE NEW LIST ITEM -->
+        <!-- ============================================================== -->
+        <div class="tab-pane" id="add-item">
+            <div class="box box-success box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-plus-circle"></i> Create New List Item</h3>
+                </div>
+                <form method="post" enctype="multipart/form-data" asp-page-handler="List">
+                    <div class="box-body" style="padding: 25px;">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="PageSectionList.PageSectionId" type="hidden" value="@Model.PageSection.Id" />
+
+                        <!-- Section Header 1 -->
+                        <h4 class="text-primary" style="margin-top: 0; border-bottom: 2px solid #3c8dbc; padding-bottom: 8px;">
+                            <i class="fa fa-file-text-o"></i> General Information
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.Title" class="control-label">Title <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                        <input asp-for="PageSectionList.Title" class="form-control" placeholder="Enter title" required />
+                                    </div>
+                                    <span asp-validation-for="PageSectionList.Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.MiniTitle" class="control-label">Mini Title / Subtitle</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-tag"></i></span>
+                                        <input asp-for="PageSectionList.MiniTitle" class="form-control" placeholder="e.g. Featured, Special, etc." />
+                                    </div>
+                                    <span asp-validation-for="PageSectionList.MiniTitle" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label asp-for="PageSectionList.Description" class="control-label">Brief Description</label>
+                            <textarea asp-for="PageSectionList.Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="PageSectionList.Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label asp-for="PageSectionList.MoreDescription" class="control-label">Detailed Description / Content (Rich Text &amp; Full HTML View)</label>
+                            <textarea asp-for="PageSectionList.MoreDescription" class="form-control summernote" rows="6"></textarea>
+                            <span asp-validation-for="PageSectionList.MoreDescription" class="text-danger"></span>
+                        </div>
+
+                        <!-- Section Header 2 -->
+                        <h4 class="text-primary" style="margin-top: 30px; border-bottom: 2px solid #3c8dbc; padding-bottom: 8px;">
+                            <i class="fa fa-cogs"></i> Links &amp; Configuration
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.ButtonText" class="control-label">Button Text</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-mouse-pointer"></i></span>
+                                        <input asp-for="PageSectionList.ButtonText" class="form-control" placeholder="e.g. Read More" />
+                                    </div>
+                                    <span asp-validation-for="PageSectionList.ButtonText" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.ButtonLink" class="control-label">Internal Page Link</label>
+                                    <select asp-for="PageSectionList.ButtonLink" class="form-control" asp-items="ViewBag.WebPageId">
+                                        <option value="0"># (No Link)</option>
+                                        <option value="000">Contact Us Page</option>
+                                    </select>
+                                    <span asp-validation-for="PageSectionList.ButtonLink" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.DirectUrl" class="control-label">External Direct URL</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                                        <input asp-for="PageSectionList.DirectUrl" class="form-control" placeholder="https://..." />
+                                    </div>
+                                    <span asp-validation-for="PageSectionList.DirectUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.SortOrder" class="control-label">Display Sort Order</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-sort-numeric-asc"></i></span>
+                                        <input asp-for="PageSectionList.SortOrder" class="form-control" value="0" />
+                                    </div>
+                                    <span asp-validation-for="PageSectionList.SortOrder" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.IconText" class="control-label">FontAwesome Icon Class</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-flag"></i></span>
+                                        <input asp-for="PageSectionList.IconText" class="form-control" placeholder="e.g. fa fa-graduation-cap" />
+                                    </div>
+                                    <span asp-validation-for="PageSectionList.IconText" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Header 3 -->
+                        <h4 class="text-primary" style="margin-top: 30px; border-bottom: 2px solid #3c8dbc; padding-bottom: 8px;">
+                            <i class="fa fa-bookmark"></i> Ribbon Menu Settings
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="checkbox" style="margin-top: 25px;">
+                                        <label style="font-weight: 600;">
+                                            <input asp-for="PageSectionList.AddToRibon" type="checkbox" /> Add to Ribbon Menu
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.RibonSortOrder" class="control-label">Ribbon Sort Order</label>
+                                    <input asp-for="PageSectionList.RibonSortOrder" class="form-control" value="0" />
+                                    <span asp-validation-for="PageSectionList.RibonSortOrder" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="PageSectionList.RibonCustomDisplayTitle" class="control-label">Ribbon Title Override</label>
+                                    <input asp-for="PageSectionList.RibonCustomDisplayTitle" class="form-control" placeholder="Custom Ribbon title" />
+                                    <span asp-validation-for="PageSectionList.RibonCustomDisplayTitle" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Header 4 -->
+                        <h4 class="text-primary" style="margin-top: 30px; border-bottom: 2px solid #3c8dbc; padding-bottom: 8px;">
+                            <i class="fa fa-file-image-o"></i> Media Uploads &amp; Video Links
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label"><i class="fa fa-picture-o text-green"></i> Image Upload</label>
+                                    <input type="file" class="form-control" asp-for="imagefile" accept="image/*" />
+                                    <span class="help-block text-muted">Supports JPG, PNG, WEBP.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label"><i class="fa fa-video-camera text-red"></i> Video Direct URL</label>
+                                    <input asp-for="PageSectionList.VideoUrl" class="form-control" placeholder="https://youtube.com/... or MP4 link" />
+                                    <span class="help-block text-muted">YouTube, Vimeo, or direct link.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label"><i class="fa fa-upload text-blue"></i> Or Upload Video File (MP4)</label>
+                                    <input type="file" class="form-control" asp-for="videofile" accept="video/mp4" />
+                                    <span class="help-block text-muted">Overrides direct URL if chosen.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="box-footer" style="padding: 15px 25px; background-color: #f7f7f7;">
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-save"></i> Save List Item</button>
+                        <a href="#list-items" data-toggle="tab" class="btn btn-default btn-lg pull-right"><i class="fa fa-arrow-left"></i> Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(function () {
+            $('.summernote').summernote({
+                height: 250,
+                minHeight: 140,
+                maxHeight: 600,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph', 'height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video', 'hr']],
+                    ['view', ['fullscreen', 'codeview']]
+                ]
+            });
+        });
+    </script>
+}

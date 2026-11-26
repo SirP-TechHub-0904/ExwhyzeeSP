@@ -1,269 +1,321 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.WebSetting.DesignSettingsModel
 @{
+    ViewData["Title"] = "Design, Custom CSS & System Settings";
 }
-<div class="box box-primary card-default">
-    
-    <!-- /.card-header -->
-    <form method="post">
 
-        <div class="box-body p-4">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h5 class=" ">CONFIGURATION SETTINGS</h5>
-                        </div>
-                        <div class="box-body p-4">
-                            <ul class="todo-list" data-widget="todo-list">
+<div class="row" style="margin-top: 10px; margin-bottom: 35px;">
+    <div class="col-md-12">
 
-
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="DataConfig.DashboardCSS"></label><br />
-
-                                        <textarea asp-for="DataConfig.DashboardCSS" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="DataConfig.LayoutCSS"></label><br />
-
-                                        <textarea asp-for="DataConfig.LayoutCSS" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="DataConfig.LoginCSS"></label><br />
-
-                                        <textarea asp-for="DataConfig.LoginCSS" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="DataConfig.Configuration"></label><br />
-
-                                        <textarea asp-for="DataConfig.Configuration" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="DataConfig.LayoutJavaScript"></label><br />
-
-                                        <textarea asp-for="DataConfig.LayoutJavaScript" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-group mb-4">
-                                        <label class="control-label" asp-for="DataConfig.LiveConfiguration"></label><br />
-
-                                        <textarea asp-for="DataConfig.LiveConfiguration" class="form-control "></textarea>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="DataConfig.RedirectTohttpswww" /> @Html.DisplayNameFor(model => model.DataConfig.RedirectTohttpswww)
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-
-                                    <div class="form-check mb-4">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="DataConfig.RedirectTohttps" /> @Html.DisplayNameFor(model => model.DataConfig.RedirectTohttps)
-                                        </label>
-                                    </div>
-                                </li>
-
-                                @if (User.IsInRole("SuperAdmin,Admin"))
-                                {
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label asp-for="DataConfig.MailSender" class="control-label"></label>
-                                            @Html.DropDownListFor(model => model.DataConfig.MailSender, new SelectList(Enum.GetValues(typeof(ExwhyzeeSP.Core.Entities.MailSender))), new { @class = "form-control" })
-                                            <span asp-validation-for="DataConfig.MailSender" class="text-danger"></span>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.OutlookServer"></label><br />
-                                            <input asp-for="DataConfig.OutlookServer" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.OutlookPort"></label><br />
-                                            <input asp-for="DataConfig.OutlookPort" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.OutlookUsername"></label><br />
-                                            <input asp-for="DataConfig.OutlookUsername" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.OutlookSecurity"></label><br />
-                                            <input asp-for="DataConfig.OutlookSecurity" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.OutlookSenderEmail"></label><br />
-                                            <input asp-for="DataConfig.OutlookSenderEmail" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check mb-4">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" asp-for="DataConfig.OutlookUseDefaultCredentials" /> @Html.DisplayNameFor(model => model.DataConfig.OutlookUseDefaultCredentials)
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li>
-
-                                        <div class="form-check mb-4">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" asp-for="DataConfig.OutlookSSLEnable" /> @Html.DisplayNameFor(model => model.DataConfig.OutlookSSLEnable)
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.GoogleServer"></label><br />
-                                            <input asp-for="DataConfig.GoogleServer" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.GooglePort"></label><br />
-                                            <input asp-for="DataConfig.GooglePort" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.GoogleUsername"></label><br />
-                                            <input asp-for="DataConfig.GoogleUsername" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.GoogleSecurity"></label><br />
-                                            <input asp-for="DataConfig.GoogleSecurity" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.GoogleSenderEmail"></label><br />
-                                            <input asp-for="DataConfig.GoogleSenderEmail" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check mb-4">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" asp-for="DataConfig.GoogleUseDefaultCredentials" /> @Html.DisplayNameFor(model => model.DataConfig.GoogleUseDefaultCredentials)
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li>
-
-                                        <div class="form-check mb-4">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" asp-for="DataConfig.GoogleSSLEnable" /> @Html.DisplayNameFor(model => model.DataConfig.GoogleSSLEnable)
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.WebmailServer"></label><br />
-                                            <input asp-for="DataConfig.WebmailServer" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.WebmailPort"></label><br />
-                                            <input asp-for="DataConfig.WebmailPort" class="form-control " />
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.WebmailUsername"></label><br />
-                                            <input asp-for="DataConfig.WebmailUsername" class="form-control " />
-                                        </div>
-                                    </li>
-
-
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.WebmailSecurity"></label><br />
-                                            <input asp-for="DataConfig.WebmailSecurity" class="form-control " />
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.WebmailSenderEmail"></label><br />
-                                            <input asp-for="DataConfig.WebmailSenderEmail" class="form-control " />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="form-check mb-4">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" asp-for="DataConfig.WebmailUseDefaultCredentials" /> @Html.DisplayNameFor(model => model.DataConfig.WebmailUseDefaultCredentials)
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li>
-
-                                        <div class="form-check mb-4">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" asp-for="DataConfig.WebmailSSLEnable" /> @Html.DisplayNameFor(model => model.DataConfig.WebmailSSLEnable)
-                                            </label>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.CCmails"></label><br />
-                                            <textarea asp-for="DataConfig.CCmails" class="form-control " ></textarea>
-                                        </div>
-                                    </li>
-
-
-
-                                    <li>
-                                        <div class="form-group mb-4">
-                                            <label class="control-label" asp-for="DataConfig.BBmails"></label><br />
-                                            <textarea asp-for="DataConfig.BBmails" class="form-control " ></textarea>
-                                        </div>
-                                    </li>
-
-
-                                }
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="box box-primary">
-                    <div class="box-footer">
-                        <input type="submit" value="Update" class="btn btn-primary" />
-
-                    </div>
-                </div>
-
+        <!-- Top Header & Action Banner -->
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h3 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: #1e293b;">
+                    <i class="fa fa-paint-brush text-primary" style="margin-right: 8px;"></i> Design, Custom CSS &amp; Configuration
+                </h3>
+                <span style="font-size: 13px; color: #64748b;">
+                    Manage global public layout CSS, dashboard styling, custom tracking scripts, and server configuration.
+                </span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="/MisContent/WebSetting" class="btn btn-default" style="font-weight: 600; border-radius: 6px; background: #fff; border-color: #cbd5e1;">
+                    <i class="fa fa-arrow-left"></i> Back to Overview
+                </a>
+                <a href="/MisContent/WebSetting/UiProperty" class="btn btn-info" style="font-weight: 600; border-radius: 6px;">
+                    <i class="fa fa-sliders"></i> UI &amp; Layout Properties
+                </a>
             </div>
         </div>
 
-    </form>
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" style="border-radius: 6px; margin-bottom: 20px;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <i class="fa fa-check-circle" style="margin-right: 6px;"></i> @TempData["success"]
+            </div>
+        }
+
+        <form method="post">
+            <div class="nav-tabs-custom" style="box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                <ul class="nav nav-tabs" style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 6px 12px 0 12px;">
+                    <li class="active">
+                        <a href="#tab_css" data-toggle="tab" style="font-weight: 700; font-size: 14px;">
+                            <i class="fa fa-css3 text-primary"></i> Custom CSS Styles
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_js" data-toggle="tab" style="font-weight: 700; font-size: 14px;">
+                            <i class="fa fa-code text-warning"></i> Scripts &amp; Live Config
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_domain" data-toggle="tab" style="font-weight: 700; font-size: 14px;">
+                            <i class="fa fa-lock text-success"></i> Domain &amp; HTTPS
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_mail" data-toggle="tab" style="font-weight: 700; font-size: 14px;">
+                            <i class="fa fa-envelope text-info"></i> Mail Server
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" style="padding: 24px; background: #ffffff;">
+
+                    <!-- TAB 1: CUSTOM CSS -->
+                    <div class="tab-pane active" id="tab_css">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label asp-for="DataConfig.LayoutCSS" class="control-label" style="font-weight: 700; font-size: 14px; color: #1e293b;">
+                                        <i class="fa fa-globe text-primary"></i> Public Website Custom CSS (LayoutCSS)
+                                    </label>
+                                    <p class="text-muted" style="font-size: 12px; margin-bottom: 8px;">
+                                        Injected into the <code>&lt;head&gt;</code> of all public homepage and frontend views. Write raw CSS without <code>&lt;style&gt;</code> tags.
+                                    </p>
+                                    <textarea asp-for="DataConfig.LayoutCSS" class="form-control" rows="8" placeholder="/* Example: body { font-family: 'Segoe UI', sans-serif; } .hero { border-radius: 20px; } */" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #9cdcfe; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label asp-for="DataConfig.DashboardCSS" class="control-label" style="font-weight: 700; font-size: 13px; color: #1e293b;">
+                                        <i class="fa fa-dashboard text-danger"></i> Admin Dashboard CSS (DashboardCSS)
+                                    </label>
+                                    <textarea asp-for="DataConfig.DashboardCSS" class="form-control" rows="6" placeholder="/* Custom styling for admin dashboard */" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #ce9178; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label asp-for="DataConfig.LoginCSS" class="control-label" style="font-weight: 700; font-size: 13px; color: #1e293b;">
+                                        <i class="fa fa-key text-success"></i> Login Screen CSS (LoginCSS)
+                                    </label>
+                                    <textarea asp-for="DataConfig.LoginCSS" class="form-control" rows="6" placeholder="/* Custom styling for login/auth views */" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #b5cea8; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="DataConfig.MisDashboardCSS" class="control-label" style="font-weight: 700; font-size: 13px; color: #1e293b;">
+                                        <i class="fa fa-th text-info"></i> MIS Dashboard Custom CSS
+                                    </label>
+                                    <textarea asp-for="DataConfig.MisDashboardCSS" class="form-control" rows="5" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #dcdcaa; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="DataConfig.ElectionCustomCss" class="control-label" style="font-weight: 700; font-size: 13px; color: #1e293b;">
+                                        <i class="fa fa-check-square-o text-warning"></i> Election Portal CSS
+                                    </label>
+                                    <textarea asp-for="DataConfig.ElectionCustomCss" class="form-control" rows="5" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #dcdcaa; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: JAVASCRIPT & LIVE CONFIG -->
+                    <div class="tab-pane" id="tab_js">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label asp-for="DataConfig.LayoutJavaScript" class="control-label" style="font-weight: 700; font-size: 14px; color: #1e293b;">
+                                        <i class="fa fa-code text-warning"></i> Public Website JavaScript (LayoutJavaScript)
+                                    </label>
+                                    <p class="text-muted" style="font-size: 12px; margin-bottom: 8px;">
+                                        Executed on public frontend views. Write raw JavaScript without <code>&lt;script&gt;</code> tags.
+                                    </p>
+                                    <textarea asp-for="DataConfig.LayoutJavaScript" class="form-control" rows="7" placeholder="// Example: console.log('Portal loaded');" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #4ec9b0; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="DataConfig.LiveConfiguration" class="control-label" style="font-weight: 700; font-size: 13px; color: #1e293b;">
+                                        <i class="fa fa-bar-chart text-primary"></i> Live Analytics &amp; Meta Configuration
+                                    </label>
+                                    <textarea asp-for="DataConfig.LiveConfiguration" class="form-control" rows="6" placeholder="Google Analytics, Pixel, or meta tags" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #9cdcfe; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="DataConfig.Configuration" class="control-label" style="font-weight: 700; font-size: 13px; color: #1e293b;">
+                                        <i class="fa fa-cogs text-secondary"></i> System Configuration Payload
+                                    </label>
+                                    <textarea asp-for="DataConfig.Configuration" class="form-control" rows="6" style="font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; background: #1e1e1e; color: #9cdcfe; border-radius: 6px; padding: 12px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: DOMAIN & HTTPS -->
+                    <div class="tab-pane" id="tab_domain">
+                        <div class="box box-solid" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px;">
+                            <h4 style="font-weight: 700; color: #1e293b; margin-top: 0; margin-bottom: 16px;">
+                                <i class="fa fa-shield text-success"></i> Security &amp; Canonical URL Enforcements
+                            </h4>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <div class="checkbox">
+                                    <label style="font-weight: 600; font-size: 14px; color: #334155;">
+                                        <input type="checkbox" asp-for="DataConfig.RedirectTohttps" /> <strong>Force HTTPS</strong> (Redirect http:// to https://)
+                                    </label>
+                                </div>
+                                <span class="text-muted" style="font-size: 12px; display: block; margin-left: 20px;">
+                                    Ensures all visitors use encrypted SSL connections.
+                                </span>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <div class="checkbox">
+                                    <label style="font-weight: 600; font-size: 14px; color: #334155;">
+                                        <input type="checkbox" asp-for="DataConfig.RedirectTohttpswww" /> <strong>Force WWW</strong> (Redirect to https://www.)
+                                    </label>
+                                </div>
+                                <span class="text-muted" style="font-size: 12px; display: block; margin-left: 20px;">
+                                    Enforces canonical www prefix for SEO and cookie separation.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: MAIL SERVER -->
+                    <div class="tab-pane" id="tab_mail">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="DataConfig.MailSender" class="control-label" style="font-weight: 700; color: #1e293b;">Primary Mail Provider</label>
+                                    @Html.DropDownListFor(model => model.DataConfig.MailSender, new SelectList(Enum.GetValues(typeof(ExwhyzeeSP.Core.Entities.MailSender))), new { @class = "form-control", style = "height: 40px; border-radius: 6px;" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label asp-for="DataConfig.DisplayName" class="control-label" style="font-weight: 700; color: #1e293b;">Email Display Name</label>
+                                    <input asp-for="DataConfig.DisplayName" class="form-control" style="height: 40px; border-radius: 6px;" placeholder="e.g. Immaculate Conception Seminary" />
+                                </div>
+                            </div>
+
+                            <!-- Outlook / Office 365 -->
+                            <div class="col-md-12">
+                                <h5 style="font-weight: 700; color: #0284c7; border-bottom: 2px solid #e0f2fe; padding-bottom: 6px; margin-top: 15px;">
+                                    <i class="fa fa-windows"></i> Outlook / Exchange / Microsoft 365
+                                </h5>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.OutlookServer" class="control-label">Host Server</label>
+                                    <input asp-for="DataConfig.OutlookServer" class="form-control" placeholder="smtp.office365.com" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.OutlookPort" class="control-label">Port</label>
+                                    <input asp-for="DataConfig.OutlookPort" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.OutlookUsername" class="control-label">Username</label>
+                                    <input asp-for="DataConfig.OutlookUsername" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.OutlookSenderEmail" class="control-label">Sender Email</label>
+                                    <input asp-for="DataConfig.OutlookSenderEmail" class="form-control" />
+                                </div>
+                            </div>
+
+                            <!-- Google / Gmail -->
+                            <div class="col-md-12">
+                                <h5 style="font-weight: 700; color: #ea4335; border-bottom: 2px solid #fee2e2; padding-bottom: 6px; margin-top: 15px;">
+                                    <i class="fa fa-google"></i> Google Workspace / Gmail SMTP
+                                </h5>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.GoogleServer" class="control-label">Host Server</label>
+                                    <input asp-for="DataConfig.GoogleServer" class="form-control" placeholder="smtp.gmail.com" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.GooglePort" class="control-label">Port</label>
+                                    <input asp-for="DataConfig.GooglePort" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.GoogleUsername" class="control-label">Username</label>
+                                    <input asp-for="DataConfig.GoogleUsername" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.GoogleSenderEmail" class="control-label">Sender Email</label>
+                                    <input asp-for="DataConfig.GoogleSenderEmail" class="form-control" />
+                                </div>
+                            </div>
+
+                            <!-- Webmail / cPanel -->
+                            <div class="col-md-12">
+                                <h5 style="font-weight: 700; color: #059669; border-bottom: 2px solid #d1fae5; padding-bottom: 6px; margin-top: 15px;">
+                                    <i class="fa fa-server"></i> Webmail / Custom SMTP
+                                </h5>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.WebmailServer" class="control-label">Host Server</label>
+                                    <input asp-for="DataConfig.WebmailServer" class="form-control" placeholder="mail.yourdomain.com" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.WebmailPort" class="control-label">Port</label>
+                                    <input asp-for="DataConfig.WebmailPort" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.WebmailUsername" class="control-label">Username</label>
+                                    <input asp-for="DataConfig.WebmailUsername" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="DataConfig.WebmailSenderEmail" class="control-label">Sender Email</label>
+                                    <input asp-for="DataConfig.WebmailSenderEmail" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label asp-for="DataConfig.CCmails" class="control-label">CC Recipient Emails</label>
+                                    <textarea asp-for="DataConfig.CCmails" class="form-control" rows="2" placeholder="Comma-separated emails"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label asp-for="DataConfig.BBmails" class="control-label">BCC Recipient Emails</label>
+                                    <textarea asp-for="DataConfig.BBmails" class="form-control" rows="2" placeholder="Comma-separated emails"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="box-footer" style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 18px 24px;">
+                    <button type="submit" class="btn btn-primary btn-lg" style="font-weight: 700; padding: 10px 32px; border-radius: 6px; box-shadow: 0 4px 12px rgba(60,141,188,0.3);">
+                        <i class="fa fa-save"></i> Save Custom CSS &amp; Configuration
+                    </button>
+                    <a href="/MisContent/WebSetting" class="btn btn-default btn-lg pull-right" style="font-weight: 600; border-radius: 6px;">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </form>
+
+    </div>
 </div>
-
-
-
-

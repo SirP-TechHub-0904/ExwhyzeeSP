@@ -1,4 +1,4 @@
-﻿@model ExwhyzeeSP.Core.Models.SuperSetting
+@model ExwhyzeeSP.Core.Models.SuperSetting
 
 
 @if (Model.TemplateLayoutKey == "Layout1111")
@@ -50,6 +50,6 @@ else if (Model.TemplateLayoutKey == "Layout2222")
     <link href="~/Layout/carspot/css/main.css" rel="stylesheet" />
 }
 <style>
-    @Html.Raw(ViewBag.DataConfigs.LayoutCSS)
+    @Html.Raw(ViewBag.DataConfigs?.LayoutCSS)
 </style>
 

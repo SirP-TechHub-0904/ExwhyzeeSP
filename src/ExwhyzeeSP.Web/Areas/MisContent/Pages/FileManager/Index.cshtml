@@ -1,0 +1,233 @@
+@page
+@model ExwhyzeeSP.Web.Areas.MisContent.Pages.FileManager.IndexModel
+@{
+    ViewData["Title"] = "Media & File Manager";
+}
+
+<div class="row" style="margin-top: 10px; margin-bottom: 35px;">
+    <div class="col-md-12">
+
+        <!-- Top Header & Action Banner -->
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 22px 28px; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h3 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 700; color: #1e293b;">
+                    <i class="fa fa-folder-open text-warning" style="margin-right: 8px;"></i> Media &amp; File Manager
+                </h3>
+                <span style="font-size: 13.5px; color: #64748b;">
+                    Upload, store, and manage image assets. Click <strong>Copy URL</strong> on any image to paste it directly into Summernote, homepage sections, or pages.
+                </span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <span class="label label-primary" style="font-size: 13px; padding: 7px 14px; border-radius: 20px;">
+                    <i class="fa fa-image"></i> @Model.TotalCount Media Files
+                </span>
+                <a href="#upload-section" class="btn btn-success" style="font-weight: 700; border-radius: 6px; padding: 8px 18px; box-shadow: 0 2px 6px rgba(0,166,90,0.3);">
+                    <i class="fa fa-cloud-upload"></i> Upload Images
+                </a>
+            </div>
+        </div>
+
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" style="border-radius: 6px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <i class="fa fa-check-circle" style="margin-right: 6px; font-size: 16px;"></i> @TempData["success"]
+            </div>
+        }
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" style="border-radius: 6px; margin-bottom: 20px;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <i class="fa fa-exclamation-circle" style="margin-right: 6px; font-size: 16px;"></i> @TempData["error"]
+            </div>
+        }
+
+        <!-- Upload Dropzone Box -->
+        <div id="upload-section" class="box box-success" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-top: 4px solid #00a65a; margin-bottom: 30px;">
+            <div class="box-header with-border" style="padding: 16px 20px;">
+                <h3 class="box-title" style="font-weight: 700; font-size: 16px; color: #1e293b;">
+                    <i class="fa fa-upload text-success" style="margin-right: 6px;"></i> Upload Images (Single or Bulk)
+                </h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body" style="padding: 24px;">
+                <form method="post" asp-page-handler="Upload" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px 20px; text-align: center; background: #f8fafc; transition: all 0.2s;" id="drop-area">
+                                <i class="fa fa-cloud-upload text-success" style="font-size: 42px; margin-bottom: 12px;"></i>
+                                <h4 style="font-weight: 700; color: #1e293b; margin: 0 0 6px 0;">Select or Drag &amp; Drop Images Here</h4>
+                                <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+                                    Supports JPG, PNG, WEBP, GIF, SVG. Select multiple images at once for bulk upload.
+                                </p>
+                                <input type="file" name="files" id="file-input" multiple accept="image/*" class="form-control" style="max-width: 380px; margin: 0 auto; display: inline-block;" required />
+                                <div id="file-count" style="margin-top: 10px; font-weight: 600; color: #0284c7; font-size: 13px; display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label class="control-label" style="font-weight: 700; color: #334155;">Custom Title / Label (Optional)</label>
+                                <input type="text" name="customTitle" class="form-control" placeholder="e.g. Rector Portrait or Seminary Chapel" style="height: 42px; border-radius: 6px;" />
+                                <span class="help-block" style="font-size: 12px; color: #64748b;">
+                                    If uploading a single file, you can give it a custom name. For bulk uploads, original file names are preserved automatically.
+                                </span>
+                            </div>
+                            <div style="margin-top: 25px;">
+                                <button type="submit" class="btn btn-success btn-block btn-lg" style="font-weight: 700; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,166,90,0.3);">
+                                    <i class="fa fa-cloud-upload"></i> Upload &amp; Save to Media
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div style="background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <form method="get" style="display: flex; gap: 10px; flex: 1 1 320px; max-width: 500px;">
+                <div class="input-group" style="width: 100%;">
+                    <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Search images by name or date..." style="height: 38px; border-radius: 6px 0 0 6px;" />
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary" style="height: 38px; border-radius: 0 6px 6px 0; font-weight: 600;">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </span>
+                </div>
+            </form>
+            @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+            {
+                <a asp-page="./Index" class="btn btn-default btn-sm" style="font-weight: 600;">
+                    <i class="fa fa-times"></i> Clear Search
+                </a>
+            }
+        </div>
+
+        <!-- Media Grid -->
+        @if (Model.MediaFiles != null && Model.MediaFiles.Any())
+        {
+            <div class="row" id="media-grid">
+                @foreach (var item in Model.MediaFiles)
+                {
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 media-item" style="margin-bottom: 25px;">
+                        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; position: relative;">
+                            
+                            <!-- Thumbnail with aspect ratio -->
+                            <div style="position: relative; height: 180px; background: #f1f5f9; overflow: hidden;">
+                                <img src="@item.ImageUrl" alt="@item.Title" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy" />
+                                <span class="label label-default" style="position: absolute; top: 10px; right: 10px; font-size: 10px; font-weight: 700; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); padding: 4px 8px; border-radius: 4px;">
+                                    @(item.MiniTitle ?? "IMG")
+                                </span>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div style="padding: 16px;">
+                                <h5 style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@item.Title">
+                                    @item.Title
+                                </h5>
+                                <div style="font-size: 11.5px; color: #64748b; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fa fa-clock-o"></i> @(item.Description ?? "Media asset")</span>
+                                    <span>ID: @item.Id</span>
+                                </div>
+
+                                <!-- One-Click Copy URL Button -->
+                                <button type="button" class="btn btn-primary btn-block btn-copy-url" data-url="@item.ImageUrl" style="font-weight: 700; font-size: 13px; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; box-shadow: 0 2px 6px rgba(60,141,188,0.25);">
+                                    <i class="fa fa-copy"></i> Copy URL
+                                </button>
+
+                                <!-- Bottom Action Links -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid #f1f5f9;">
+                                    <a href="@item.ImageUrl" target="_blank" class="btn btn-xs btn-default" style="font-weight: 600; color: #334155;">
+                                        <i class="fa fa-external-link"></i> Full View
+                                    </a>
+                                    <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" onsubmit="return confirm('Are you sure you want to delete this image?');" style="display: inline;">
+                                        <button type="submit" class="btn btn-xs btn-danger" style="font-weight: 600;">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div style="background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1; padding: 60px 20px; text-align: center; margin-top: 20px;">
+                <i class="fa fa-picture-o text-muted" style="font-size: 54px; margin-bottom: 16px; opacity: 0.5;"></i>
+                <h4 style="font-weight: 700; color: #334155; margin: 0 0 8px 0;">No Media Files Found</h4>
+                <p style="font-size: 14px; color: #64748b; max-width: 480px; margin: 0 auto 20px;">
+                    You have not uploaded any files yet, or no files matched your search. Select files in the upload area above to start building your media library!
+                </p>
+                <a href="#upload-section" class="btn btn-success" style="font-weight: 700; border-radius: 6px; padding: 8px 22px;">
+                    <i class="fa fa-cloud-upload"></i> Upload Your First Image
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- Floating Toast Notification for Copied URL -->
+<div id="copy-toast" style="display: none; position: fixed; bottom: 25px; right: 25px; background: #0f172a; color: #ffffff; padding: 14px 22px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 99999; font-weight: 600; font-size: 14px; border-left: 5px solid #10b981; animation: fadeIn 0.2s;">
+    <i class="fa fa-check-circle text-success" style="margin-right: 8px; font-size: 16px;"></i> Image URL copied to clipboard!
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            // Display selected file count
+            $('#file-input').on('change', function () {
+                var count = this.files.length;
+                if (count > 0) {
+                    $('#file-count').text(count + ' file' + (count > 1 ? 's' : '') + ' selected ready to upload.').fadeIn();
+                } else {
+                    $('#file-count').hide();
+                }
+            });
+
+            // One-Click Copy to Clipboard Handler
+            $('.btn-copy-url').on('click', function (e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var url = $btn.data('url');
+
+                // Convert relative URL to full absolute URL if needed so it works everywhere
+                if (url.startsWith('/')) {
+                    url = window.location.origin + url;
+                }
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(url).then(showCopiedSuccess).catch(fallbackCopy);
+                } else {
+                    fallbackCopy();
+                }
+
+                function fallbackCopy() {
+                    var $temp = $('<input>');
+                    $('body').append($temp);
+                    $temp.val(url).select();
+                    document.execCommand('copy');
+                    $temp.remove();
+                    showCopiedSuccess();
+                }
+
+                function showCopiedSuccess() {
+                    var originalHtml = $btn.html();
+                    $btn.removeClass('btn-primary').addClass('btn-success').html('<i class="fa fa-check"></i> Copied!');
+                    
+                    var $toast = $('#copy-toast');
+                    $toast.stop(true, true).fadeIn(200).delay(2500).fadeOut(300);
+
+                    setTimeout(function () {
+                        $btn.removeClass('btn-success').addClass('btn-primary').html(originalHtml);
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+}

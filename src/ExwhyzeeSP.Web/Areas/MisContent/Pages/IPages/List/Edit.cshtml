@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.List.EditModel
 
 @{
@@ -37,8 +37,8 @@
                         <span asp-validation-for="PageSectionList.SortOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-4">
-                        <label asp-for="PageSectionList.Description" class="control-label"></label>
-                        <input asp-for="PageSectionList.Description" class="form-control" />
+                        <label asp-for="PageSectionList.Description" class="control-label">Brief Description</label>
+                        <textarea asp-for="PageSectionList.Description" class="form-control" rows="3"></textarea>
                         <span asp-validation-for="PageSectionList.Description" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-4">

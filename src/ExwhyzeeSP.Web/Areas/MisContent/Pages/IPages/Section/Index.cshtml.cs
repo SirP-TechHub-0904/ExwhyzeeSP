@@ -26,7 +26,9 @@ namespace ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Section
         public async Task OnGetAsync()
         {
             PageSection = await _context.PageSections
-                .Include(p => p.WebPage).ToListAsync();
+                .Include(p => p.WebPage)
+                .Where(p => p.TemplateKey != "FileManager" && p.CustomClass != "file-manager-asset")
+                .ToListAsync();
         }
     }
 }

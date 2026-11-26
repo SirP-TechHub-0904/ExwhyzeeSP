@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model ExwhyzeeSP.Web.Areas.MisContent.Pages.IPages.Section.CreateModel
 @inject ExwhyzeeSP.Data.Contexts.ApplicationDbContext _context
 
@@ -30,13 +30,13 @@
                         <span asp-validation-for="PageSection.Title" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-4">
-                        <label asp-for="PageSection.Description" class="control-label"></label>
-                        <input asp-for="PageSection.Description" class="form-control" />
+                        <label asp-for="PageSection.Description" class="control-label">Brief Description</label>
+                        <textarea asp-for="PageSection.Description" class="form-control" rows="3"></textarea>
                         <span asp-validation-for="PageSection.Description" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-4">
-                        <label asp-for="PageSection.FullDescription" class="control-label"></label>
-                        <input asp-for="PageSection.FullDescription" class="form-control" />
+                        <label asp-for="PageSection.FullDescription" class="control-label">Full Content Body</label>
+                        <textarea asp-for="PageSection.FullDescription" class="form-control summernote" rows="6"></textarea>
                         <span asp-validation-for="PageSection.FullDescription" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-4">
@@ -118,6 +118,26 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $('.summernote').summernote({
+                height: 250,
+                minHeight: 140,
+                maxHeight: 600,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph', 'height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video', 'hr']],
+                    ['view', ['fullscreen', 'codeview']]
+                ]
+            });
+        });
+    </script>
 }
 
 
